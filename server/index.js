@@ -105,7 +105,7 @@ const startSelfPolling = (port) => {
       console.log(`🏥 Performing self health check at ${new Date().toLocaleString()}`);
       
       const response = await axios.get(healthUrl, {
-        timeout: 30000, // 30 second timeout
+        timeout: 30000,
         headers: {
           'User-Agent': 'QuizPilot-SelfPolling/1.0'
         }

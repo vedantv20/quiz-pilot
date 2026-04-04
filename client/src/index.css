@@ -1,0 +1,233 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colors */
+  --color-background: oklch(0.9940 0 0);
+  --color-foreground: oklch(0 0 0);
+  --color-card: oklch(0.9940 0 0);
+  --color-card-foreground: oklch(0 0 0);
+  --color-popover: oklch(0.9911 0 0);
+  --color-popover-foreground: oklch(0 0 0);
+  --color-primary: oklch(0.7443 0.2161 146.3021);
+  --color-primary-foreground: oklch(1.0000 0 0);
+  --color-secondary: oklch(0.9540 0.0063 255.4755);
+  --color-secondary-foreground: oklch(0.1344 0 0);
+  --color-muted: oklch(0.9702 0 0);
+  --color-muted-foreground: oklch(0.4386 0 0);
+  --color-accent: oklch(0.9393 0.0288 266.3680);
+  --color-accent-foreground: oklch(0.5445 0.1903 259.4848);
+  --color-destructive: oklch(0.6290 0.1902 23.0704);
+  --color-destructive-foreground: oklch(1.0000 0 0);
+  --color-border: oklch(0.9300 0.0094 286.2156);
+  --color-input: oklch(0.9401 0 0);
+  --color-ring: oklch(0 0 0);
+  --color-chart-1: oklch(0.7459 0.1483 156.4499);
+  --color-chart-2: oklch(0.5393 0.2713 286.7462);
+  --color-chart-3: oklch(0.7336 0.1758 50.5517);
+  --color-chart-4: oklch(0.5828 0.1809 259.7276);
+  --color-chart-5: oklch(0.5590 0 0);
+
+  /* Fonts */
+  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --font-serif: "Lora", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+
+  /* Container constraints */
+  --size-xs: 20rem;
+  --size-sm: 24rem;
+  --size-md: 28rem;
+  --size-lg: 32rem;
+  --size-xl: 36rem;
+  --size-2xl: 42rem;
+  --size-3xl: 48rem;
+  --size-4xl: 56rem;
+  --size-5xl: 64rem;
+  --size-6xl: 72rem;
+  --size-7xl: 80rem;
+
+  /* Radius */
+  --radius: 0.75rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+}
+
+@variant dark {
+  @theme {
+    --color-background: oklch(0.2223 0.0060 271.1393);
+    --color-foreground: oklch(0.9551 0 0);
+    --color-card: oklch(0.2568 0.0076 274.6528);
+    --color-card-foreground: oklch(0.9551 0 0);
+    --color-popover: oklch(0.2568 0.0076 274.6528);
+    --color-popover-foreground: oklch(0.9551 0 0);
+    --color-primary: oklch(0.6132 0.2294 291.7437);
+    --color-primary-foreground: oklch(1.0000 0 0);
+    --color-secondary: oklch(0.2940 0.0130 272.9312);
+    --color-secondary-foreground: oklch(0.9551 0 0);
+    --color-muted: oklch(0.2940 0.0130 272.9312);
+    --color-muted-foreground: oklch(0.7058 0 0);
+    --color-accent: oklch(0.2795 0.0368 260.0310);
+    --color-accent-foreground: oklch(0.7857 0.1153 246.6596);
+    --color-destructive: oklch(0.7106 0.1661 22.2162);
+    --color-destructive-foreground: oklch(1.0000 0 0);
+    --color-border: oklch(0.3289 0.0092 268.3843);
+    --color-input: oklch(0.3289 0.0092 268.3843);
+    --color-ring: oklch(0.6132 0.2294 291.7437);
+    --color-chart-1: oklch(0.8003 0.1821 151.7110);
+    --color-chart-2: oklch(0.6132 0.2294 291.7437);
+    --color-chart-3: oklch(0.8077 0.1035 19.5706);
+    --color-chart-4: oklch(0.6691 0.1569 260.1063);
+    --color-chart-5: oklch(0.7058 0 0);
+  }
+}
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: var(--color-border);
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+  -moz-tab-size: 4;
+  tab-size: 4;
+  font-family: var(--font-sans);
+  font-feature-settings: normal;
+  font-variation-settings: normal;
+}
+
+body {
+  margin: 0;
+  font-family: inherit;
+  line-height: inherit;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+/* Form elements */
+button, input, optgroup, select, textarea {
+  font-family: inherit;
+  font-feature-settings: inherit;
+  font-variation-settings: inherit;
+  font-size: 100%;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  background-color: transparent;
+  background-image: none;
+  cursor: pointer;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+/* Layout utilities */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container {
+    max-width: 640px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+@media (min-width: 1536px) {
+  .container {
+    max-width: 1536px;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-muted);
+  border-radius: var(--radius);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-muted-foreground);
+  border-radius: var(--radius);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-foreground);
+}
+
+/* Animation utilities */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}

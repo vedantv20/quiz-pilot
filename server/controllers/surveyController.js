@@ -42,7 +42,7 @@ const submitSurvey = async (req, res, next) => {
     );
 
     const surveyData = {
-      id: survey._id,
+      _id: survey._id,
       targetExam: survey.targetExam,
       attemptYear: survey.attemptYear,
       dailyStudyHours: survey.dailyStudyHours,
@@ -75,7 +75,7 @@ const getMySurvey = async (req, res, next) => {
     }
 
     const surveyData = {
-      id: survey._id,
+      _id: survey._id,
       targetExam: survey.targetExam,
       attemptYear: survey.attemptYear,
       dailyStudyHours: survey.dailyStudyHours,
@@ -111,7 +111,7 @@ const getAllSurveys = async (req, res, next) => {
     const totalSurveys = await Survey.countDocuments();
 
     const surveysData = surveys.map(survey => ({
-      id: survey._id,
+      _id: survey._id,
       student: survey.student,
       targetExam: survey.targetExam,
       attemptYear: survey.attemptYear,

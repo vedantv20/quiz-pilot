@@ -75,7 +75,7 @@ const getLeaderboard = async (req, res, next) => {
         return {
           rank: index + 1,
           user: {
-            id: user._id,
+            _id: user._id,
             name: user.name,
             avatar: user.avatar,
             badges: user.badges,

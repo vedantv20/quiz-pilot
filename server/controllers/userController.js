@@ -38,7 +38,7 @@ const getAllUsers = async (req, res, next) => {
         const quizCount = user.role !== 'student' ? await Quiz.countDocuments({ createdBy: user._id }) : 0;
 
         return {
-          id: user._id,
+          _id: user._id,
           name: user.name,
           email: user.email,
           role: user.role,
@@ -101,7 +101,7 @@ const changeUserRole = async (req, res, next) => {
     await user.save();
 
     const userData = {
-      id: user._id,
+      _id: user._id,
       name: user.name,
       email: user.email,
       role: user.role,

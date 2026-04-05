@@ -11,9 +11,23 @@ const { errorHandler } = require('./middleware');
 const app = express();
 
 // Security middleware
+const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:3000,http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean)
+
 app.use(helmet());
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // Allow non-browser tools like curl/postman (no Origin header)
+    if (!origin) return callback(null, true)
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true)
+    }
+
+    return callback(new Error(`CORS blocked for origin: ${origin}`), false)
+  },
   credentials: true
 }));
 

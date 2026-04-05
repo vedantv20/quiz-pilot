@@ -111,9 +111,9 @@ const getBookmarks = async (req, res, next) => {
       : await Bookmark.countDocuments(matchQuery);
 
     const bookmarksData = filteredBookmarks.map(bookmark => ({
-      id: bookmark._id,
+      _id: bookmark._id,
       question: {
-        id: bookmark.question._id,
+        _id: bookmark.question._id,
         text: bookmark.question.text,
         options: bookmark.question.options,
         correctIndex: bookmark.question.correctIndex,

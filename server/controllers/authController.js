@@ -36,7 +36,7 @@ const register = async (req, res, next) => {
 
     // Return user data without password
     const userData = {
-      id: user._id,
+      _id: user._id,
       name: user.name,
       email: user.email,
       role: user.role,
@@ -85,7 +85,7 @@ const login = async (req, res, next) => {
 
     // Return user data without password
     const userData = {
-      id: user._id,
+      _id: user._id,
       name: user.name,
       email: user.email,
       role: user.role,
@@ -115,7 +115,7 @@ const getMe = async (req, res, next) => {
     const user = req.user;
 
     const userData = {
-      id: user._id,
+      _id: user._id,
       name: user.name,
       email: user.email,
       role: user.role,

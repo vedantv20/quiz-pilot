@@ -170,7 +170,7 @@ const submitAttempt = async (req, res, next) => {
     const result = {
       attemptId: attempt._id,
       quiz: {
-        id: quiz._id,
+        _id: quiz._id,
         title: quiz.title,
         totalQuestions: questions.length
       },
@@ -214,9 +214,9 @@ const getMyAttempts = async (req, res, next) => {
     const totalAttempts = await Attempt.countDocuments({ student: student._id });
 
     const attemptsData = attempts.map(attempt => ({
-      id: attempt._id,
+      _id: attempt._id,
       quiz: {
-        id: attempt.quiz._id,
+        _id: attempt.quiz._id,
         title: attempt.quiz.title,
         difficulty: attempt.quiz.difficulty,
         subject: attempt.quiz.subject
@@ -274,7 +274,7 @@ const getQuizAttempts = async (req, res, next) => {
     const totalAttempts = await Attempt.countDocuments({ quiz: quizId });
 
     const attemptsData = attempts.map(attempt => ({
-      id: attempt._id,
+      _id: attempt._id,
       student: attempt.student,
       score: attempt.score,
       percentage: attempt.percentage,
@@ -284,7 +284,7 @@ const getQuizAttempts = async (req, res, next) => {
 
     return sendSuccess(res, 200, 'Quiz attempts retrieved successfully', {
       quiz: {
-        id: quiz._id,
+        _id: quiz._id,
         title: quiz.title
       },
       attempts: attemptsData,

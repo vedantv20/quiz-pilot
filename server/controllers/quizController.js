@@ -26,13 +26,14 @@ const getAllQuizzes = async (req, res, next) => {
         const attemptCount = await Attempt.countDocuments({ quiz: quiz._id });
         
         return {
-          id: quiz._id,
+          _id: quiz._id,
           title: quiz.title,
           description: quiz.description,
           subject: quiz.subject,
           difficulty: quiz.difficulty,
           timeLimit: quiz.timeLimit,
           isMock: quiz.isMock,
+          isPublished: quiz.isPublished,
           totalQuestions: questionCount,
           attemptCount,
           tags: quiz.tags,
@@ -77,7 +78,7 @@ const getQuizById = async (req, res, next) => {
     // For mock exams: always hide correctIndex and explanation during attempt
     if (user.role === 'student' || quiz.isMock) {
       questions = questions.map(q => ({
-        id: q._id,
+        _id: q._id,
         text: q.text,
         options: q.options,
         difficulty: q.difficulty
@@ -86,7 +87,7 @@ const getQuizById = async (req, res, next) => {
     } else {
       // For teachers/admins: show everything
       questions = questions.map(q => ({
-        id: q._id,
+        _id: q._id,
         text: q.text,
         options: q.options,
         correctIndex: q.correctIndex,
@@ -96,7 +97,7 @@ const getQuizById = async (req, res, next) => {
     }
 
     const quizData = {
-      id: quiz._id,
+      _id: quiz._id,
       title: quiz.title,
       description: quiz.description,
       subject: quiz.subject,
@@ -149,7 +150,7 @@ const createQuiz = async (req, res, next) => {
     await quiz.populate('createdBy', 'name email');
 
     const quizData = {
-      id: quiz._id,
+      _id: quiz._id,
       title: quiz.title,
       description: quiz.description,
       subject: quiz.subject,
@@ -201,7 +202,7 @@ const updateQuiz = async (req, res, next) => {
     const questionCount = await Question.countDocuments({ quiz: id });
 
     const quizData = {
-      id: quiz._id,
+      _id: quiz._id,
       title: quiz.title,
       description: quiz.description,
       subject: quiz.subject,
@@ -337,7 +338,7 @@ const getQuizStats = async (req, res, next) => {
 
     const stats = {
       quiz: {
-        id: quiz._id,
+        _id: quiz._id,
         title: quiz.title,
         totalQuestions: questions.length
       },
@@ -348,7 +349,7 @@ const getQuizStats = async (req, res, next) => {
         lowestScore
       },
       recentAttempts: attempts.slice(0, 10).map(attempt => ({
-        id: attempt._id,
+        _id: attempt._id,
         student: attempt.student,
         score: attempt.score,
         percentage: attempt.percentage,

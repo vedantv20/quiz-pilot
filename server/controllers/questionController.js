@@ -39,7 +39,7 @@ const addQuestion = async (req, res, next) => {
     await Quiz.findByIdAndUpdate(quiz, { totalQuestions: questionCount });
 
     const questionData = {
-      id: question._id,
+      _id: question._id,
       quiz: question.quiz,
       subject: question.subject,
       text: question.text,
@@ -84,7 +84,7 @@ const updateQuestion = async (req, res, next) => {
     await question.save();
 
     const questionData = {
-      id: question._id,
+      _id: question._id,
       quiz: question.quiz._id,
       subject: question.subject,
       text: question.text,

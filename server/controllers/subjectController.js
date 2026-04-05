@@ -20,7 +20,7 @@ const getAllSubjects = async (req, res, next) => {
         });
         
         return {
-          id: subject._id,
+          _id: subject._id,
           name: subject.name,
           icon: subject.icon,
           description: subject.description,
@@ -58,7 +58,7 @@ const createSubject = async (req, res, next) => {
     await subject.populate('createdBy', 'name email');
 
     const subjectData = {
-      id: subject._id,
+      _id: subject._id,
       name: subject.name,
       icon: subject.icon,
       description: subject.description,

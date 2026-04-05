@@ -14,6 +14,14 @@ const questionSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  image: {
+    type: String, // URL/path to uploaded image
+    default: null
+  },
+  imageAlt: {
+    type: String, // Alt text for accessibility
+    default: ''
+  },
   options: {
     type: [String],
     validate: {

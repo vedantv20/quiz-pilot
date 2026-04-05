@@ -35,7 +35,7 @@ exports.completeOnboarding = async (req, res, next) => {
     const { educationLevel, currentClass, targetExams, preferredSubjects } = validation.data;
 
     const user = await User.findByIdAndUpdate(
-      req.user.userId,
+      req.user._id,
       {
         educationLevel,
         currentClass,
@@ -131,7 +131,7 @@ exports.getTargetExams = async (req, res, next) => {
 // Get subjects based on user's qualification
 exports.getSubjectsByQualification = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.userId);
+    const user = await User.findById(req.user._id);
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -200,7 +200,7 @@ exports.getSuggestedQuizzes = async (req, res, next) => {
   try {
     const { limit = 10, difficulty } = req.query;
     
-    const user = await User.findById(req.user.userId);
+    const user = await User.findById(req.user._id);
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -323,7 +323,7 @@ exports.updateTargetExams = async (req, res, next) => {
     const { targetExams } = validation.data;
 
     const user = await User.findByIdAndUpdate(
-      req.user.userId,
+      req.user._id,
       { targetExams },
       { new: true }
     ).select('-passwordHash');

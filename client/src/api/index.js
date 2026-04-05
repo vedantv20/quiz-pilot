@@ -87,3 +87,15 @@ export const onboardingAPI = {
   getSuggestedQuizzes: (params) => api.get('/onboarding/suggested-quizzes', { params: cleanParams(params) }),
   updateTargetExams: (targetExams) => api.put('/onboarding/target-exams', { targetExams }),
 }
+
+// Upload API calls
+export const uploadAPI = {
+  uploadQuestionImage: (file) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    return api.post('/upload/question-image', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+  deleteQuestionImage: (filename) => api.delete(`/upload/question-image/${filename}`),
+}

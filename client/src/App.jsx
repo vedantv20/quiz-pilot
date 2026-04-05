@@ -24,6 +24,7 @@ import {
   TeacherDashboard,
   CreateQuiz,
   EditQuiz,
+  NewQuestion,
   QuizStats,
   AdminDashboard,
   UserManagement,
@@ -104,6 +105,11 @@ function App() {
                   <Route path="/teacher/quiz/:id/edit" element={
                     <ProtectedRoute allowedRoles={['teacher', 'admin']}>
                       <EditQuiz />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/teacher/quiz/:quizId/question/new" element={
+                    <ProtectedRoute allowedRoles={['teacher', 'admin']}>
+                      <NewQuestion />
                     </ProtectedRoute>
                   } />
                   <Route path="/teacher/quiz/:id/stats" element={

@@ -1,5 +1,7 @@
 const { Question, Quiz } = require('../models');
 const { sendSuccess, sendError } = require('../utils/response');
+const fs = require('fs');
+const path = require('path');
 
 /**
  * Add a question to a quiz (Teacher/Admin only)
@@ -7,7 +9,7 @@ const { sendSuccess, sendError } = require('../utils/response');
  */
 const addQuestion = async (req, res, next) => {
   try {
-    const { quiz, subject, text, options, correctIndex, explanation, difficulty } = req.validatedData;
+    const { quiz, subject, text, image, imageAlt, options, correctIndex, explanation, difficulty } = req.validatedData;
     const user = req.user;
 
     // Check if quiz exists and user has permission
@@ -25,6 +27,8 @@ const addQuestion = async (req, res, next) => {
       quiz,
       subject: subject || quizDoc.subject,
       text,
+      image: image || null,
+      imageAlt: imageAlt || '',
       options,
       correctIndex,
       explanation,
@@ -43,6 +47,8 @@ const addQuestion = async (req, res, next) => {
       quiz: question.quiz,
       subject: question.subject,
       text: question.text,
+      image: question.image,
+      imageAlt: question.imageAlt,
       options: question.options,
       correctIndex: question.correctIndex,
       explanation: question.explanation,
@@ -76,6 +82,18 @@ const updateQuestion = async (req, res, next) => {
       return sendError(res, 403, 'Not authorized to edit this question');
     }
 
+    // If updating image and old image exists, delete old image file
+    if (updates.image && question.image && updates.image !== question.image) {
+      const oldImagePath = path.join(__dirname, '../uploads/questions', path.basename(question.image));
+      if (fs.existsSync(oldImagePath)) {
+        try {
+          fs.unlinkSync(oldImagePath);
+        } catch (err) {
+          console.warn('Failed to delete old image:', err);
+        }
+      }
+    }
+
     // Update question
     Object.keys(updates).forEach(key => {
       question[key] = updates[key];
@@ -88,6 +106,8 @@ const updateQuestion = async (req, res, next) => {
       quiz: question.quiz._id,
       subject: question.subject,
       text: question.text,
+      image: question.image,
+      imageAlt: question.imageAlt,
       options: question.options,
       correctIndex: question.correctIndex,
       explanation: question.explanation,
@@ -118,6 +138,18 @@ const deleteQuestion = async (req, res, next) => {
     // Check ownership (admin can delete any question)
     if (user.role !== 'admin' && question.quiz.createdBy.toString() !== user._id.toString()) {
       return sendError(res, 403, 'Not authorized to delete this question');
+    }
+
+    // Delete associated image file if exists
+    if (question.image) {
+      const imagePath = path.join(__dirname, '../uploads/questions', path.basename(question.image));
+      if (fs.existsSync(imagePath)) {
+        try {
+          fs.unlinkSync(imagePath);
+        } catch (err) {
+          console.warn('Failed to delete question image:', err);
+        }
+      }
     }
 
     const quizId = question.quiz._id;

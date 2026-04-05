@@ -87,7 +87,7 @@ export const QuestionCard = ({
         <div className="mb-6">
           <img
             src={question.image}
-            alt="Question diagram"
+            alt={question.imageAlt || "Question diagram"}
             className="max-w-full h-auto rounded-lg shadow-sm"
             onError={() => setImageError(true)}
           />

@@ -16,6 +16,7 @@ export { default as Leaderboard } from './Leaderboard'
 export { default as TeacherDashboard } from './TeacherDashboard'
 export { default as CreateQuiz } from './CreateQuiz'
 export { default as EditQuiz } from './EditQuiz'
+export { default as NewQuestion } from './NewQuestion'
 export const QuizStats = () => {
   return (
     <div className="page-shell">

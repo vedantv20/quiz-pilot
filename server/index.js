@@ -4,6 +4,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const axios = require('axios');
+const path = require('path');
 
 const connectDB = require('./config/database');
 const { errorHandler } = require('./middleware');
@@ -57,6 +58,9 @@ app.use('/api/', limiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+// Serve uploaded files statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Health check route
 app.get('/health', (req, res) => {
   res.status(200).json({
@@ -77,6 +81,7 @@ app.use('/api/surveys', require('./routes/surveys'));
 app.use('/api/bookmarks', require('./routes/bookmarks'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/onboarding', require('./routes/onboarding'));
+app.use('/api/upload', require('./routes/upload'));
 
 // 404 handler for undefined routes
 app.use('*', (req, res) => {

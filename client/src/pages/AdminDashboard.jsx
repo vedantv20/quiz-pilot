@@ -60,7 +60,7 @@ const AdminDashboard = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
-              <Shield className="w-8 h-8 text-purple-600" />
+              <Shield className="w-8 h-8 text-primary" />
               Admin Dashboard
             </h1>
             <p className="text-muted-foreground mt-2">
@@ -72,7 +72,7 @@ const AdminDashboard = () => {
           <div className="flex gap-3">
             <Link
               to="/admin/users"
-              className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+              className="btn-primary"
             >
               <Users className="w-4 h-4" />
               Manage Users
@@ -104,11 +104,11 @@ const AdminDashboard = () => {
             className="bg-green-50 dark:bg-green-900/20"
           />
           <StatCard
-            icon={<Activity className="w-6 h-6 text-purple-600" />}
+            icon={<Activity className="w-6 h-6 text-primary" />}
             title="Quiz Attempts"
             value={isLoading ? '...' : attemptStats?.total || 0}
             subtitle={`+${attemptStats?.todayCount || 0} today`}
-            className="bg-purple-50 dark:bg-purple-900/20"
+            className="bg-primary/10"
           />
           <StatCard
             icon={<ClipboardList className="w-6 h-6 text-orange-600" />}
@@ -168,9 +168,9 @@ const AdminDashboard = () => {
                     </div>
                   </div>
 
-                  <div className="flex justify-between items-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                  <div className="flex justify-between items-center p-4 bg-primary/10 rounded-lg">
                     <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-purple-600 rounded-full"></div>
+                      <div className="w-3 h-3 bg-primary rounded-full"></div>
                       <span className="font-medium text-foreground">Admins</span>
                     </div>
                     <div className="text-right">
@@ -270,7 +270,7 @@ const AdminDashboard = () => {
                 </h2>
                 <Link
                   to="/admin/users"
-                  className="text-purple-600 hover:text-purple-700 text-sm font-medium"
+                    className="text-primary hover:text-primary/80 text-sm font-medium"
                 >
                   View all
                 </Link>
@@ -282,8 +282,8 @@ const AdminDashboard = () => {
                 <div className="space-y-4">
                   {recentUsers.map((user) => (
                     <div key={user._id} className="flex items-center gap-4 p-3 hover:bg-muted/80 rounded-lg transition-colors">
-                      <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
-                        <span className="text-purple-600 dark:text-purple-400 font-medium text-sm">
+                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                        <span className="text-primary font-medium text-sm">
                           {user.name.charAt(0).toUpperCase()}
                         </span>
                       </div>
@@ -324,7 +324,7 @@ const AdminDashboard = () => {
                 </h2>
                 <Link
                   to="/subjects"
-                  className="text-purple-600 hover:text-purple-700 text-sm font-medium"
+                    className="text-primary hover:text-primary/80 text-sm font-medium"
                 >
                   View all
                 </Link>

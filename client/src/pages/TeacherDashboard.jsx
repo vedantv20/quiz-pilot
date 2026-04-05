@@ -27,7 +27,7 @@ const TeacherDashboard = () => {
   const [selectedTimeframe, setSelectedTimeframe] = useState('week');
 
   // Fetch teacher's quizzes
-  const teacherId = user?.id || user?._id;
+  const teacherId = user?._id || user?.id;
 
   const { data: quizzes = [], isLoading: quizzesLoading } = useQuery({
     queryKey: ['teacher-quizzes'],
@@ -76,7 +76,7 @@ const TeacherDashboard = () => {
           <div className="flex gap-3">
             <Link
               to="/teacher/quiz/new"
-              className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+              className="btn-primary"
             >
               <Plus className="w-4 h-4" />
               Create Quiz
@@ -97,8 +97,8 @@ const TeacherDashboard = () => {
                 onClick={() => setSelectedTimeframe(option.key)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   selectedTimeframe === option.key
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-card text-foreground hover:bg-purple-50 dark:hover:bg-purple-900/20 border border-border'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-card text-foreground hover:bg-primary/10 border border-border'
                 }`}
               >
                 {option.label}
@@ -124,11 +124,11 @@ const TeacherDashboard = () => {
             className="bg-green-50 dark:bg-green-900/20"
           />
           <StatCard
-            icon={<TrendingUp className="w-6 h-6 text-purple-600" />}
+            icon={<TrendingUp className="w-6 h-6 text-primary" />}
             title="Average Score"
             value={`${averageScore.toFixed(1)}%`}
             subtitle="Across all quizzes"
-            className="bg-purple-50 dark:bg-purple-900/20"
+            className="bg-primary/10"
           />
           <StatCard
             icon={<Target className="w-6 h-6 text-orange-600" />}
@@ -190,7 +190,7 @@ const TeacherDashboard = () => {
                   </h2>
                   <Link
                     to="/teacher/quizzes"
-                    className="text-purple-600 hover:text-purple-700 text-sm font-medium"
+                    className="text-primary hover:text-primary/80 text-sm font-medium"
                   >
                     View all
                   </Link>
@@ -231,7 +231,7 @@ const TeacherDashboard = () => {
                   </p>
                   <Link
                     to="/teacher/quiz/new"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                    className="btn-primary"
                   >
                     <Plus className="w-4 h-4" />
                     Create Quiz
@@ -284,7 +284,7 @@ const TeacherDashboard = () => {
               <div className="space-y-3">
                 {stats?.recentAttempts?.slice(0, 5).map((attempt, index) => (
                   <div key={index} className="flex items-center gap-3 text-sm">
-                    <div className="w-2 h-2 bg-purple-600 rounded-full" />
+                    <div className="w-2 h-2 bg-primary rounded-full" />
                     <span className="text-muted-foreground">
                       {attempt.studentName} scored {attempt.percentage}% on {attempt.quizTitle}
                     </span>

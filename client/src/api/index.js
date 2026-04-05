@@ -14,9 +14,21 @@ export const subjectAPI = {
   delete: (id) => api.delete(`/subjects/${id}`),
 }
 
+// Helper to filter out undefined/null params
+const cleanParams = (params) => {
+  if (!params) return undefined
+  const cleaned = {}
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      cleaned[key] = value
+    }
+  })
+  return Object.keys(cleaned).length > 0 ? cleaned : undefined
+}
+
 // Quiz API calls
 export const quizAPI = {
-  getAll: (params) => api.get('/quizzes', { params }),
+  getAll: (params) => api.get('/quizzes', { params: cleanParams(params) }),
   getById: (id) => api.get(`/quizzes/${id}`),
   create: (data) => api.post('/quizzes', data),
   update: (id, data) => api.put(`/quizzes/${id}`, data),
@@ -41,7 +53,7 @@ export const attemptAPI = {
 
 // Leaderboard API calls
 export const leaderboardAPI = {
-  get: (params) => api.get('/leaderboard', { params }),
+  get: (params) => api.get('/leaderboard', { params: cleanParams(params) }),
 }
 
 // Survey API calls
@@ -61,7 +73,7 @@ export const bookmarkAPI = {
 
 // User API calls
 export const userAPI = {
-  getAll: (params) => api.get('/users', { params }),
+  getAll: (params) => api.get('/users', { params: cleanParams(params) }),
   updateRole: (id, role) => api.put(`/users/${id}/role`, { role }),
   delete: (id) => api.delete(`/users/${id}`),
 }

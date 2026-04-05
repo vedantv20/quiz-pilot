@@ -25,7 +25,7 @@ export const StatCard = ({
     if (trendValue < 0) return 'text-red-600 dark:text-red-400'
     return 'text-muted-foreground'
   }
-
+  
   const formatValue = (val) => {
     if (typeof val === 'number') {
       if (val >= 1000000) {

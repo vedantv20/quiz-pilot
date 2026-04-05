@@ -139,7 +139,7 @@ const CreateQuiz = () => {
             {/* Basic Information */}
             <div className="space-y-6">
               <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-purple-600" />
+                <BookOpen className="w-5 h-5 text-primary" />
                 Basic Information
               </h2>
 
@@ -155,7 +155,7 @@ const CreateQuiz = () => {
                   value={formData.title}
                   onChange={handleInputChange}
                   placeholder="Enter quiz title..."
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
                     errors.title ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
@@ -176,7 +176,7 @@ const CreateQuiz = () => {
                   onChange={handleInputChange}
                   rows={3}
                   placeholder="Describe what this quiz covers..."
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 />
               </div>
 
@@ -194,7 +194,7 @@ const CreateQuiz = () => {
                       name="subject"
                       value={formData.subject}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
                         errors.subject ? 'border-red-500' : 'border-gray-300'
                       }`}
                     >
@@ -220,7 +220,7 @@ const CreateQuiz = () => {
                     name="difficulty"
                     value={formData.difficulty}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   >
                     <option value="easy">Easy</option>
                     <option value="medium">Medium</option>
@@ -235,7 +235,7 @@ const CreateQuiz = () => {
           <div className="bg-card rounded-xl shadow-sm border border-border p-6">
             <div className="space-y-6">
               <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
-                <Target className="w-5 h-5 text-purple-600" />
+                <Target className="w-5 h-5 text-primary" />
                 Quiz Settings
               </h2>
 
@@ -252,8 +252,8 @@ const CreateQuiz = () => {
                       onClick={() => handleTimeLimitChange(minutes)}
                       className={`px-4 py-3 text-sm font-medium rounded-lg border transition-colors ${
                         formData.timeLimit === minutes * 60
-                          ? 'bg-purple-600 text-white border-purple-600'
-                          : 'bg-white dark:bg-gray-700 text-foreground border-border hover:bg-purple-50 dark:hover:bg-purple-900/20'
+                          ? 'bg-primary text-primary-foreground border-primary'
+                          : 'bg-white dark:bg-gray-700 text-foreground border-border hover:bg-primary/10'
                       }`}
                     >
                       <Clock className="w-4 h-4 mx-auto mb-1" />
@@ -278,7 +278,7 @@ const CreateQuiz = () => {
                       name="isMock"
                       checked={formData.isMock}
                       onChange={handleInputChange}
-                      className="w-4 h-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                      className="w-4 h-4 text-primary focus:ring-primary border-gray-300 rounded"
                     />
                     <div>
                       <div className="font-medium text-foreground">Mock Exam Mode</div>
@@ -305,13 +305,13 @@ const CreateQuiz = () => {
                   value={newTag}
                   onChange={(e) => setNewTag(e.target.value)}
                   placeholder="Add a tag..."
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
                 />
                 <button
                   type="button"
                   onClick={addTag}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                  className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
@@ -348,7 +348,7 @@ const CreateQuiz = () => {
                     value="false"
                     checked={!formData.isPublished}
                     onChange={() => setFormData(prev => ({ ...prev, isPublished: false }))}
-                    className="w-4 h-4 text-purple-600 focus:ring-purple-500"
+                    className="w-4 h-4 text-primary focus:ring-primary"
                   />
                   <Lock className="w-5 h-5 text-gray-500" />
                   <div>
@@ -366,7 +366,7 @@ const CreateQuiz = () => {
                     value="true"
                     checked={formData.isPublished}
                     onChange={() => setFormData(prev => ({ ...prev, isPublished: true }))}
-                    className="w-4 h-4 text-purple-600 focus:ring-purple-500"
+                    className="w-4 h-4 text-primary focus:ring-primary"
                   />
                   <Globe className="w-5 h-5 text-green-500" />
                   <div>
@@ -399,7 +399,7 @@ const CreateQuiz = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="btn-primary"
             >
               {isSubmitting ? (
                 <>

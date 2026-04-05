@@ -94,7 +94,7 @@ const SurveyAnalytics = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
-              <ClipboardList className="w-8 h-8 text-purple-600" />
+              <ClipboardList className="w-8 h-8 text-primary" />
               Survey Analytics
             </h1>
             <p className="text-muted-foreground mt-2">
@@ -127,11 +127,11 @@ const SurveyAnalytics = () => {
             className="bg-red-50 dark:bg-red-900/20"
           />
           <StatCard
-            icon={<Target className="w-6 h-6 text-purple-600" />}
+            icon={<Target className="w-6 h-6 text-primary" />}
             title="Avg Confidence"
             value={`${averageConfidenceLevel.toFixed(1)}/5`}
             subtitle="Student confidence rating"
-            className="bg-purple-50 dark:bg-purple-900/20"
+            className="bg-primary/10"
           />
         </div>
 
@@ -380,9 +380,9 @@ const SurveyAnalytics = () => {
         </div>
 
         {/* Insights and Recommendations */}
-        <div className="mt-8 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-xl p-6 border border-purple-200 dark:border-purple-700">
+        <div className="mt-8 bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl p-6 border border-primary/20">
           <div className="flex items-start gap-4">
-            <Brain className="w-8 h-8 text-purple-600 mt-1" />
+            <Brain className="w-8 h-8 text-primary mt-1" />
             <div>
               <h3 className="text-lg font-semibold text-foreground mb-4">
                 Key Insights & Recommendations

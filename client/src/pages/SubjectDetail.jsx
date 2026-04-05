@@ -171,26 +171,26 @@ export const SubjectDetail = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <StatCard
             title="Total Quizzes"
-            value={subjectStats.totalQuizzes}
+            value={subjectStats.totalQuizzes ? subjectStats.totalQuizzes : 0}
             icon={BookOpen}
             color="primary"
           />
           <StatCard
             title="Your Attempts"
-            value={subjectStats.userAttempts}
+            value={subjectStats.userAttempts ?  subjectStats.userAttempts : 0}
             icon={TrendingUp}
             color="info"
           />
           <StatCard
             title="Average Score"
-            value={`${subjectStats.averageScore}%`}
+            value={`${subjectStats.averageScore ? subjectStats.averageScore : 0}%`}
             icon={Users}
             color="success"
             subtitle={subjectStats.userAttempts > 0 ? "Your performance" : "No attempts yet"}
           />
           <StatCard
             title="Completion"
-            value={`${subjectStats.completionRate}%`}
+            value={`${subjectStats.completionRate ? subjectStats.completionRate : 0}%`}
             icon={Clock}
             color="warning"
             subtitle="Quizzes completed"

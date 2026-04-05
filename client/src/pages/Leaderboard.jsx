@@ -32,7 +32,7 @@ const Leaderboard = () => {
   });
 
   // Find current user's position
-  const userId = user?.id || user?._id;
+  const userId = user?._id || user?.id;
   const userPosition = leaderboard.findIndex((entry) => entry._id === userId) + 1;
 
   // Get top 3 for podium display
@@ -64,7 +64,7 @@ const Leaderboard = () => {
           {/* Filters Toggle */}
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            className="btn-primary"
           >
             <Filter className="w-4 h-4" />
             Filters
@@ -85,8 +85,8 @@ const Leaderboard = () => {
                     onClick={() => handleSubjectFilter('all')}
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                       selectedSubject === 'all'
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-muted text-foreground hover:bg-purple-100 dark:hover:bg-purple-900'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted text-foreground hover:bg-primary/10'
                     }`}
                   >
                     All Subjects
@@ -97,8 +97,8 @@ const Leaderboard = () => {
                       onClick={() => handleSubjectFilter(subject._id)}
                       className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
                         selectedSubject === subject._id
-                          ? 'bg-purple-600 text-white'
-                          : 'bg-muted text-foreground hover:bg-purple-100 dark:hover:bg-purple-900'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-muted text-foreground hover:bg-primary/10'
                       }`}
                     >
                       <span>{subject.icon}</span>
@@ -118,8 +118,8 @@ const Leaderboard = () => {
                     onClick={() => handlePeriodFilter('all')}
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                       selectedPeriod === 'all'
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-muted text-foreground hover:bg-purple-100 dark:hover:bg-purple-900'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted text-foreground hover:bg-primary/10'
                     }`}
                   >
                     All Time
@@ -128,8 +128,8 @@ const Leaderboard = () => {
                     onClick={() => handlePeriodFilter('weekly')}
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                       selectedPeriod === 'weekly'
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-muted text-foreground hover:bg-purple-100 dark:hover:bg-purple-900'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted text-foreground hover:bg-primary/10'
                     }`}
                   >
                     This Week
@@ -155,10 +155,10 @@ const Leaderboard = () => {
             className="bg-green-50 dark:bg-green-900/20"
           />
           <StatCard
-            icon={<TrendingUp className="w-6 h-6 text-purple-600" />}
+            icon={<TrendingUp className="w-6 h-6 text-primary" />}
             title="Top Score"
             value={leaderboard[0]?.totalScore || 0}
-            className="bg-purple-50 dark:bg-purple-900/20"
+            className="bg-primary/10"
           />
           <StatCard
             icon={<Clock className="w-6 h-6 text-orange-600" />}
@@ -234,10 +234,10 @@ const Leaderboard = () => {
 
         {/* Your Position Highlight */}
         {userPosition > 0 && userPosition > 10 && (
-          <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-4 mb-6 border border-purple-200 dark:border-purple-700">
+          <div className="bg-primary/10 rounded-xl p-4 mb-6 border border-primary/30">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold">
                   {user?.name?.charAt(0).toUpperCase()}
                 </div>
                 <div>
@@ -291,8 +291,8 @@ const Leaderboard = () => {
             </div>
           ) : leaderboard.length > 0 ? (
             <LeaderboardTable 
-              data={leaderboard} 
-              currentUserId={user?.id}
+              users={leaderboard} 
+              currentUserId={user?._id || user?.id}
             />
           ) : (
             <div className="p-12 text-center">
@@ -308,9 +308,9 @@ const Leaderboard = () => {
         </div>
 
         {/* Achievement Info */}
-        <div className="mt-8 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-xl p-6 border border-purple-200 dark:border-purple-700">
+        <div className="mt-8 bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl p-6 border border-primary/20">
           <div className="flex items-start gap-4">
-            <Trophy className="w-8 h-8 text-purple-600 mt-1" />
+            <Trophy className="w-8 h-8 text-primary mt-1" />
             <div>
               <h3 className="text-lg font-semibold text-foreground mb-2">
                 How Rankings Work

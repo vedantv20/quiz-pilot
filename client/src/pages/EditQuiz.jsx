@@ -260,7 +260,7 @@ const EditQuiz = () => {
               {/* Basic Information */}
               <div className="bg-card rounded-xl shadow-sm border border-border p-6">
                 <h2 className="text-xl font-semibold text-foreground flex items-center gap-2 mb-6">
-                  <BookOpen className="w-5 h-5 text-purple-600" />
+                  <BookOpen className="w-5 h-5 text-primary" />
                   Basic Information
                 </h2>
 
@@ -276,7 +276,7 @@ const EditQuiz = () => {
                       name="title"
                       value={formData.title}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
                         errors.title ? 'border-red-500' : 'border-gray-300'
                       }`}
                     />
@@ -296,7 +296,7 @@ const EditQuiz = () => {
                       value={formData.description}
                       onChange={handleInputChange}
                       rows={3}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     />
                   </div>
 
@@ -311,7 +311,7 @@ const EditQuiz = () => {
                         name="subject"
                         value={formData.subject}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
                           errors.subject ? 'border-red-500' : 'border-gray-300'
                         }`}
                       >
@@ -333,7 +333,7 @@ const EditQuiz = () => {
                         name="difficulty"
                         value={formData.difficulty}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                       >
                         <option value="easy">Easy</option>
                         <option value="medium">Medium</option>
@@ -355,8 +355,8 @@ const EditQuiz = () => {
                           onClick={() => handleTimeLimitChange(minutes)}
                           className={`px-3 py-2 text-sm font-medium rounded-lg border transition-colors ${
                             formData.timeLimit === minutes * 60
-                              ? 'bg-purple-600 text-white border-purple-600'
-                              : 'bg-white dark:bg-gray-700 text-foreground border-border hover:bg-purple-50 dark:hover:bg-purple-900/20'
+                              ? 'bg-primary text-primary-foreground border-primary'
+                              : 'bg-white dark:bg-gray-700 text-foreground border-border hover:bg-primary/10'
                           }`}
                         >
                           {minutes}m
@@ -373,7 +373,7 @@ const EditQuiz = () => {
                         name="isMock"
                         checked={formData.isMock}
                         onChange={handleInputChange}
-                        className="w-4 h-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                        className="w-4 h-4 text-primary focus:ring-primary border-gray-300 rounded"
                       />
                       <span className="text-sm text-foreground">
                         Mock exam mode (hide answers until completion)
@@ -392,13 +392,13 @@ const EditQuiz = () => {
                         value={newTag}
                         onChange={(e) => setNewTag(e.target.value)}
                         placeholder="Add a tag..."
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
                         onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
                       />
                       <button
                         type="button"
                         onClick={addTag}
-                        className="px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                        className="px-3 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
                       >
                         <Plus className="w-4 h-4" />
                       </button>
@@ -432,7 +432,7 @@ const EditQuiz = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="btn-primary"
                   >
                     {isSubmitting ? (
                       <>
@@ -490,7 +490,7 @@ const EditQuiz = () => {
                   </h3>
                   <Link
                     to={`/teacher/quiz/${id}/question/new`}
-                    className="flex items-center gap-2 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm"
+                    className="btn-primary text-sm"
                   >
                     <Plus className="w-4 h-4" />
                     Add Question
@@ -531,7 +531,7 @@ const EditQuiz = () => {
                   </p>
                   <Link
                     to={`/teacher/quiz/${id}/question/new`}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                    className="btn-primary"
                   >
                     <Plus className="w-4 h-4" />
                     Add First Question
@@ -555,7 +555,7 @@ const QuestionManagementCard = ({ question, index, onDelete, quizId }) => {
       <div className="flex justify-between items-start gap-3">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-sm font-medium text-purple-600 dark:text-purple-400">
+            <span className="text-sm font-medium text-primary">
               Q{index}
             </span>
             <BadgeChip text={question.difficulty} variant={question.difficulty} />

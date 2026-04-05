@@ -74,7 +74,7 @@ const UserManagement = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
-              <Users className="w-8 h-8 text-purple-600" />
+              <Users className="w-8 h-8 text-primary" />
               User Management
             </h1>
             <p className="text-muted-foreground mt-2">
@@ -115,7 +115,7 @@ const UserManagement = () => {
                   placeholder="Search users by name or email..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
                 />
               </div>
             </div>
@@ -125,7 +125,7 @@ const UserManagement = () => {
               <select
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
-                className="px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
               >
                 <option value="all">All Roles</option>
                 <option value="student">Students</option>
@@ -151,7 +151,7 @@ const UserManagement = () => {
                   <label className="block text-sm font-medium text-foreground mb-2">
                     Registration Date
                   </label>
-                  <select className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                  <select className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white">
                     <option>All Time</option>
                     <option>Last 7 days</option>
                     <option>Last 30 days</option>
@@ -162,7 +162,7 @@ const UserManagement = () => {
                   <label className="block text-sm font-medium text-foreground mb-2">
                     Activity Status
                   </label>
-                  <select className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                  <select className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white">
                     <option>All Users</option>
                     <option>Active (7 days)</option>
                     <option>Inactive (30+ days)</option>
@@ -172,7 +172,7 @@ const UserManagement = () => {
                   <label className="block text-sm font-medium text-foreground mb-2">
                     Sort By
                   </label>
-                  <select className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                  <select className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white">
                     <option>Newest First</option>
                     <option>Oldest First</option>
                     <option>Name A-Z</option>
@@ -260,7 +260,7 @@ const UserManagement = () => {
                       >
                         Previous
                       </button>
-                      <span className="px-4 py-2 bg-purple-600 text-white rounded-lg">
+                      <span className="px-4 py-2 bg-primary text-primary-foreground rounded-lg">
                         {page}
                       </span>
                       <button
@@ -324,8 +324,8 @@ const UserTableRow = ({ user, onRoleChange, onDelete, isChangingRole, isDeleting
         {/* User Info */}
         <div className="col-span-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
-              <span className="text-purple-600 dark:text-purple-400 font-medium text-sm">
+            <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+              <span className="text-primary font-medium text-sm">
                 {user.name.charAt(0).toUpperCase()}
               </span>
             </div>
@@ -440,8 +440,8 @@ const UserMobileCard = ({ user, onRoleChange, onDelete, isChangingRole, isDeleti
   return (
     <div className="p-4">
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
-          <span className="text-purple-600 dark:text-purple-400 font-medium">
+        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+          <span className="text-primary font-medium">
             {user.name.charAt(0).toUpperCase()}
           </span>
         </div>

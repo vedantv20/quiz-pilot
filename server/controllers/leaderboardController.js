@@ -61,26 +61,24 @@ const getLeaderboard = async (req, res, next) => {
     ]);
 
     // Populate user data and add rankings
-    const populatedLeaderboard = await Promise.all(
+    const leaderboardEntries = await Promise.all(
       leaderboardData.map(async (entry, index) => {
         const user = await User.findById(entry._id).select('name email avatar badges streak');
         
+        // Skip entries where user no longer exists (deleted users)
+        if (!user) {
+          return null;
+        }
+        
         // Check if user is in top 10 for badge eligibility
         const isTop10 = index < 10;
-        if (isTop10 && user && !user.badges.includes('top_10')) {
+        if (isTop10 && !user.badges.includes('top_10')) {
           user.badges.push('top_10');
           await user.save();
         }
 
         return {
-          rank: index + 1,
-          user: {
-            _id: user._id,
-            name: user.name,
-            avatar: user.avatar,
-            badges: user.badges,
-            streak: user.streak
-          },
+          user,
           stats: {
             totalAttempts: entry.totalAttempts,
             totalScore: entry.totalScore,
@@ -92,12 +90,27 @@ const getLeaderboard = async (req, res, next) => {
         };
       })
     );
+    
+    // Filter out null entries (deleted users) and add proper rankings
+    const populatedLeaderboard = leaderboardEntries
+      .filter(entry => entry !== null)
+      .map((entry, index) => ({
+        rank: index + 1,
+        user: {
+          _id: entry.user._id,
+          name: entry.user.name,
+          avatar: entry.user.avatar,
+          badges: entry.user.badges,
+          streak: entry.user.streak
+        },
+        stats: entry.stats
+      }));
 
     // Get current user's position if authenticated
     let currentUserRank = null;
     if (req.user) {
       const userEntry = populatedLeaderboard.find(entry => 
-        entry.user.id.toString() === req.user._id.toString()
+        entry.user._id.toString() === req.user._id.toString()
       );
       currentUserRank = userEntry ? userEntry.rank : null;
     }

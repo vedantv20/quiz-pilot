@@ -16,20 +16,31 @@ const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:3000,http://
   .map((origin) => origin.trim())
   .filter(Boolean)
 
+// Log allowed origins for debugging
+console.log('🔒 Allowed CORS origins:', allowedOrigins);
+
 app.use(helmet());
 app.use(cors({
   origin: (origin, callback) => {
     // Allow non-browser tools like curl/postman (no Origin header)
     if (!origin) return callback(null, true)
 
-    if (allowedOrigins.includes(origin)) {
+    // Check if origin is in the allowed list
+    if (allowedOrigins.some(allowed => origin === allowed || origin.startsWith(allowed.replace(/\/$/, '')))) {
       return callback(null, true)
     }
 
+    console.error(`❌ CORS blocked for origin: ${origin}`);
+    console.error(`   Allowed origins: ${allowedOrigins.join(', ')}`);
     return callback(new Error(`CORS blocked for origin: ${origin}`), false)
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
+
+// Handle preflight requests explicitly
+app.options('*', cors());
 
 // Rate limiting
 const limiter = rateLimit({

@@ -110,19 +110,21 @@ const getAllSurveys = async (req, res, next) => {
 
     const totalSurveys = await Survey.countDocuments();
 
-    const surveysData = surveys.map(survey => ({
-      _id: survey._id,
-      student: survey.student,
-      targetExam: survey.targetExam,
-      attemptYear: survey.attemptYear,
-      dailyStudyHours: survey.dailyStudyHours,
-      weakSubjects: survey.weakSubjects,
-      strongSubjects: survey.strongSubjects,
-      resourcesUsed: survey.resourcesUsed,
-      stressLevel: survey.stressLevel,
-      confidenceLevel: survey.confidenceLevel,
-      submittedAt: survey.submittedAt
-    }));
+    const surveysData = surveys
+      .filter(survey => survey.student !== null) // Filter out surveys with deleted students
+      .map(survey => ({
+        _id: survey._id,
+        student: survey.student,
+        targetExam: survey.targetExam,
+        attemptYear: survey.attemptYear,
+        dailyStudyHours: survey.dailyStudyHours,
+        weakSubjects: survey.weakSubjects,
+        strongSubjects: survey.strongSubjects,
+        resourcesUsed: survey.resourcesUsed,
+        stressLevel: survey.stressLevel,
+        confidenceLevel: survey.confidenceLevel,
+        submittedAt: survey.submittedAt
+      }));
 
     return sendSuccess(res, 200, 'Surveys retrieved successfully', {
       surveys: surveysData,

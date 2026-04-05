@@ -18,7 +18,7 @@ const awardBadges = async (user, attempt, quiz) => {
   }
 
   // Subject mastery badge (average >85% on this subject)
-  if (attempt.percentage > 85) {
+  if (attempt.percentage > 85 && quiz.subject?.name) {
     const subjectAttempts = await Attempt.find({ 
       student: user._id 
     }).populate({
@@ -27,7 +27,7 @@ const awardBadges = async (user, attempt, quiz) => {
     });
 
     const sameSubjectAttempts = subjectAttempts.filter(att => 
-      att.quiz.subject.name === quiz.subject.name
+      att.quiz?.subject?.name === quiz.subject.name
     );
 
     if (sameSubjectAttempts.length >= 3) {
@@ -166,6 +166,9 @@ const submitAttempt = async (req, res, next) => {
 
     // Get updated user data
     const updatedUser = await User.findById(student._id);
+    
+    // Safely get streak value
+    const updatedStreak = updatedUser?.streak || student.streak || 0;
 
     const result = {
       attemptId: attempt._id,
@@ -180,7 +183,7 @@ const submitAttempt = async (req, res, next) => {
       timeTaken,
       correctAnswers,
       newBadges,
-      updatedStreak: updatedUser.streak,
+      updatedStreak,
       completedAt: attempt.completedAt
     };
 
@@ -213,19 +216,21 @@ const getMyAttempts = async (req, res, next) => {
 
     const totalAttempts = await Attempt.countDocuments({ student: student._id });
 
-    const attemptsData = attempts.map(attempt => ({
-      _id: attempt._id,
-      quiz: {
-        _id: attempt.quiz._id,
-        title: attempt.quiz.title,
-        difficulty: attempt.quiz.difficulty,
-        subject: attempt.quiz.subject
-      },
-      score: attempt.score,
-      percentage: attempt.percentage,
-      timeTaken: attempt.timeTaken,
-      completedAt: attempt.completedAt
-    }));
+    const attemptsData = attempts
+      .filter(attempt => attempt.quiz !== null) // Filter out attempts with deleted quizzes
+      .map(attempt => ({
+        _id: attempt._id,
+        quiz: {
+          _id: attempt.quiz._id,
+          title: attempt.quiz.title,
+          difficulty: attempt.quiz.difficulty,
+          subject: attempt.quiz.subject
+        },
+        score: attempt.score,
+        percentage: attempt.percentage,
+        timeTaken: attempt.timeTaken,
+        completedAt: attempt.completedAt
+      }));
 
     return sendSuccess(res, 200, 'Attempt history retrieved successfully', {
       attempts: attemptsData,
@@ -273,14 +278,16 @@ const getQuizAttempts = async (req, res, next) => {
 
     const totalAttempts = await Attempt.countDocuments({ quiz: quizId });
 
-    const attemptsData = attempts.map(attempt => ({
-      _id: attempt._id,
-      student: attempt.student,
-      score: attempt.score,
-      percentage: attempt.percentage,
-      timeTaken: attempt.timeTaken,
-      completedAt: attempt.completedAt
-    }));
+    const attemptsData = attempts
+      .filter(attempt => attempt.student !== null) // Filter out attempts with deleted students
+      .map(attempt => ({
+        _id: attempt._id,
+        student: attempt.student,
+        score: attempt.score,
+        percentage: attempt.percentage,
+        timeTaken: attempt.timeTaken,
+        completedAt: attempt.completedAt
+      }));
 
     return sendSuccess(res, 200, 'Quiz attempts retrieved successfully', {
       quiz: {

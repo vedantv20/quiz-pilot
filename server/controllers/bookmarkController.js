@@ -103,8 +103,10 @@ const getBookmarks = async (req, res, next) => {
       .skip(skip)
       .limit(parseInt(limit));
 
-    // Filter out bookmarks where quiz doesn't match subject filter
-    const filteredBookmarks = bookmarks.filter(bookmark => bookmark.question.quiz !== null);
+    // Filter out bookmarks where question was deleted or quiz doesn't match subject filter
+    const filteredBookmarks = bookmarks.filter(bookmark => 
+      bookmark.question !== null && bookmark.question.quiz !== null
+    );
 
     const totalBookmarks = subject 
       ? filteredBookmarks.length 

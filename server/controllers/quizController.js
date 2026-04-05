@@ -67,7 +67,8 @@ const getQuizById = async (req, res, next) => {
     }
 
     // Check if quiz is published (unless user is teacher/admin or owner)
-    if (!quiz.isPublished && user.role === 'student' && quiz.createdBy._id.toString() !== user._id.toString()) {
+    const isOwner = quiz.createdBy && quiz.createdBy._id && quiz.createdBy._id.toString() === user._id.toString();
+    if (!quiz.isPublished && user.role === 'student' && !isOwner) {
       return sendError(res, 403, 'Quiz not available');
     }
 
@@ -348,14 +349,16 @@ const getQuizStats = async (req, res, next) => {
         highestScore,
         lowestScore
       },
-      recentAttempts: attempts.slice(0, 10).map(attempt => ({
-        _id: attempt._id,
-        student: attempt.student,
-        score: attempt.score,
-        percentage: attempt.percentage,
-        timeTaken: attempt.timeTaken,
-        completedAt: attempt.completedAt
-      })),
+      recentAttempts: attempts.slice(0, 10)
+        .filter(attempt => attempt.student !== null) // Filter out attempts with deleted students
+        .map(attempt => ({
+          _id: attempt._id,
+          student: attempt.student,
+          score: attempt.score,
+          percentage: attempt.percentage,
+          timeTaken: attempt.timeTaken,
+          completedAt: attempt.completedAt
+        })),
       questionAccuracy
     };
 

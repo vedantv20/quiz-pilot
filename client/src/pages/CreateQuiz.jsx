@@ -114,38 +114,38 @@ const CreateQuiz = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="page-shell">
+      <div className="page-container max-w-4xl">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <button
             onClick={() => navigate(-1)}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+            className="p-2 hover:bg-muted rounded-lg transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <ArrowLeft className="w-5 h-5 text-muted-foreground" />
           </button>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-foreground">
               Create New Quiz
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-2">
+            <p className="text-muted-foreground mt-2">
               Set up your quiz details. You'll add questions after creation.
             </p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <div className="bg-card rounded-xl shadow-sm border border-border p-6">
             {/* Basic Information */}
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+              <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
                 <BookOpen className="w-5 h-5 text-purple-600" />
                 Basic Information
               </h2>
 
               {/* Title */}
               <div>
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label htmlFor="title" className="block text-sm font-medium text-foreground mb-2">
                   Quiz Title *
                 </label>
                 <input
@@ -166,7 +166,7 @@ const CreateQuiz = () => {
 
               {/* Description */}
               <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label htmlFor="description" className="block text-sm font-medium text-foreground mb-2">
                   Description
                 </label>
                 <textarea
@@ -183,11 +183,11 @@ const CreateQuiz = () => {
               {/* Subject and Difficulty */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label htmlFor="subject" className="block text-sm font-medium text-foreground mb-2">
                     Subject *
                   </label>
                   {subjectsLoading ? (
-                    <div className="w-full h-12 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+                    <div className="w-full h-12 bg-muted rounded-lg animate-pulse" />
                   ) : (
                     <select
                       id="subject"
@@ -212,7 +212,7 @@ const CreateQuiz = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label htmlFor="difficulty" className="block text-sm font-medium text-foreground mb-2">
                     Difficulty Level
                   </label>
                   <select
@@ -232,16 +232,16 @@ const CreateQuiz = () => {
           </div>
 
           {/* Quiz Settings */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <div className="bg-card rounded-xl shadow-sm border border-border p-6">
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+              <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
                 <Target className="w-5 h-5 text-purple-600" />
                 Quiz Settings
               </h2>
 
               {/* Time Limit */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                <label className="block text-sm font-medium text-foreground mb-3">
                   Time Limit
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -253,7 +253,7 @@ const CreateQuiz = () => {
                       className={`px-4 py-3 text-sm font-medium rounded-lg border transition-colors ${
                         formData.timeLimit === minutes * 60
                           ? 'bg-purple-600 text-white border-purple-600'
-                          : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-purple-50 dark:hover:bg-purple-900/20'
+                          : 'bg-white dark:bg-gray-700 text-foreground border-border hover:bg-purple-50 dark:hover:bg-purple-900/20'
                       }`}
                     >
                       <Clock className="w-4 h-4 mx-auto mb-1" />
@@ -261,18 +261,18 @@ const CreateQuiz = () => {
                     </button>
                   ))}
                 </div>
-                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                <p className="mt-2 text-sm text-muted-foreground">
                   Current: {Math.floor(formData.timeLimit / 60)} minutes
                 </p>
               </div>
 
               {/* Quiz Type */}
               <div className="space-y-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label className="block text-sm font-medium text-foreground">
                   Quiz Type
                 </label>
                 <div className="space-y-3">
-                  <label className="flex items-center gap-3 p-4 border border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  <label className="flex items-center gap-3 p-4 border border-border rounded-lg cursor-pointer hover:bg-muted/80">
                     <input
                       type="checkbox"
                       name="isMock"
@@ -281,8 +281,8 @@ const CreateQuiz = () => {
                       className="w-4 h-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
                     />
                     <div>
-                      <div className="font-medium text-gray-900 dark:text-white">Mock Exam Mode</div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                      <div className="font-medium text-foreground">Mock Exam Mode</div>
+                      <div className="text-sm text-muted-foreground">
                         Students cannot see answers or explanations until after submission
                       </div>
                     </div>
@@ -293,9 +293,9 @@ const CreateQuiz = () => {
           </div>
 
           {/* Tags */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <div className="bg-card rounded-xl shadow-sm border border-border p-6">
             <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              <h2 className="text-xl font-semibold text-foreground">
                 Tags (Optional)
               </h2>
               
@@ -334,14 +334,14 @@ const CreateQuiz = () => {
           </div>
 
           {/* Publishing Options */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <div className="bg-card rounded-xl shadow-sm border border-border p-6">
             <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              <h2 className="text-xl font-semibold text-foreground">
                 Publishing Options
               </h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <label className="flex items-center gap-3 p-4 border border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                <label className="flex items-center gap-3 p-4 border border-border rounded-lg cursor-pointer hover:bg-muted/80">
                   <input
                     type="radio"
                     name="isPublished"
@@ -352,14 +352,14 @@ const CreateQuiz = () => {
                   />
                   <Lock className="w-5 h-5 text-gray-500" />
                   <div>
-                    <div className="font-medium text-gray-900 dark:text-white">Save as Draft</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <div className="font-medium text-foreground">Save as Draft</div>
+                    <div className="text-sm text-muted-foreground">
                       Keep private, add questions later
                     </div>
                   </div>
                 </label>
 
-                <label className="flex items-center gap-3 p-4 border border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                <label className="flex items-center gap-3 p-4 border border-border rounded-lg cursor-pointer hover:bg-muted/80">
                   <input
                     type="radio"
                     name="isPublished"
@@ -370,8 +370,8 @@ const CreateQuiz = () => {
                   />
                   <Globe className="w-5 h-5 text-green-500" />
                   <div>
-                    <div className="font-medium text-gray-900 dark:text-white">Publish Now</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <div className="font-medium text-foreground">Publish Now</div>
+                    <div className="text-sm text-muted-foreground">
                       Make available to students immediately
                     </div>
                   </div>
@@ -392,7 +392,7 @@ const CreateQuiz = () => {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              className="px-6 py-3 border border-border text-foreground rounded-lg hover:bg-muted/80 transition-colors"
             >
               Cancel
             </button>
@@ -421,3 +421,5 @@ const CreateQuiz = () => {
 };
 
 export default CreateQuiz;
+
+

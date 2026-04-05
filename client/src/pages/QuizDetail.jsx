@@ -21,26 +21,36 @@ export const QuizDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const [selectedMode, setSelectedMode] = useState('practice')
+  const toArray = (value) => (Array.isArray(value) ? value : [])
+  const withId = (item) => ({ ...item, _id: item?._id || item?.id })
 
   // Fetch quiz details
   const { data: quiz, isLoading: quizLoading, error: quizError } = useQuery({
     queryKey: ['quiz', id],
-    queryFn: () => quizAPI.getById(id).then(res => res.data.data),
+    queryFn: () =>
+      quizAPI.getById(id).then((res) => {
+        const data = res?.data?.data
+        if (!data) return null
+        return {
+          ...withId(data),
+          questions: toArray(data.questions).map((q) => withId(q)),
+        }
+      }),
     enabled: !!id,
   })
 
   // Fetch subject details
   const { data: subjects = [] } = useQuery({
     queryKey: ['subjects'],
-    queryFn: () => subjectAPI.getAll().then(res => res.data.data),
+    queryFn: () => subjectAPI.getAll().then((res) => toArray(res?.data?.data).map(withId)),
   })
 
   // Fetch user's previous attempts on this quiz
   const { data: userAttempts = [] } = useQuery({
     queryKey: ['attempts', 'quiz', id],
     queryFn: async () => {
-      const attempts = await attemptAPI.getMy().then(res => res.data.data)
-      return attempts.filter(attempt => 
+      const attempts = await attemptAPI.getMy().then((res) => res?.data?.data)
+      return toArray(attempts?.attempts).map(withId).filter(attempt => 
         (attempt.quiz?._id || attempt.quiz) === id
       ).sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt))
     },
@@ -79,14 +89,16 @@ export const QuizDetail = () => {
 
   if (quizLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
-          <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-24 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-            ))}
+      <div className="page-shell">
+        <div className="page-container">
+          <div className="animate-pulse space-y-6">
+            <div className="h-8 bg-muted rounded w-1/4"></div>
+            <div className="h-32 bg-muted rounded-lg"></div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="h-24 bg-muted rounded-lg"></div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -95,41 +107,44 @@ export const QuizDetail = () => {
 
   if (quizError || !quiz) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center py-12">
-          <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Quiz Not Found
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            The quiz you're looking for doesn't exist or has been removed.
-          </p>
-          <button
-            onClick={() => navigate('/subjects')}
-            className="btn-primary"
-          >
-            Browse All Quizzes
-          </button>
+      <div className="page-shell">
+        <div className="page-container">
+          <div className="text-center py-12">
+            <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-foreground mb-2">
+              Quiz Not Found
+            </h2>
+            <p className="text-muted-foreground mb-6">
+              The quiz you're looking for doesn't exist or has been removed.
+            </p>
+            <button
+              onClick={() => navigate('/subjects')}
+              className="btn-primary"
+            >
+              Browse All Quizzes
+            </button>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="page-shell">
+      <div className="page-container">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center space-x-4 mb-6">
           <button
             onClick={() => navigate(-1)}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className="p-2 rounded-lg hover:bg-muted transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <ArrowLeft className="w-5 h-5 text-muted-foreground" />
           </button>
           {subject && (
             <Link 
               to={`/subjects/${subject._id}`}
-              className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+              className="flex items-center space-x-2 text-muted-foreground hover:text-primary transition-colors"
             >
               <span className="text-2xl">{subject.icon}</span>
               <span className="font-medium">{subject.name}</span>
@@ -137,7 +152,7 @@ export const QuizDetail = () => {
           )}
         </div>
 
-        <div className="card">
+        <div className="surface-card">
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
             <div className="flex-1">
               <div className="flex flex-wrap items-center gap-3 mb-4">
@@ -161,12 +176,12 @@ export const QuizDetail = () => {
                 )}
               </div>
 
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+              <h1 className="text-3xl font-bold text-foreground mb-4">
                 {quiz.title}
               </h1>
 
               {quiz.description && (
-                <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-6">
+                <p className="text-muted-foreground text-lg leading-relaxed mb-6">
                   {quiz.description}
                 </p>
               )}
@@ -176,7 +191,7 @@ export const QuizDetail = () => {
                   {quiz.tags.map((tag, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm"
+                        className="px-3 py-1 bg-muted text-foreground rounded-full text-sm"
                     >
                       #{tag}
                     </span>
@@ -188,21 +203,21 @@ export const QuizDetail = () => {
             {/* Quiz Stats */}
             <div className="lg:min-w-[300px]">
               <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <BookOpen className="w-8 h-8 text-primary-600 dark:text-primary-400 mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                <div className="text-center p-4 bg-muted rounded-lg border border-border">
+                  <BookOpen className="w-8 h-8 text-primary mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-foreground">
                     {quiz.totalQuestions}
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                  <div className="text-sm text-muted-foreground">
                     Questions
                   </div>
                 </div>
-                <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <Clock className="w-8 h-8 text-primary-600 dark:text-primary-400 mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                <div className="text-center p-4 bg-muted rounded-lg border border-border">
+                  <Clock className="w-8 h-8 text-primary mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-foreground">
                     {formatTime(quiz.timeLimit)}
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                  <div className="text-sm text-muted-foreground">
                     Time Limit
                   </div>
                 </div>
@@ -240,8 +255,8 @@ export const QuizDetail = () => {
       {/* Mode Selection and Start */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Mode Selection */}
-        <div className="card">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+        <div className="surface-card">
+          <h3 className="text-xl font-semibold text-foreground mb-6">
             Choose Your Mode
           </h3>
           
@@ -249,8 +264,8 @@ export const QuizDetail = () => {
             {/* Practice Mode */}
             <label className={`block p-4 border-2 rounded-lg cursor-pointer transition-colors ${
               selectedMode === 'practice' 
-                ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' 
-                : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                ? 'border-primary bg-primary/10 dark:bg-primary/20' 
+                    : 'border-border hover:border-muted-foreground/30'
             }`}>
               <input
                 type="radio"
@@ -263,10 +278,10 @@ export const QuizDetail = () => {
               <div className="flex items-start space-x-3">
                 <div className="text-2xl">🎯</div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
+                  <h4 className="font-semibold text-foreground mb-1">
                     Practice Mode
                   </h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     Take your time, see explanations immediately, and learn as you go. 
                     No time pressure.
                   </p>
@@ -277,8 +292,8 @@ export const QuizDetail = () => {
             {/* Timed Mode */}
             <label className={`block p-4 border-2 rounded-lg cursor-pointer transition-colors ${
               selectedMode === 'timed' 
-                ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' 
-                : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                ? 'border-primary bg-primary/10 dark:bg-primary/20' 
+                    : 'border-border hover:border-muted-foreground/30'
             }`}>
               <input
                 type="radio"
@@ -291,10 +306,10 @@ export const QuizDetail = () => {
               <div className="flex items-start space-x-3">
                 <div className="text-2xl">⏱️</div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
+                  <h4 className="font-semibold text-foreground mb-1">
                     Timed Mode
                   </h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     Complete the quiz within the time limit. 
                     Automatic submission when time runs out.
                   </p>
@@ -306,8 +321,8 @@ export const QuizDetail = () => {
             {quiz.isMock && (
               <label className={`block p-4 border-2 rounded-lg cursor-pointer transition-colors ${
                 selectedMode === 'mock' 
-                  ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' 
-                  : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                  ? 'border-primary bg-primary/10 dark:bg-primary/20' 
+                  : 'border-border hover:border-muted-foreground/30'
               }`}>
                 <input
                   type="radio"
@@ -320,11 +335,11 @@ export const QuizDetail = () => {
                 <div className="flex items-start space-x-3">
                   <div className="text-2xl">🏆</div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white mb-1 flex items-center space-x-2">
+                    <h4 className="font-semibold text-foreground mb-1 flex items-center space-x-2">
                       <span>Mock Exam Mode</span>
                       <Zap className="w-4 h-4 text-yellow-500" />
                     </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-muted-foreground">
                       Simulate real exam conditions. No hints, no explanations until the end. 
                       Full concentration required.
                     </p>
@@ -354,18 +369,18 @@ export const QuizDetail = () => {
         </div>
 
         {/* Previous Attempts */}
-        <div className="card">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+        <div className="surface-card">
+          <h3 className="text-xl font-semibold text-foreground mb-6">
             Previous Attempts
           </h3>
           
           {userAttempts.length > 0 ? (
             <div className="space-y-4 max-h-96 overflow-y-auto">
               {userAttempts.slice(0, 10).map((attempt, index) => (
-                <div key={attempt._id} className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div key={attempt._id} className="p-4 bg-muted rounded-lg border border-border">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
-                      <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      <span className="text-sm font-medium text-muted-foreground">
                         Attempt #{userAttempts.length - index}
                       </span>
                       <BadgeChip 
@@ -376,27 +391,27 @@ export const QuizDetail = () => {
                         {attempt.percentage}%
                       </BadgeChip>
                     </div>
-                    <span className="text-xs text-gray-500 dark:text-gray-500">
+                    <span className="text-xs text-muted-foreground">
                       {new Date(attempt.completedAt).toLocaleDateString()}
                     </span>
                   </div>
                   <div className="grid grid-cols-3 gap-4 text-sm">
                     <div>
-                      <span className="text-gray-600 dark:text-gray-400">Score:</span>
-                      <span className="ml-1 font-medium text-gray-900 dark:text-white">
+                      <span className="text-muted-foreground">Score:</span>
+                      <span className="ml-1 font-medium text-foreground">
                         {attempt.score}/{quiz.totalQuestions}
                       </span>
                     </div>
                     <div>
-                      <span className="text-gray-600 dark:text-gray-400">Time:</span>
-                      <span className="ml-1 font-medium text-gray-900 dark:text-white">
+                      <span className="text-muted-foreground">Time:</span>
+                      <span className="ml-1 font-medium text-foreground">
                         {formatTime(attempt.timeTaken)}
                       </span>
                     </div>
                     <div className="text-right">
                       <Link
                         to={`/quiz/${id}/result?attempt=${attempt._id}`}
-                        className="text-primary-600 dark:text-primary-400 hover:text-primary-500 text-sm"
+                        className="text-primary hover:text-primary/80 text-sm"
                       >
                         Review →
                       </Link>
@@ -407,11 +422,11 @@ export const QuizDetail = () => {
             </div>
           ) : (
             <div className="text-center py-8">
-              <Target className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
+              <Target className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground mb-4">
                 You haven't attempted this quiz yet
               </p>
-              <p className="text-sm text-gray-500 dark:text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 Your attempt history will appear here after you take the quiz
               </p>
             </div>
@@ -420,11 +435,11 @@ export const QuizDetail = () => {
       </div>
 
       {/* Instructions */}
-      <div className="mt-8 card">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+      <div className="mt-8 surface-card">
+        <h3 className="text-lg font-semibold text-foreground mb-4">
           Instructions
         </h3>
-        <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+        <div className="space-y-2 text-sm text-muted-foreground">
           <p>• Read each question carefully before selecting your answer</p>
           <p>• You can change your answers before submitting</p>
           <p>• Use the question navigation to jump between questions</p>
@@ -441,6 +456,10 @@ export const QuizDetail = () => {
           <p>• Click "Submit Quiz" when you're ready to see your results</p>
         </div>
       </div>
+      </div>
     </div>
   )
 }
+
+
+

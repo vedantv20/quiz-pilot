@@ -22,17 +22,26 @@ export const Bookmarks = () => {
   const [selectedDifficulty, setSelectedDifficulty] = useState('all')
   const [sortBy, setSortBy] = useState('recent') // recent, subject, difficulty
   const [selectedQuestions, setSelectedQuestions] = useState(new Set())
+  const toArray = (value) => (Array.isArray(value) ? value : [])
+  const withId = (item) => ({ ...item, _id: item?._id || item?.id })
 
   // Fetch bookmarked questions
   const { data: bookmarks = [], isLoading: bookmarksLoading } = useQuery({
     queryKey: ['bookmarks'],
-    queryFn: () => bookmarkAPI.getAll().then(res => res.data.data),
+    queryFn: () =>
+      bookmarkAPI.getAll().then((res) => {
+        const payload = res?.data?.data
+        return toArray(payload?.bookmarks).map((bookmark) => ({
+          ...withId(bookmark),
+          question: withId(bookmark.question),
+        }))
+      }),
   })
 
   // Fetch subjects for filtering
   const { data: subjects = [] } = useQuery({
     queryKey: ['subjects'],
-    queryFn: () => subjectAPI.getAll().then(res => res.data.data),
+    queryFn: () => subjectAPI.getAll().then((res) => toArray(res?.data?.data).map(withId)),
   })
 
   // Remove bookmark mutation
@@ -126,14 +135,16 @@ export const Bookmarks = () => {
 
   if (bookmarksLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
-          <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded"></div>
-          <div className="space-y-4">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-32 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-            ))}
+      <div className="page-shell">
+        <div className="page-container">
+          <div className="animate-pulse space-y-6">
+            <div className="h-8 bg-muted rounded w-1/3"></div>
+            <div className="h-12 bg-muted rounded"></div>
+            <div className="space-y-4">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="h-32 bg-muted rounded-lg"></div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -141,16 +152,17 @@ export const Bookmarks = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="page-shell">
+      <div className="page-container">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center space-x-3 mb-4">
-          <Bookmark className="w-8 h-8 text-primary-600 dark:text-primary-400" />
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <Bookmark className="w-8 h-8 text-primary" />
+          <h1 className="text-3xl font-bold text-foreground">
             Bookmarked Questions
           </h1>
         </div>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-muted-foreground">
           Review your saved questions and practice them again
         </p>
       </div>
@@ -226,21 +238,21 @@ export const Bookmarks = () => {
 
       {/* Bulk Actions */}
       {filteredBookmarks.length > 0 && (
-        <div className="flex items-center justify-between mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+        <div className="flex items-center justify-between mb-6 p-4 bg-muted rounded-lg">
           <div className="flex items-center space-x-4">
             <label className="flex items-center space-x-2">
               <input
                 type="checkbox"
                 checked={selectedQuestions.size === filteredBookmarks.length}
                 onChange={handleSelectAll}
-                className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                    className="rounded border-gray-300 text-primary focus:ring-primary"
               />
-              <span className="text-sm text-gray-600 dark:text-gray-400">
+              <span className="text-sm text-muted-foreground">
                 Select All ({filteredBookmarks.length})
               </span>
             </label>
             {selectedQuestions.size > 0 && (
-              <span className="text-sm text-gray-600 dark:text-gray-400">
+              <span className="text-sm text-muted-foreground">
                 {selectedQuestions.size} selected
               </span>
             )}
@@ -276,13 +288,13 @@ export const Bookmarks = () => {
                     type="checkbox"
                     checked={isSelected}
                     onChange={(e) => handleQuestionSelect(question._id, e.target.checked)}
-                    className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                className="rounded border-gray-300 text-primary focus:ring-primary"
                   />
                 </div>
 
                 {/* Question Card with Actions */}
                 <div className="relative pl-12">
-                  <div className="card">
+                  <div className="surface-card">
                     {/* Header */}
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center space-x-3">
@@ -292,7 +304,7 @@ export const Bookmarks = () => {
                         {subject && (
                           <div className="flex items-center space-x-2">
                             <span className="text-lg">{subject.icon}</span>
-                            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                            <span className="text-sm font-medium text-muted-foreground">
                               {subject.name}
                             </span>
                           </div>
@@ -309,7 +321,7 @@ export const Bookmarks = () => {
                         {question.quiz && (
                           <Link
                             to={`/quiz/${question.quiz._id || question.quiz}`}
-                            className="p-2 text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                            className="p-2 text-gray-400 hover:text-primary transition-colors"
                             title="View original quiz"
                           >
                             <ExternalLink className="w-4 h-4" />
@@ -330,7 +342,7 @@ export const Bookmarks = () => {
 
                     {/* Question Content */}
                     <div className="mb-4">
-                      <h3 className="text-lg font-medium text-gray-900 dark:text-white leading-relaxed mb-4">
+                      <h3 className="text-lg font-medium text-foreground leading-relaxed mb-4">
                         {question.text}
                       </h3>
 
@@ -374,8 +386,8 @@ export const Bookmarks = () => {
                     )}
 
                     {/* Footer */}
-                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                      <div className="text-sm text-gray-500 dark:text-gray-500">
+                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+                      <div className="text-sm text-muted-foreground">
                         Bookmarked on {new Date(bookmark.createdAt).toLocaleDateString()}
                       </div>
                     </div>
@@ -386,17 +398,17 @@ export const Bookmarks = () => {
           })}
 
           {/* Results Count */}
-          <div className="text-center text-sm text-gray-600 dark:text-gray-400 pt-6">
+          <div className="text-center text-sm text-muted-foreground pt-6">
             Showing {filteredBookmarks.length} of {bookmarks.length} bookmarked questions
           </div>
         </div>
       ) : (
         <div className="text-center py-12">
           <Bookmark className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+          <h3 className="text-lg font-medium text-foreground mb-2">
             {bookmarks.length === 0 ? 'No bookmarked questions yet' : 'No questions found'}
           </h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
+          <p className="text-muted-foreground mb-6">
             {bookmarks.length === 0 
               ? 'Start taking quizzes and bookmark questions you want to review later.'
               : 'Try adjusting your search or filter criteria.'
@@ -421,6 +433,10 @@ export const Bookmarks = () => {
           )}
         </div>
       )}
+      </div>
     </div>
   )
 }
+
+
+

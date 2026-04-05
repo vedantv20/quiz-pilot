@@ -81,27 +81,27 @@ export const Register = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-violet-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4 py-8">
+    <div className="page-shell flex items-center justify-center px-4 py-8">
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-500 to-violet-600 rounded-2xl mb-4">
-            <span className="text-white font-bold text-2xl">QP</span>
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-accent-foreground rounded-2xl mb-4 shadow-md">
+            <span className="text-primary-foreground font-bold text-2xl">QP</span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-3xl font-bold text-foreground mb-2">
             Join QuizPilot
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-muted-foreground">
             Create your account and start learning today
           </p>
         </div>
 
         {/* Register Form */}
-        <div className="card">
+        <div className="surface-card">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name Field */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
                 Full Name
               </label>
               <div className="relative">
@@ -126,7 +126,7 @@ export const Register = () => {
 
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
                 Email Address
               </label>
               <div className="relative">
@@ -151,14 +151,14 @@ export const Register = () => {
 
             {/* Role Selection */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 I want to join as a
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <label className={`relative flex items-center justify-center p-3 border rounded-lg cursor-pointer transition-colors ${
                   formData.role === 'student' 
-                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' 
-                    : 'border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'
+                    ? 'border-primary bg-primary/10 dark:bg-primary/20' 
+                    : 'border-border hover:bg-muted/60'
                 }`}>
                   <input
                     type="radio"
@@ -170,14 +170,14 @@ export const Register = () => {
                   />
                   <div className="text-center">
                     <div className="text-2xl mb-1">🎓</div>
-                    <div className="font-medium text-sm text-gray-900 dark:text-white">Student</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">Take quizzes</div>
+                    <div className="font-medium text-sm text-foreground">Student</div>
+                    <div className="text-xs text-muted-foreground">Take quizzes</div>
                   </div>
                 </label>
                 <label className={`relative flex items-center justify-center p-3 border rounded-lg cursor-pointer transition-colors ${
                   formData.role === 'teacher' 
-                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' 
-                    : 'border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'
+                    ? 'border-primary bg-primary/10 dark:bg-primary/20' 
+                    : 'border-border hover:bg-muted/60'
                 }`}>
                   <input
                     type="radio"
@@ -189,8 +189,8 @@ export const Register = () => {
                   />
                   <div className="text-center">
                     <div className="text-2xl mb-1">👨‍🏫</div>
-                    <div className="font-medium text-sm text-gray-900 dark:text-white">Teacher</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">Create quizzes</div>
+                    <div className="font-medium text-sm text-foreground">Teacher</div>
+                    <div className="text-xs text-muted-foreground">Create quizzes</div>
                   </div>
                 </label>
               </div>
@@ -198,7 +198,7 @@ export const Register = () => {
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
                 Password
               </label>
               <div className="relative">
@@ -234,7 +234,7 @@ export const Register = () => {
 
             {/* Confirm Password Field */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-foreground mb-2">
                 Confirm Password
               </label>
               <div className="relative">
@@ -290,11 +290,11 @@ export const Register = () => {
 
           {/* Login Link */}
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-muted-foreground">
               Already have an account?{' '}
               <Link
                 to="/login"
-                className="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300"
+                className="font-medium text-primary hover:text-primary/80"
               >
                 Sign in here
               </Link>
@@ -305,3 +305,6 @@ export const Register = () => {
     </div>
   )
 }
+
+
+

@@ -19,10 +19,10 @@ export const SurveyStep = ({
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all ${
                   step < currentStep
-                    ? 'bg-primary-600 border-primary-600 text-white'
+                    ? 'bg-primary border-primary text-primary-foreground'
                     : step === currentStep
-                    ? 'bg-primary-100 border-primary-600 text-primary-600 dark:bg-primary-900 dark:text-primary-400'
-                    : 'bg-gray-100 border-gray-300 text-gray-400 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-500'
+                    ? 'bg-primary/10 border-primary text-primary dark:bg-primary/20'
+                    : 'bg-muted border-border text-muted-foreground'
                 }`}
               >
                 {step < currentStep ? (
@@ -35,8 +35,8 @@ export const SurveyStep = ({
                 <div
                   className={`w-12 h-0.5 mx-2 ${
                     step < currentStep 
-                      ? 'bg-primary-600' 
-                      : 'bg-gray-300 dark:bg-gray-600'
+                      ? 'bg-primary' 
+                      : 'bg-border'
                   }`}
                 />
               )}
@@ -47,18 +47,20 @@ export const SurveyStep = ({
 
       {/* Step Title */}
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+        <h2 className="text-2xl font-bold text-foreground mb-2">
           {title}
         </h2>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-sm text-muted-foreground">
           Step {currentStep} of {totalSteps}
         </p>
       </div>
 
       {/* Step Content */}
-      <div className="card">
+      <div className="surface-card">
         {children}
       </div>
     </div>
   )
 }
+
+

@@ -39,11 +39,16 @@ export const Profile = () => {
     new: false,
     confirm: false
   })
+  const toArray = (value) => (Array.isArray(value) ? value : [])
+  const withId = (item) => ({ ...item, _id: item?._id || item?.id })
 
   // Fetch user's attempts for stats
   const { data: attempts = [], isLoading: attemptsLoading } = useQuery({
     queryKey: ['attempts', 'my'],
-    queryFn: () => attemptAPI.getMy().then(res => res.data.data),
+    queryFn: () =>
+      attemptAPI
+        .getMy()
+        .then((res) => toArray(res?.data?.data?.attempts).map(withId)),
   })
 
   // Calculate user statistics
@@ -121,13 +126,14 @@ export const Profile = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="page-shell">
+      <div className="page-container">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        <h1 className="text-3xl font-bold text-foreground mb-2">
           My Profile
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-muted-foreground">
           Manage your account settings and view your learning progress
         </p>
       </div>
@@ -136,9 +142,9 @@ export const Profile = () => {
         {/* Profile Information */}
         <div className="lg:col-span-2 space-y-8">
           {/* Basic Information */}
-          <div className="card">
+          <div className="surface-card">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              <h2 className="text-xl font-semibold text-foreground">
                 Basic Information
               </h2>
               <button
@@ -168,21 +174,21 @@ export const Profile = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Avatar */}
               <div className="md:col-span-2 flex items-center space-x-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-primary-500 to-violet-600 rounded-full flex items-center justify-center">
+                <div className="w-20 h-20 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center">
                   <span className="text-white font-bold text-2xl">
                     {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                   </span>
                 </div>
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                  <h3 className="text-lg font-medium text-foreground">
                     {user?.name}
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 capitalize">
+                  <p className="text-sm text-muted-foreground capitalize">
                     {user?.role}
                   </p>
                   <div className="flex items-center space-x-2 mt-1">
                     <Trophy className="w-4 h-4 text-yellow-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                    <span className="text-sm text-muted-foreground">
                       {userStats.totalBadges} badges earned
                     </span>
                   </div>
@@ -191,7 +197,7 @@ export const Profile = () => {
 
               {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Full Name
                 </label>
                 {isEditing ? (
@@ -202,7 +208,7 @@ export const Profile = () => {
                     className="input-field"
                   />
                 ) : (
-                  <div className="flex items-center space-x-2 text-gray-900 dark:text-white">
+                  <div className="flex items-center space-x-2 text-foreground">
                     <User className="w-4 h-4 text-gray-400" />
                     <span>{user?.name}</span>
                   </div>
@@ -211,21 +217,21 @@ export const Profile = () => {
 
               {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Email Address
                 </label>
-                <div className="flex items-center space-x-2 text-gray-900 dark:text-white">
+                <div className="flex items-center space-x-2 text-foreground">
                   <Mail className="w-4 h-4 text-gray-400" />
                   <span>{user?.email}</span>
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   Email cannot be changed
                 </p>
               </div>
 
               {/* Target Exam */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Target Exam
                 </label>
                 {isEditing ? (
@@ -244,7 +250,7 @@ export const Profile = () => {
                     <option value="OTHER">Other</option>
                   </select>
                 ) : (
-                  <div className="flex items-center space-x-2 text-gray-900 dark:text-white">
+                  <div className="flex items-center space-x-2 text-foreground">
                     <Target className="w-4 h-4 text-gray-400" />
                     <span>{user?.targetExam || 'Not set'}</span>
                   </div>
@@ -253,10 +259,10 @@ export const Profile = () => {
 
               {/* Join Date */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Member Since
                 </label>
-                <div className="flex items-center space-x-2 text-gray-900 dark:text-white">
+                <div className="flex items-center space-x-2 text-foreground">
                   <Calendar className="w-4 h-4 text-gray-400" />
                   <span>{new Date(user?.createdAt).toLocaleDateString()}</span>
                 </div>
@@ -265,7 +271,7 @@ export const Profile = () => {
 
             {/* Cancel editing */}
             {isEditing && (
-              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="mt-4 pt-4 border-t border-border">
                 <button
                   onClick={() => {
                     setIsEditing(false)
@@ -283,9 +289,9 @@ export const Profile = () => {
           </div>
 
           {/* Change Password */}
-          <div className="card">
+          <div className="surface-card">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              <h2 className="text-xl font-semibold text-foreground">
                 Security
               </h2>
               <button
@@ -300,7 +306,7 @@ export const Profile = () => {
               <div className="space-y-4">
                 {/* Current Password */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Current Password
                   </label>
                   <div className="relative">
@@ -326,7 +332,7 @@ export const Profile = () => {
 
                 {/* New Password */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     New Password
                   </label>
                   <div className="relative">
@@ -352,7 +358,7 @@ export const Profile = () => {
 
                 {/* Confirm Password */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Confirm New Password
                   </label>
                   <div className="relative">
@@ -385,27 +391,27 @@ export const Profile = () => {
                 </button>
               </div>
             ) : (
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-muted-foreground">
                 Keep your account secure with a strong password
               </p>
             )}
           </div>
 
           {/* Recent Activity */}
-          <div className="card">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+          <div className="surface-card">
+            <h2 className="text-xl font-semibold text-foreground mb-6">
               Recent Activity
             </h2>
             
             {userStats.recentActivity.length > 0 ? (
               <div className="space-y-4">
                 {userStats.recentActivity.map((attempt) => (
-                  <div key={attempt._id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <div key={attempt._id} className="flex items-center justify-between p-4 bg-muted rounded-lg">
                     <div>
-                      <h4 className="font-medium text-gray-900 dark:text-white">
+                      <h4 className="font-medium text-foreground">
                         {attempt.quiz?.title || 'Untitled Quiz'}
                       </h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm text-muted-foreground">
                         {new Date(attempt.completedAt).toLocaleDateString()} • {formatTime(attempt.timeTaken)}
                       </p>
                     </div>
@@ -417,7 +423,7 @@ export const Profile = () => {
                       }`}>
                         {attempt.percentage}%
                       </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-500">
+                      <div className="text-sm text-muted-foreground">
                         {attempt.score}/{attempt.quiz?.totalQuestions}
                       </div>
                     </div>
@@ -427,7 +433,7 @@ export const Profile = () => {
             ) : (
               <div className="text-center py-8">
                 <Clock className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-muted-foreground">
                   No quiz attempts yet. Start taking quizzes to see your activity here.
                 </p>
               </div>
@@ -438,8 +444,8 @@ export const Profile = () => {
         {/* Stats Sidebar */}
         <div className="space-y-6">
           {/* Performance Overview */}
-          <div className="card text-center">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+          <div className="surface-card text-center">
+            <h3 className="text-lg font-semibold text-foreground mb-6">
               Overall Performance
             </h3>
             <ScoreRing 
@@ -449,17 +455,17 @@ export const Profile = () => {
             />
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">Best Score:</span>
-                <span className="font-medium text-gray-900 dark:text-white">
+                <span className="text-muted-foreground">Best Score:</span>
+                <span className="font-medium text-foreground">
                   {userStats.bestScore}%
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">Trend:</span>
+                <span className="text-muted-foreground">Trend:</span>
                 <span className={`font-medium ${
                   trend > 0 ? 'text-green-600 dark:text-green-400' :
                   trend < 0 ? 'text-red-600 dark:text-red-400' :
-                  'text-gray-900 dark:text-white'
+                  'text-foreground'
                 }`}>
                   {trend > 0 ? '+' : ''}{trend.toFixed(1)}%
                 </span>
@@ -490,8 +496,8 @@ export const Profile = () => {
           </div>
 
           {/* Badges */}
-          <div className="card">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <div className="surface-card">
+            <h3 className="text-lg font-semibold text-foreground mb-4">
               Achievements
             </h3>
             
@@ -500,10 +506,10 @@ export const Profile = () => {
                 {user.badges.map((badge, index) => {
                   const badgeInfo = getBadgeInfo(badge)
                   return (
-                    <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <div key={index} className="flex items-center space-x-3 p-3 bg-muted rounded-lg">
                       <div className="text-2xl">{badgeInfo.icon}</div>
                       <div>
-                        <div className="font-medium text-gray-900 dark:text-white">
+                        <div className="font-medium text-foreground">
                           {badgeInfo.name}
                         </div>
                       </div>
@@ -514,7 +520,7 @@ export const Profile = () => {
             ) : (
               <div className="text-center py-6">
                 <Award className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                <p className="text-muted-foreground text-sm">
                   No badges earned yet. Keep taking quizzes to unlock achievements!
                 </p>
               </div>
@@ -522,6 +528,10 @@ export const Profile = () => {
           </div>
         </div>
       </div>
+      </div>
     </div>
   )
 }
+
+
+

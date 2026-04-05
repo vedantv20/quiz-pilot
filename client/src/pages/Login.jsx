@@ -65,27 +65,27 @@ export const Login = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-violet-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4">
+    <div className="page-shell flex items-center justify-center px-4 py-8">
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-500 to-violet-600 rounded-2xl mb-4">
-            <span className="text-white font-bold text-2xl">QP</span>
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-accent-foreground rounded-2xl mb-4 shadow-md">
+            <span className="text-primary-foreground font-bold text-2xl">QP</span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-3xl font-bold text-foreground mb-2">
             Welcome Back
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-muted-foreground">
             Sign in to continue your learning journey
           </p>
         </div>
 
         {/* Login Form */}
-        <div className="card">
+        <div className="surface-card">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
                 Email Address
               </label>
               <div className="relative">
@@ -110,7 +110,7 @@ export const Login = () => {
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
                 Password
               </label>
               <div className="relative">
@@ -165,9 +165,9 @@ export const Login = () => {
           </form>
 
           {/* Demo Accounts */}
-          <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-3">Demo Accounts</h3>
-            <div className="space-y-2 text-xs text-gray-600 dark:text-gray-400">
+          <div className="mt-6 p-4 bg-muted rounded-lg border border-border">
+            <h3 className="text-sm font-medium text-foreground mb-3">Demo Accounts</h3>
+            <div className="space-y-2 text-xs text-muted-foreground">
               <div className="flex justify-between">
                 <span>Admin:</span>
                 <span className="font-mono">admin@quizpilot.com / Admin@123</span>
@@ -185,11 +185,11 @@ export const Login = () => {
 
           {/* Register Link */}
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-muted-foreground">
               Don't have an account?{' '}
               <Link
                 to="/register"
-                className="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300"
+                className="font-medium text-primary hover:text-primary/80"
               >
                 Create one here
               </Link>
@@ -200,3 +200,6 @@ export const Login = () => {
     </div>
   )
 }
+
+
+

@@ -33,27 +33,49 @@ export const QuizAttempt = () => {
   const [startTime, setStartTime] = useState(null)
   const [showSubmitDialog, setShowSubmitDialog] = useState(false)
   const [bookmarkedQuestions, setBookmarkedQuestions] = useState(new Set())
+  const toArray = (value) => (Array.isArray(value) ? value : [])
+  const withId = (item) => ({ ...item, _id: item?._id || item?.id })
 
   // Fetch quiz and questions
   const { data: quiz, isLoading: quizLoading } = useQuery({
     queryKey: ['quiz', id, 'attempt'],
-    queryFn: () => quizAPI.getById(id).then(res => res.data.data),
+    queryFn: () =>
+      quizAPI.getById(id).then((res) => {
+        const data = res?.data?.data
+        if (!data) return null
+        return {
+          ...withId(data),
+          questions: toArray(data.questions).map((q) => withId(q)),
+        }
+      }),
     enabled: !!id,
   })
 
   // Fetch user's bookmarks
   const { data: userBookmarks = [] } = useQuery({
     queryKey: ['bookmarks'],
-    queryFn: () => bookmarkAPI.getAll().then(res => res.data.data),
+    queryFn: () =>
+      bookmarkAPI.getAll().then((res) => {
+        const payload = res?.data?.data
+        return toArray(payload?.bookmarks).map((bookmark) => ({
+          ...withId(bookmark),
+          question: withId(bookmark.question),
+        }))
+      }),
   })
 
   // Submit attempt mutation
   const submitAttempt = useMutation({
     mutationFn: (attemptData) => attemptAPI.submit(attemptData),
     onSuccess: (response) => {
-      const attempt = response.data.data
+      const attempt = response?.data?.data
+      if (!attempt) {
+        toast.error('Quiz submitted but response was invalid')
+        navigate('/dashboard')
+        return
+      }
       toast.success(`Quiz completed! Score: ${attempt.percentage}%`)
-      navigate(`/quiz/${id}/result?attempt=${attempt._id}`)
+      navigate(`/quiz/${id}/result?attempt=${attempt._id || attempt.id}`)
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || 'Failed to submit quiz')
@@ -201,10 +223,10 @@ export const QuizAttempt = () => {
 
   if (quizLoading) {
     return (
-      <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
+      <div className="page-shell flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading quiz...</p>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading quiz...</p>
         </div>
       </div>
     )
@@ -212,13 +234,13 @@ export const QuizAttempt = () => {
 
   if (!quiz || !quiz.questions?.length) {
     return (
-      <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
+      <div className="page-shell flex items-center justify-center">
         <div className="text-center">
           <AlertTriangle className="w-16 h-16 text-red-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          <h2 className="text-2xl font-bold text-foreground mb-2">
             Quiz Not Available
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
+          <p className="text-muted-foreground mb-6">
             This quiz is not available or has no questions.
           </p>
           <button onClick={() => navigate(`/quiz/${id}`)} className="btn-primary">
@@ -234,24 +256,24 @@ export const QuizAttempt = () => {
   const progress = (answeredCount / quiz.questions.length) * 100
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
+    <div className="page-shell flex flex-col">
       {/* Header */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3">
+      <div className="bg-card border-b border-border px-4 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Left: Quiz Info */}
           <div className="flex items-center space-x-4">
             <button
               onClick={handleExit}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                className="p-2 rounded-lg hover:bg-muted transition-colors"
               title="Exit Quiz"
             >
-              <X className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+               <X className="w-5 h-5 text-muted-foreground" />
             </button>
             <div>
-              <h1 className="font-semibold text-gray-900 dark:text-white">
+              <h1 className="font-semibold text-foreground">
                 {quiz.title}
               </h1>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 {mode === 'mock' ? 'Mock Exam' : 
                  mode === 'timed' ? 'Timed Quiz' : 'Practice Mode'}
               </p>
@@ -260,16 +282,16 @@ export const QuizAttempt = () => {
 
           {/* Center: Progress */}
           <div className="hidden md:flex items-center space-x-4">
-            <div className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="text-sm text-muted-foreground">
               Question {currentQuestion + 1} of {quiz.questions.length}
             </div>
-            <div className="w-32 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div className="w-32 bg-muted rounded-full h-2">
               <div 
-                className="bg-primary-600 h-2 rounded-full transition-all duration-300"
+                className="bg-primary h-2 rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="text-sm text-muted-foreground">
               {answeredCount} answered
             </div>
           </div>
@@ -299,8 +321,8 @@ export const QuizAttempt = () => {
       {/* Main Content */}
       <div className="flex-1 flex">
         {/* Question Navigation Sidebar */}
-        <div className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4 overflow-y-auto">
-          <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
+        <div className="w-64 bg-card border-r border-border p-4 overflow-y-auto">
+          <h3 className="font-semibold text-foreground mb-4">
             Questions
           </h3>
           <div className="grid grid-cols-4 gap-2">
@@ -316,10 +338,10 @@ export const QuizAttempt = () => {
                   className={`
                     relative w-12 h-12 rounded-lg text-sm font-medium transition-all
                     ${isCurrent 
-                      ? 'bg-primary-600 text-white ring-2 ring-primary-600' 
+                      ? 'bg-primary text-primary-foreground ring-2 ring-primary' 
                       : isAnswered 
                         ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
-                        : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
                     }
                   `}
                 >
@@ -336,15 +358,15 @@ export const QuizAttempt = () => {
           <div className="mt-6 space-y-2 text-xs">
             <div className="flex items-center space-x-2">
               <div className="w-4 h-4 bg-green-100 dark:bg-green-900 rounded"></div>
-              <span className="text-gray-600 dark:text-gray-400">Answered</span>
+               <span className="text-muted-foreground">Answered</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 bg-gray-100 dark:bg-gray-700 rounded"></div>
-              <span className="text-gray-600 dark:text-gray-400">Not answered</span>
+              <div className="w-4 h-4 bg-muted rounded"></div>
+              <span className="text-muted-foreground">Not answered</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 bg-primary-600 rounded"></div>
-              <span className="text-gray-600 dark:text-gray-400">Current</span>
+              <div className="w-4 h-4 bg-primary rounded"></div>
+              <span className="text-muted-foreground">Current</span>
             </div>
           </div>
         </div>
@@ -377,10 +399,10 @@ export const QuizAttempt = () => {
               </button>
 
               <div className="flex items-center space-x-4">
-                <span className="text-sm text-gray-600 dark:text-gray-400">
+                <span className="text-sm text-muted-foreground">
                   Use arrow keys to navigate
                 </span>
-                <span className="text-sm text-gray-600 dark:text-gray-400">
+                <span className="text-sm text-muted-foreground">
                   Press 1-4 to select answers
                 </span>
               </div>
@@ -410,20 +432,20 @@ export const QuizAttempt = () => {
       {/* Submit Confirmation Dialog */}
       {showSubmitDialog && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <div className="bg-card text-card-foreground rounded-lg max-w-md w-full p-6 border border-border">
+            <h3 className="text-lg font-semibold text-foreground mb-4">
               Submit Quiz?
             </h3>
             <div className="space-y-3 mb-6">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600 dark:text-gray-400">Questions answered:</span>
-                <span className="font-medium text-gray-900 dark:text-white">
+                <span className="text-muted-foreground">Questions answered:</span>
+                <span className="font-medium text-foreground">
                   {answeredCount} of {quiz.questions.length}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600 dark:text-gray-400">Unanswered questions:</span>
-                <span className="font-medium text-gray-900 dark:text-white">
+                <span className="text-muted-foreground">Unanswered questions:</span>
+                <span className="font-medium text-foreground">
                   {quiz.questions.length - answeredCount}
                 </span>
               </div>
@@ -467,3 +489,6 @@ export const QuizAttempt = () => {
     </div>
   )
 }
+
+
+

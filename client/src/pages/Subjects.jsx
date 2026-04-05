@@ -7,17 +7,19 @@ import { subjectAPI, quizAPI } from '../api'
 export const Subjects = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedDifficulty, setSelectedDifficulty] = useState('all')
+  const toArray = (value) => (Array.isArray(value) ? value : [])
+  const withId = (item) => ({ ...item, _id: item?._id || item?.id })
 
   // Fetch subjects
   const { data: subjects = [], isLoading: subjectsLoading } = useQuery({
     queryKey: ['subjects'],
-    queryFn: () => subjectAPI.getAll().then(res => res.data.data),
+    queryFn: () => subjectAPI.getAll().then((res) => toArray(res?.data?.data).map(withId)),
   })
 
   // Fetch quizzes to get counts per subject
   const { data: quizzes = [] } = useQuery({
     queryKey: ['quizzes', 'all'],
-    queryFn: () => quizAPI.getAll().then(res => res.data.data),
+    queryFn: () => quizAPI.getAll().then((res) => toArray(res?.data?.data).map(withId)),
   })
 
   // Calculate quiz counts per subject
@@ -55,28 +57,31 @@ export const Subjects = () => {
 
   if (subjectsLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="page-shell">
+        <div className="page-container">
         <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
-          <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded"></div>
+          <div className="h-8 bg-muted rounded w-1/3"></div>
+          <div className="h-12 bg-muted rounded"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-48 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+              <div key={i} className="h-48 bg-muted rounded-lg"></div>
             ))}
           </div>
+        </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="page-shell">
+      <div className="page-container">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        <h1 className="text-3xl font-bold text-foreground mb-2">
           Explore Subjects
         </h1>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">
+        <p className="text-muted-foreground mb-6">
           Choose from {totalSubjects} subjects with {totalQuizzes} practice quizzes
         </p>
 
@@ -122,26 +127,26 @@ export const Subjects = () => {
             <Link
               key={subject._id}
               to={`/subjects/${subject._id}`}
-              className="card hover:shadow-lg transition-all duration-200 group"
+              className="surface-card hover:shadow-lg transition-all duration-200 group"
             >
               {/* Subject Icon and Title */}
               <div className="flex items-center space-x-4 mb-4">
                 <div className="text-4xl">{subject.icon}</div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                    <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
                     {subject.name}
                   </h3>
-                  <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                  <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                     <BookOpen className="w-4 h-4" />
                     <span>{subject.quizCount} quizzes</span>
                   </div>
                 </div>
-                <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors" />
+                <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
               </div>
 
               {/* Description */}
               {subject.description && (
-                <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
+                 <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
                   {subject.description}
                 </p>
               )}
@@ -150,24 +155,24 @@ export const Subjects = () => {
               <div className="space-y-3">
                 {/* Difficulty Distribution */}
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">Difficulty levels:</span>
+                  <span className="text-muted-foreground">Difficulty levels:</span>
                   <div className="flex items-center space-x-3">
                     {subject.difficultyCounts.easy > 0 && (
                       <div className="flex items-center space-x-1">
                         <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                        <span className="text-gray-600 dark:text-gray-400">{subject.difficultyCounts.easy}</span>
+                        <span className="text-muted-foreground">{subject.difficultyCounts.easy}</span>
                       </div>
                     )}
                     {subject.difficultyCounts.medium > 0 && (
                       <div className="flex items-center space-x-1">
                         <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-                        <span className="text-gray-600 dark:text-gray-400">{subject.difficultyCounts.medium}</span>
+                        <span className="text-muted-foreground">{subject.difficultyCounts.medium}</span>
                       </div>
                     )}
                     {subject.difficultyCounts.hard > 0 && (
                       <div className="flex items-center space-x-1">
                         <div className="w-2 h-2 bg-red-400 rounded-full"></div>
-                        <span className="text-gray-600 dark:text-gray-400">{subject.difficultyCounts.hard}</span>
+                        <span className="text-muted-foreground">{subject.difficultyCounts.hard}</span>
                       </div>
                     )}
                   </div>
@@ -175,7 +180,7 @@ export const Subjects = () => {
 
                 {/* Average Questions */}
                 {subject.averageQuestions > 0 && (
-                  <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
                     <span>Avg. questions per quiz:</span>
                     <span className="font-medium">{subject.averageQuestions}</span>
                   </div>
@@ -183,12 +188,12 @@ export const Subjects = () => {
 
                 {/* Progress Bar (placeholder for user progress) */}
                 <div className="pt-2">
-                  <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-500 mb-1">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
                     <span>Your progress</span>
                     <span>0%</span>
                   </div>
-                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                    <div className="bg-primary-600 h-2 rounded-full" style={{ width: '0%' }}></div>
+                  <div className="w-full bg-muted rounded-full h-2">
+                    <div className="bg-primary h-2 rounded-full" style={{ width: '0%' }}></div>
                   </div>
                 </div>
               </div>
@@ -198,10 +203,10 @@ export const Subjects = () => {
       ) : (
         <div className="text-center py-12">
           <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                  <h3 className="text-lg font-medium text-foreground mb-2">
             No subjects found
           </h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
+                <p className="text-muted-foreground mb-4">
             {searchTerm || selectedDifficulty !== 'all' 
               ? 'Try adjusting your search or filter criteria.'
               : 'No subjects are available at the moment.'}
@@ -222,16 +227,16 @@ export const Subjects = () => {
 
       {/* Subject Stats Summary */}
       {filteredSubjects.length > 0 && (
-        <div className="mt-12 card">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <div className="mt-12 surface-card">
+          <h3 className="text-lg font-semibold text-foreground mb-4">
             Quick Stats
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary-600 dark:text-primary-400">
+              <div className="text-2xl font-bold text-primary">
                 {totalSubjects}
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">
+              <div className="text-sm text-muted-foreground">
                 Total Subjects
               </div>
             </div>
@@ -239,7 +244,7 @@ export const Subjects = () => {
               <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                 {quizzes.filter(q => q.difficulty === 'easy' && q.isPublished).length}
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">
+              <div className="text-sm text-muted-foreground">
                 Easy Quizzes
               </div>
             </div>
@@ -247,7 +252,7 @@ export const Subjects = () => {
               <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
                 {quizzes.filter(q => q.difficulty === 'medium' && q.isPublished).length}
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">
+              <div className="text-sm text-muted-foreground">
                 Medium Quizzes
               </div>
             </div>
@@ -255,13 +260,17 @@ export const Subjects = () => {
               <div className="text-2xl font-bold text-red-600 dark:text-red-400">
                 {quizzes.filter(q => q.difficulty === 'hard' && q.isPublished).length}
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">
+              <div className="text-sm text-muted-foreground">
                 Hard Quizzes
               </div>
             </div>
           </div>
         </div>
       )}
+      </div>
     </div>
   )
 }
+
+
+

@@ -10,12 +10,12 @@ export const StatCard = ({
 }) => {
   const getColorClasses = (colorName) => {
     const colors = {
-      primary: 'bg-primary-100 text-primary-600 dark:bg-primary-900 dark:text-primary-400',
-      success: 'bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-400',
-      warning: 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900 dark:text-yellow-400',
-      danger: 'bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-400',
-      info: 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-400',
-      gray: 'bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-400',
+      primary: 'bg-primary/15 text-primary',
+      success: 'bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-400',
+      warning: 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/40 dark:text-yellow-400',
+      danger: 'bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400',
+      info: 'bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400',
+      gray: 'bg-muted text-muted-foreground',
     }
     return colors[colorName] || colors.primary
   }
@@ -23,7 +23,7 @@ export const StatCard = ({
   const getTrendColor = (trendValue) => {
     if (trendValue > 0) return 'text-green-600 dark:text-green-400'
     if (trendValue < 0) return 'text-red-600 dark:text-red-400'
-    return 'text-gray-600 dark:text-gray-400'
+    return 'text-muted-foreground'
   }
 
   const formatValue = (val) => {
@@ -40,17 +40,17 @@ export const StatCard = ({
   }
 
   return (
-    <div className={`card ${className}`}>
+    <div className={`surface-card ${className}`}>
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+          <p className="text-sm font-medium text-muted-foreground mb-1">
             {title}
           </p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+          <p className="text-2xl font-bold text-foreground mb-1">
             {formatValue(value)}
           </p>
           {subtitle && (
-            <p className="text-sm text-gray-500 dark:text-gray-500">
+            <p className="text-sm text-muted-foreground">
               {subtitle}
             </p>
           )}
@@ -60,7 +60,7 @@ export const StatCard = ({
                 {trend > 0 ? '+' : ''}{trend}%
               </span>
               {trendLabel && (
-                <span className="text-xs text-gray-500 dark:text-gray-500">
+                <span className="text-xs text-muted-foreground">
                   {trendLabel}
                 </span>
               )}
@@ -76,3 +76,7 @@ export const StatCard = ({
     </div>
   )
 }
+
+export default StatCard
+
+

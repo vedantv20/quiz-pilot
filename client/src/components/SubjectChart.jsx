@@ -16,13 +16,13 @@ export const SubjectChart = ({
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
-          <p className="font-medium text-gray-900 dark:text-white">{label}</p>
-          <p className="text-primary-600 dark:text-primary-400">
+        <div className="bg-card text-card-foreground p-3 rounded-lg shadow-lg border border-border">
+          <p className="font-medium text-foreground">{label}</p>
+          <p className="text-primary">
             Score: {payload[0].value}%
           </p>
           {payload[0].payload.attempts > 0 && (
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
+            <p className="text-muted-foreground text-sm">
               Attempts: {payload[0].payload.attempts}
             </p>
           )}
@@ -34,14 +34,14 @@ export const SubjectChart = ({
 
   if (!chartData.length) {
     return (
-      <div className={`card ${className}`}>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+      <div className={`surface-card ${className}`}>
+        <h3 className="text-lg font-semibold text-foreground mb-4">
           {title}
         </h3>
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <div className="text-4xl mb-2">📊</div>
-            <p className="text-gray-600 dark:text-gray-400">No data available</p>
+            <p className="text-muted-foreground">No data available</p>
           </div>
         </div>
       </div>
@@ -49,8 +49,8 @@ export const SubjectChart = ({
   }
 
   return (
-    <div className={`card ${className}`}>
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+    <div className={`surface-card ${className}`}>
+      <h3 className="text-lg font-semibold text-foreground mb-4">
         {title}
       </h3>
       <div className="h-64">
@@ -60,12 +60,12 @@ export const SubjectChart = ({
             <XAxis 
               dataKey="subject" 
               tick={{ fontSize: 12 }}
-              className="text-gray-600 dark:text-gray-400"
+              className="text-muted-foreground"
             />
             <YAxis 
               domain={[0, 100]}
               tick={{ fontSize: 12 }}
-              className="text-gray-600 dark:text-gray-400"
+              className="text-muted-foreground"
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
@@ -81,3 +81,5 @@ export const SubjectChart = ({
     </div>
   )
 }
+
+

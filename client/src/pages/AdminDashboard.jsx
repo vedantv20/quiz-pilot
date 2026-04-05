@@ -54,16 +54,16 @@ const AdminDashboard = () => {
   const isLoading = userStatsLoading || quizStatsLoading || attemptStatsLoading || surveyStatsLoading;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="page-shell">
+      <div className="page-container">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
               <Shield className="w-8 h-8 text-purple-600" />
               Admin Dashboard
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-2">
+            <p className="text-muted-foreground mt-2">
               Manage users, content, and monitor platform analytics
             </p>
           </div>
@@ -79,7 +79,7 @@ const AdminDashboard = () => {
             </Link>
             <Link
               to="/admin/subjects"
-              className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 border border-border text-foreground rounded-lg hover:bg-muted/80 transition-colors"
             >
               <Settings className="w-4 h-4" />
               Settings
@@ -122,8 +122,8 @@ const AdminDashboard = () => {
         {/* User Role Distribution */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
           <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+            <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+              <h2 className="text-xl font-semibold text-foreground mb-6">
                 User Distribution
               </h2>
               
@@ -131,8 +131,8 @@ const AdminDashboard = () => {
                 <div className="space-y-4">
                   {[...Array(3)].map((_, i) => (
                     <div key={i} className="flex justify-between items-center">
-                      <div className="w-24 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
-                      <div className="w-16 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                      <div className="w-24 h-4 bg-muted rounded animate-pulse" />
+                      <div className="w-16 h-4 bg-muted rounded animate-pulse" />
                     </div>
                   ))}
                 </div>
@@ -141,13 +141,13 @@ const AdminDashboard = () => {
                   <div className="flex justify-between items-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
-                      <span className="font-medium text-gray-900 dark:text-white">Students</span>
+                      <span className="font-medium text-foreground">Students</span>
                     </div>
                     <div className="text-right">
-                      <div className="font-semibold text-gray-900 dark:text-white">
+                      <div className="font-semibold text-foreground">
                         {userStats?.byRole?.student || 0}
                       </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                      <div className="text-sm text-muted-foreground">
                         {((userStats?.byRole?.student || 0) / (userStats?.total || 1) * 100).toFixed(1)}%
                       </div>
                     </div>
@@ -156,13 +156,13 @@ const AdminDashboard = () => {
                   <div className="flex justify-between items-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 bg-green-600 rounded-full"></div>
-                      <span className="font-medium text-gray-900 dark:text-white">Teachers</span>
+                      <span className="font-medium text-foreground">Teachers</span>
                     </div>
                     <div className="text-right">
-                      <div className="font-semibold text-gray-900 dark:text-white">
+                      <div className="font-semibold text-foreground">
                         {userStats?.byRole?.teacher || 0}
                       </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                      <div className="text-sm text-muted-foreground">
                         {((userStats?.byRole?.teacher || 0) / (userStats?.total || 1) * 100).toFixed(1)}%
                       </div>
                     </div>
@@ -171,13 +171,13 @@ const AdminDashboard = () => {
                   <div className="flex justify-between items-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 bg-purple-600 rounded-full"></div>
-                      <span className="font-medium text-gray-900 dark:text-white">Admins</span>
+                      <span className="font-medium text-foreground">Admins</span>
                     </div>
                     <div className="text-right">
-                      <div className="font-semibold text-gray-900 dark:text-white">
+                      <div className="font-semibold text-foreground">
                         {userStats?.byRole?.admin || 0}
                       </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                      <div className="text-sm text-muted-foreground">
                         {((userStats?.byRole?.admin || 0) / (userStats?.total || 1) * 100).toFixed(1)}%
                       </div>
                     </div>
@@ -189,31 +189,31 @@ const AdminDashboard = () => {
 
           {/* Quick Stats */}
           <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">
                 Platform Health
               </h3>
               <div className="space-y-4">
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Active Users (7d)</span>
+                  <span className="text-sm text-muted-foreground">Active Users (7d)</span>
                   <span className="font-medium text-green-600 dark:text-green-400">
                     {userStats?.activeLastWeek || 0}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Avg Quiz Score</span>
-                  <span className="font-medium text-gray-900 dark:text-white">
+                  <span className="text-sm text-muted-foreground">Avg Quiz Score</span>
+                  <span className="font-medium text-foreground">
                     {attemptStats?.averageScore || 0}%
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Quiz Completion Rate</span>
+                  <span className="text-sm text-muted-foreground">Quiz Completion Rate</span>
                   <span className="font-medium text-blue-600 dark:text-blue-400">
                     {attemptStats?.completionRate || 0}%
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Top Performer</span>
+                  <span className="text-sm text-muted-foreground">Top Performer</span>
                   <span className="font-medium text-yellow-600 dark:text-yellow-400">
                     {attemptStats?.topPerformer?.name || 'N/A'}
                   </span>
@@ -221,35 +221,35 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">
                 Quick Actions
               </h3>
               <div className="space-y-3">
                 <Link
                   to="/admin/users"
-                  className="flex items-center gap-3 w-full px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                  className="flex items-center gap-3 w-full px-3 py-2 text-left text-sm text-foreground hover:bg-muted/80 rounded-lg transition-colors"
                 >
                   <Users className="w-4 h-4" />
                   Manage Users
                 </Link>
                 <Link
                   to="/admin/subjects"
-                  className="flex items-center gap-3 w-full px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                  className="flex items-center gap-3 w-full px-3 py-2 text-left text-sm text-foreground hover:bg-muted/80 rounded-lg transition-colors"
                 >
                   <BookOpen className="w-4 h-4" />
                   Manage Subjects
                 </Link>
                 <Link
                   to="/admin/surveys"
-                  className="flex items-center gap-3 w-full px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                  className="flex items-center gap-3 w-full px-3 py-2 text-left text-sm text-foreground hover:bg-muted/80 rounded-lg transition-colors"
                 >
                   <ClipboardList className="w-4 h-4" />
                   Survey Analytics
                 </Link>
                 <Link
                   to="/leaderboard"
-                  className="flex items-center gap-3 w-full px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                  className="flex items-center gap-3 w-full px-3 py-2 text-left text-sm text-foreground hover:bg-muted/80 rounded-lg transition-colors"
                 >
                   <TrendingUp className="w-4 h-4" />
                   View Leaderboard
@@ -262,10 +262,10 @@ const AdminDashboard = () => {
         {/* Recent Activity */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Recent Users */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+          <div className="bg-card rounded-xl shadow-sm border border-border">
+            <div className="p-6 border-b border-border">
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                <h2 className="text-xl font-semibold text-foreground">
                   Recent Users
                 </h2>
                 <Link
@@ -281,22 +281,22 @@ const AdminDashboard = () => {
               {recentUsers.length > 0 ? (
                 <div className="space-y-4">
                   {recentUsers.map((user) => (
-                    <div key={user._id} className="flex items-center gap-4 p-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors">
+                    <div key={user._id} className="flex items-center gap-4 p-3 hover:bg-muted/80 rounded-lg transition-colors">
                       <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
                         <span className="text-purple-600 dark:text-purple-400 font-medium text-sm">
                           {user.name.charAt(0).toUpperCase()}
                         </span>
                       </div>
                       <div className="flex-1">
-                        <div className="font-medium text-gray-900 dark:text-white">
+                        <div className="font-medium text-foreground">
                           {user.name}
                         </div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                        <div className="text-sm text-muted-foreground">
                           {user.email}
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+                        <div className="text-xs text-muted-foreground capitalize">
                           {user.role}
                         </div>
                         <div className="text-xs text-gray-400">
@@ -309,17 +309,17 @@ const AdminDashboard = () => {
               ) : (
                 <div className="text-center py-8">
                   <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600 dark:text-gray-400">No recent users</p>
+                  <p className="text-muted-foreground">No recent users</p>
                 </div>
               )}
             </div>
           </div>
 
           {/* Recent Quizzes */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+          <div className="bg-card rounded-xl shadow-sm border border-border">
+            <div className="p-6 border-b border-border">
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                <h2 className="text-xl font-semibold text-foreground">
                   Recent Quizzes
                 </h2>
                 <Link
@@ -335,7 +335,7 @@ const AdminDashboard = () => {
               {recentQuizzes.length > 0 ? (
                 <div className="space-y-4">
                   {recentQuizzes.map((quiz) => (
-                    <div key={quiz._id} className="flex items-center gap-4 p-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors">
+                    <div key={quiz._id} className="flex items-center gap-4 p-3 hover:bg-muted/80 rounded-lg transition-colors">
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                         quiz.isPublished 
                           ? 'bg-green-100 dark:bg-green-900/30' 
@@ -348,10 +348,10 @@ const AdminDashboard = () => {
                         }`} />
                       </div>
                       <div className="flex-1">
-                        <div className="font-medium text-gray-900 dark:text-white">
+                        <div className="font-medium text-foreground">
                           {quiz.title}
                         </div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                        <div className="text-sm text-muted-foreground">
                           {quiz.subject?.name} • {quiz.totalQuestions} questions
                         </div>
                       </div>
@@ -373,7 +373,7 @@ const AdminDashboard = () => {
               ) : (
                 <div className="text-center py-8">
                   <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600 dark:text-gray-400">No recent quizzes</p>
+                  <p className="text-muted-foreground">No recent quizzes</p>
                 </div>
               )}
             </div>
@@ -385,3 +385,5 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
+

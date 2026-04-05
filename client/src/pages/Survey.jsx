@@ -23,7 +23,7 @@ export const Survey = () => {
   // Check if user has already submitted survey
   const { data: existingSurvey } = useQuery({
     queryKey: ['survey', 'my'],
-    queryFn: () => surveyAPI.getMy().then(res => res.data.data),
+    queryFn: () => surveyAPI.getMy().then((res) => res?.data?.data || null),
     retry: false
   })
 
@@ -147,8 +147,8 @@ export const Survey = () => {
                   key={exam.id}
                   className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
                     formData.targetExam === exam.id
-                      ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                      : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                      ? 'border-primary bg-primary/10 dark:bg-primary/20'
+                      : 'border-border hover:border-gray-300 dark:hover:border-gray-600'
                   }`}
                 >
                   <input
@@ -162,7 +162,7 @@ export const Survey = () => {
                   <div className="flex items-center space-x-3">
                     <div className="text-2xl">{exam.icon}</div>
                     <div>
-                      <div className="font-medium text-gray-900 dark:text-white">
+                      <div className="font-medium text-foreground">
                         {exam.name}
                       </div>
                     </div>
@@ -183,7 +183,7 @@ export const Survey = () => {
             <div className="space-y-8">
               {/* Daily Study Hours */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
+                <label className="block text-sm font-medium text-foreground mb-4">
                   How many hours do you study daily?
                 </label>
                 <div className="px-3">
@@ -196,9 +196,9 @@ export const Survey = () => {
                     onChange={(e) => handleInputChange('dailyStudyHours', parseFloat(e.target.value))}
                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 slider"
                   />
-                  <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400 mt-2">
+                  <div className="flex justify-between text-xs text-muted-foreground mt-2">
                     <span>1h</span>
-                    <span className="font-medium text-primary-600 dark:text-primary-400">
+                    <span className="font-medium text-primary">
                       {formData.dailyStudyHours}h per day
                     </span>
                     <span>12h</span>
@@ -208,7 +208,7 @@ export const Survey = () => {
 
               {/* Attempt Year */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                <label className="block text-sm font-medium text-foreground mb-3">
                   What year are you planning to attempt the exam?
                 </label>
                 <input
@@ -234,7 +234,7 @@ export const Survey = () => {
             <div className="space-y-8">
               {/* Weak Subjects */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
+                <label className="block text-sm font-medium text-foreground mb-4">
                   Which subjects do you find challenging? (Select multiple)
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -244,7 +244,7 @@ export const Survey = () => {
                       className={`p-3 border rounded-lg cursor-pointer transition-all ${
                         formData.weakSubjects.includes(subject)
                           ? 'border-red-300 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300'
-                          : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                          : 'border-border hover:border-gray-300 dark:hover:border-gray-600'
                       }`}
                     >
                       <input
@@ -263,7 +263,7 @@ export const Survey = () => {
 
               {/* Strong Subjects */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
+                <label className="block text-sm font-medium text-foreground mb-4">
                   Which subjects are your strengths? (Select multiple)
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -273,7 +273,7 @@ export const Survey = () => {
                       className={`p-3 border rounded-lg cursor-pointer transition-all ${
                         formData.strongSubjects.includes(subject)
                           ? 'border-green-300 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300'
-                          : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                          : 'border-border hover:border-gray-300 dark:hover:border-gray-600'
                       }`}
                     >
                       <input
@@ -306,8 +306,8 @@ export const Survey = () => {
                   key={resource.id}
                   className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
                     formData.resourcesUsed.includes(resource.id)
-                      ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                      : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                      ? 'border-primary bg-primary/10 dark:bg-primary/20'
+                      : 'border-border hover:border-gray-300 dark:hover:border-gray-600'
                   }`}
                 >
                   <input
@@ -318,7 +318,7 @@ export const Survey = () => {
                   />
                   <div className="flex items-center space-x-3">
                     <div className="text-2xl">{resource.icon}</div>
-                    <div className="font-medium text-gray-900 dark:text-white">
+                    <div className="font-medium text-foreground">
                       {resource.name}
                     </div>
                   </div>
@@ -338,7 +338,7 @@ export const Survey = () => {
             <div className="space-y-8">
               {/* Stress Level */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4 text-center">
+                <label className="block text-sm font-medium text-foreground mb-4 text-center">
                   What's your current stress level?
                 </label>
                 <div className="flex items-center justify-center space-x-4">
@@ -348,22 +348,22 @@ export const Survey = () => {
                       onClick={() => handleInputChange('stressLevel', index + 1)}
                       className={`w-16 h-16 rounded-full flex items-center justify-center text-3xl transition-all ${
                         formData.stressLevel === index + 1
-                          ? 'bg-primary-100 dark:bg-primary-900 ring-4 ring-primary-500'
-                          : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                          ? 'bg-primary/10 dark:bg-primary/20 ring-4 ring-primary'
+                          : 'hover:bg-muted'
                       }`}
                     >
                       {emoji}
                     </button>
                   ))}
                 </div>
-                <div className="text-center mt-2 text-sm text-gray-600 dark:text-gray-400">
+                <div className="text-center mt-2 text-sm text-muted-foreground">
                   {['Very Low', 'Low', 'Moderate', 'High', 'Very High'][formData.stressLevel - 1]}
                 </div>
               </div>
 
               {/* Confidence Level */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4 text-center">
+                <label className="block text-sm font-medium text-foreground mb-4 text-center">
                   How confident do you feel about your exam?
                 </label>
                 <div className="flex items-center justify-center space-x-4">
@@ -373,15 +373,15 @@ export const Survey = () => {
                       onClick={() => handleInputChange('confidenceLevel', index + 1)}
                       className={`w-16 h-16 rounded-full flex items-center justify-center text-3xl transition-all ${
                         formData.confidenceLevel === index + 1
-                          ? 'bg-primary-100 dark:bg-primary-900 ring-4 ring-primary-500'
-                          : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                          ? 'bg-primary/10 dark:bg-primary/20 ring-4 ring-primary'
+                          : 'hover:bg-muted'
                       }`}
                     >
                       {emoji}
                     </button>
                   ))}
                 </div>
-                <div className="text-center mt-2 text-sm text-gray-600 dark:text-gray-400">
+                <div className="text-center mt-2 text-sm text-muted-foreground">
                   {['Very Low', 'Low', 'Moderate', 'High', 'Very High'][formData.confidenceLevel - 1]}
                 </div>
               </div>
@@ -394,53 +394,53 @@ export const Survey = () => {
           <div className="max-w-2xl mx-auto text-center py-12">
             <div className="mb-8">
               <CheckCircle className="w-24 h-24 text-green-500 mx-auto mb-6" />
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-3xl font-bold text-foreground mb-4">
                 Thank You!
               </h2>
-              <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
+              <p className="text-lg text-muted-foreground mb-8">
                 Your survey has been submitted successfully. This will help us personalize your learning experience.
               </p>
             </div>
 
             {/* Survey Summary */}
-            <div className="card text-left mb-8">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 text-center">
+            <div className="surface-card text-left mb-8">
+              <h3 className="text-lg font-semibold text-foreground mb-4 text-center">
                 Your Responses Summary
               </h3>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Target Exam:</span>
-                  <span className="font-medium text-gray-900 dark:text-white">
+                  <span className="text-muted-foreground">Target Exam:</span>
+                  <span className="font-medium text-foreground">
                     {targetExams.find(e => e.id === formData.targetExam)?.name}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Daily Study Hours:</span>
-                  <span className="font-medium text-gray-900 dark:text-white">
+                  <span className="text-muted-foreground">Daily Study Hours:</span>
+                  <span className="font-medium text-foreground">
                     {formData.dailyStudyHours}h
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Attempt Year:</span>
-                  <span className="font-medium text-gray-900 dark:text-white">
+                  <span className="text-muted-foreground">Attempt Year:</span>
+                  <span className="font-medium text-foreground">
                     {formData.attemptYear}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Weak Subjects:</span>
-                  <span className="font-medium text-gray-900 dark:text-white">
+                  <span className="text-muted-foreground">Weak Subjects:</span>
+                  <span className="font-medium text-foreground">
                     {formData.weakSubjects.length} selected
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Strong Subjects:</span>
-                  <span className="font-medium text-gray-900 dark:text-white">
+                  <span className="text-muted-foreground">Strong Subjects:</span>
+                  <span className="font-medium text-foreground">
                     {formData.strongSubjects.length} selected
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Resources Used:</span>
-                  <span className="font-medium text-gray-900 dark:text-white">
+                  <span className="text-muted-foreground">Resources Used:</span>
+                  <span className="font-medium text-foreground">
                     {formData.resourcesUsed.length} selected
                   </span>
                 </div>
@@ -462,8 +462,8 @@ export const Survey = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="container mx-auto px-4">
+    <div className="page-shell">
+      <div className="page-container">
         {currentStep <= 5 && (
           <>
             {renderStep()}
@@ -479,7 +479,7 @@ export const Survey = () => {
                 <span>Previous</span>
               </button>
 
-              <div className="text-sm text-gray-600 dark:text-gray-400">
+              <div className="text-sm text-muted-foreground">
                 Step {currentStep} of 5
               </div>
 
@@ -514,3 +514,6 @@ export const Survey = () => {
     </div>
   )
 }
+
+
+

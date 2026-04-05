@@ -37,18 +37,18 @@ const SurveyAnalytics = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="page-shell">
+        <div className="page-container">
           <div className="animate-pulse space-y-8">
-            <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded mb-4" />
+            <div className="h-8 bg-muted rounded mb-4" />
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-32 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+                <div key={i} className="h-32 bg-muted rounded-xl" />
               ))}
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-96 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+                <div key={i} className="h-96 bg-muted rounded-xl" />
               ))}
             </div>
           </div>
@@ -88,16 +88,16 @@ const SurveyAnalytics = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="page-shell">
+      <div className="page-container">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
               <ClipboardList className="w-8 h-8 text-purple-600" />
               Survey Analytics
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-2">
+            <p className="text-muted-foreground mt-2">
               Insights from student exam preparation surveys
             </p>
           </div>
@@ -138,8 +138,8 @@ const SurveyAnalytics = () => {
         {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Exam Distribution */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+          <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6">
               Target Exam Distribution
             </h2>
             {examDistribution.length > 0 ? (
@@ -170,8 +170,8 @@ const SurveyAnalytics = () => {
           </div>
 
           {/* Study Hours Distribution */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+          <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6">
               Daily Study Hours Distribution
             </h2>
             {studyHoursDistribution.length > 0 ? (
@@ -192,8 +192,8 @@ const SurveyAnalytics = () => {
           </div>
 
           {/* Weak Subjects */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+          <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6">
               Most Common Weak Subjects
             </h2>
             {weakSubjects.length > 0 ? (
@@ -214,8 +214,8 @@ const SurveyAnalytics = () => {
           </div>
 
           {/* Resources Used */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+          <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6">
               Popular Learning Resources
             </h2>
             {resourcesUsed.length > 0 ? (
@@ -239,8 +239,8 @@ const SurveyAnalytics = () => {
         {/* Stress and Confidence Gauges */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Stress Level Gauge */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+          <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
               <Heart className="w-5 h-5 text-red-600" />
               Average Stress Level
             </h2>
@@ -253,13 +253,13 @@ const SurveyAnalytics = () => {
                   clockWise
                   dataKey="value"
                 />
-                <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="fill-current text-2xl font-bold text-gray-900 dark:text-white">
+                <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="fill-current text-2xl font-bold text-foreground">
                   {averageStressLevel.toFixed(1)}/5
                 </text>
               </RadialBarChart>
             </ResponsiveContainer>
             <div className="text-center mt-4">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 {averageStressLevel >= 4 ? 'High stress levels detected' : 
                  averageStressLevel >= 3 ? 'Moderate stress levels' : 
                  'Low stress levels'}
@@ -268,8 +268,8 @@ const SurveyAnalytics = () => {
           </div>
 
           {/* Confidence Level Gauge */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+          <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
               <Target className="w-5 h-5 text-green-600" />
               Average Confidence Level
             </h2>
@@ -282,13 +282,13 @@ const SurveyAnalytics = () => {
                   clockWise
                   dataKey="value"
                 />
-                <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="fill-current text-2xl font-bold text-gray-900 dark:text-white">
+                <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="fill-current text-2xl font-bold text-foreground">
                   {averageConfidenceLevel.toFixed(1)}/5
                 </text>
               </RadialBarChart>
             </ResponsiveContainer>
             <div className="text-center mt-4">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 {averageConfidenceLevel >= 4 ? 'High confidence levels' : 
                  averageConfidenceLevel >= 3 ? 'Moderate confidence levels' : 
                  'Low confidence levels'}
@@ -300,8 +300,8 @@ const SurveyAnalytics = () => {
         {/* Strong Subjects List */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Strong Subjects */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+          <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-green-600" />
               Most Common Strong Subjects
             </h2>
@@ -313,7 +313,7 @@ const SurveyAnalytics = () => {
                       <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
                         {index + 1}
                       </div>
-                      <span className="font-medium text-gray-900 dark:text-white">
+                      <span className="font-medium text-foreground">
                         {subject.subject}
                       </span>
                     </div>
@@ -321,7 +321,7 @@ const SurveyAnalytics = () => {
                       <div className="font-semibold text-green-600 dark:text-green-400">
                         {subject.count}
                       </div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400">
+                      <div className="text-xs text-muted-foreground">
                         students
                       </div>
                     </div>
@@ -337,30 +337,30 @@ const SurveyAnalytics = () => {
           </div>
 
           {/* Recent Submissions */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+          <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
               <Clock className="w-5 h-5 text-blue-600" />
               Recent Survey Submissions
             </h2>
             {recentSubmissions.length > 0 ? (
               <div className="space-y-3">
                 {recentSubmissions.map((submission, index) => (
-                  <div key={index} className="flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <div key={index} className="flex items-center gap-3 p-3 border border-border rounded-lg">
                     <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
                       <span className="text-blue-600 dark:text-blue-400 font-medium text-sm">
                         {submission.studentName?.charAt(0).toUpperCase()}
                       </span>
                     </div>
                     <div className="flex-1">
-                      <div className="font-medium text-gray-900 dark:text-white">
+                      <div className="font-medium text-foreground">
                         {submission.studentName}
                       </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                      <div className="text-sm text-muted-foreground">
                         Target: {submission.targetExam}
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                      <div className="text-sm text-muted-foreground">
                         {new Date(submission.submittedAt).toLocaleDateString()}
                       </div>
                       <div className="text-xs text-gray-500">
@@ -384,12 +384,12 @@ const SurveyAnalytics = () => {
           <div className="flex items-start gap-4">
             <Brain className="w-8 h-8 text-purple-600 mt-1" />
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              <h3 className="text-lg font-semibold text-foreground mb-4">
                 Key Insights & Recommendations
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-400">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground">
                 <div>
-                  <h4 className="font-medium text-gray-900 dark:text-white mb-2">📊 Survey Insights</h4>
+                  <h4 className="font-medium text-foreground mb-2">📊 Survey Insights</h4>
                   <ul className="space-y-1">
                     <li>• {totalResponses} students have completed the survey</li>
                     <li>• Average study time: {studyHoursDistribution.reduce((sum, item) => sum + (item.hours * item.count), 0) / totalResponses || 0} hours/day</li>
@@ -398,7 +398,7 @@ const SurveyAnalytics = () => {
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900 dark:text-white mb-2">💡 Recommendations</h4>
+                  <h4 className="font-medium text-foreground mb-2">💡 Recommendations</h4>
                   <ul className="space-y-1">
                     <li>• Focus on {weakSubjects[0]?.subject} - most common weak subject</li>
                     <li>• {averageStressLevel > 3.5 ? 'Implement stress management resources' : 'Continue current stress management approaches'}</li>
@@ -416,3 +416,5 @@ const SurveyAnalytics = () => {
 };
 
 export default SurveyAnalytics;
+
+

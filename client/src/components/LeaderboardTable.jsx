@@ -86,7 +86,7 @@ export const LeaderboardTable = ({
                   key={user._id} 
                   className={`${
                     isCurrentUser 
-                      ? 'bg-primary-50 dark:bg-primary-900/20 border-l-4 border-primary-500' 
+                      ? 'bg-primary/10 dark:bg-primary/20 border-l-4 border-primary' 
                       : 'hover:bg-gray-50 dark:hover:bg-gray-800'
                   } transition-colors`}
                 >
@@ -97,8 +97,8 @@ export const LeaderboardTable = ({
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-violet-600 rounded-full flex items-center justify-center">
-                        <span className="text-white font-medium text-sm">
+                      <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent-foreground rounded-full flex items-center justify-center shadow-sm">
+                        <span className="text-primary-foreground font-medium text-sm">
                           {user.name?.charAt(0)?.toUpperCase() || 'U'}
                         </span>
                       </div>
@@ -106,7 +106,7 @@ export const LeaderboardTable = ({
                         <div className="font-medium text-gray-900 dark:text-white">
                           {user.name}
                           {isCurrentUser && (
-                            <span className="ml-2 text-xs text-primary-600 dark:text-primary-400 font-medium">
+                            <span className="ml-2 text-xs text-primary font-medium">
                               (You)
                             </span>
                           )}
@@ -167,3 +167,5 @@ export const LeaderboardTable = ({
     </div>
   )
 }
+
+export default LeaderboardTable

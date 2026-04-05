@@ -36,7 +36,7 @@ export const QuestionCard = ({
     }
     
     if (selectedAnswer === optionIndex) {
-      return `${baseClasses} bg-primary-50 border-primary-200 text-primary-800 dark:bg-primary-900/20 dark:border-primary-800 dark:text-primary-300`
+      return `${baseClasses} bg-primary/10 border-primary/30 text-foreground dark:bg-primary/20 dark:border-primary/40`
     }
     
     return `${baseClasses} bg-white border-gray-200 text-gray-900 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 cursor-pointer`
@@ -67,9 +67,9 @@ export const QuestionCard = ({
             title={isBookmarked ? "Remove bookmark" : "Bookmark question"}
           >
             {isBookmarked ? (
-              <BookmarkCheck className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+              <BookmarkCheck className="w-5 h-5 text-primary" />
             ) : (
-              <Bookmark className="w-5 h-5 text-gray-400 hover:text-primary-600 dark:hover:text-primary-400" />
+              <Bookmark className="w-5 h-5 text-muted-foreground hover:text-primary" />
             )}
           </button>
         )}
@@ -135,3 +135,5 @@ export const QuestionCard = ({
     </div>
   )
 }
+
+export default QuestionCard

@@ -49,19 +49,22 @@ const EditQuiz = () => {
   const { data: quiz, isLoading: quizLoading } = useQuery({
     queryKey: ['quiz', id],
     queryFn: () => quizzesApi.getById(id),
-    onSuccess: (data) => {
-      setFormData({
-        title: data.title || '',
-        description: data.description || '',
-        subject: data.subject?._id || '',
-        difficulty: data.difficulty || 'medium',
-        timeLimit: data.timeLimit || 600,
-        isMock: data.isMock || false,
-        isPublished: data.isPublished || false,
-        tags: data.tags || []
-      });
-    }
   });
+
+  useEffect(() => {
+    if (!quiz) return;
+
+    setFormData({
+      title: quiz.title || '',
+      description: quiz.description || '',
+      subject: quiz.subject?._id || '',
+      difficulty: quiz.difficulty || 'medium',
+      timeLimit: quiz.timeLimit || 600,
+      isMock: quiz.isMock || false,
+      isPublished: quiz.isPublished || false,
+      tags: quiz.tags || []
+    });
+  }, [quiz]);
 
   // Fetch quiz questions
   const { data: questions = [], isLoading: questionsLoading } = useQuery({
@@ -181,11 +184,11 @@ const EditQuiz = () => {
 
   if (quizLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="page-shell">
+        <div className="page-container max-w-4xl">
           <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded mb-4" />
-            <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded" />
+            <div className="h-8 bg-muted rounded mb-4" />
+            <div className="h-64 bg-muted rounded" />
           </div>
         </div>
       </div>
@@ -194,10 +197,10 @@ const EditQuiz = () => {
 
   if (!quiz) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="page-shell">
+        <div className="page-container max-w-4xl">
           <div className="text-center py-12">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Quiz not found</h1>
+            <h1 className="text-2xl font-bold text-foreground">Quiz not found</h1>
           </div>
         </div>
       </div>
@@ -205,22 +208,22 @@ const EditQuiz = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="page-shell">
+      <div className="page-container max-w-6xl">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate(-1)}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+              className="p-2 hover:bg-muted rounded-lg transition-colors"
             >
-              <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+              <ArrowLeft className="w-5 h-5 text-muted-foreground" />
             </button>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-3xl font-bold text-foreground">
                 Edit Quiz
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-2">
+              <p className="text-muted-foreground mt-2">
                 Manage quiz settings and questions
               </p>
             </div>
@@ -230,7 +233,7 @@ const EditQuiz = () => {
           <div className="flex gap-3">
             <Link
               to={`/quiz/${id}`}
-              className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 border border-border text-foreground rounded-lg hover:bg-muted/80 transition-colors"
             >
               <Eye className="w-4 h-4" />
               Preview
@@ -255,8 +258,8 @@ const EditQuiz = () => {
           <div className="lg:col-span-2">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Basic Information */}
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
+              <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+                <h2 className="text-xl font-semibold text-foreground flex items-center gap-2 mb-6">
                   <BookOpen className="w-5 h-5 text-purple-600" />
                   Basic Information
                 </h2>
@@ -264,7 +267,7 @@ const EditQuiz = () => {
                 <div className="space-y-4">
                   {/* Title */}
                   <div>
-                    <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label htmlFor="title" className="block text-sm font-medium text-foreground mb-2">
                       Quiz Title *
                     </label>
                     <input
@@ -284,7 +287,7 @@ const EditQuiz = () => {
 
                   {/* Description */}
                   <div>
-                    <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label htmlFor="description" className="block text-sm font-medium text-foreground mb-2">
                       Description
                     </label>
                     <textarea
@@ -300,7 +303,7 @@ const EditQuiz = () => {
                   {/* Subject and Difficulty */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <label htmlFor="subject" className="block text-sm font-medium text-foreground mb-2">
                         Subject *
                       </label>
                       <select
@@ -322,7 +325,7 @@ const EditQuiz = () => {
                     </div>
 
                     <div>
-                      <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <label htmlFor="difficulty" className="block text-sm font-medium text-foreground mb-2">
                         Difficulty Level
                       </label>
                       <select
@@ -341,7 +344,7 @@ const EditQuiz = () => {
 
                   {/* Time Limit */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                    <label className="block text-sm font-medium text-foreground mb-3">
                       Time Limit
                     </label>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -353,7 +356,7 @@ const EditQuiz = () => {
                           className={`px-3 py-2 text-sm font-medium rounded-lg border transition-colors ${
                             formData.timeLimit === minutes * 60
                               ? 'bg-purple-600 text-white border-purple-600'
-                              : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-purple-50 dark:hover:bg-purple-900/20'
+                              : 'bg-white dark:bg-gray-700 text-foreground border-border hover:bg-purple-50 dark:hover:bg-purple-900/20'
                           }`}
                         >
                           {minutes}m
@@ -372,7 +375,7 @@ const EditQuiz = () => {
                         onChange={handleInputChange}
                         className="w-4 h-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
                       />
-                      <span className="text-sm text-gray-700 dark:text-gray-300">
+                      <span className="text-sm text-foreground">
                         Mock exam mode (hide answers until completion)
                       </span>
                     </label>
@@ -380,7 +383,7 @@ const EditQuiz = () => {
 
                   {/* Tags */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Tags
                     </label>
                     <div className="flex gap-2 mb-3">
@@ -425,7 +428,7 @@ const EditQuiz = () => {
                 )}
 
                 {/* Actions */}
-                <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-border">
                   <button
                     type="submit"
                     disabled={isSubmitting}
@@ -451,27 +454,27 @@ const EditQuiz = () => {
           {/* Sidebar - Questions */}
           <div className="space-y-6">
             {/* Quiz Stats */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">
                 Quiz Statistics
               </h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Questions</span>
-                  <span className="font-medium text-gray-900 dark:text-white">
+                  <span className="text-sm text-muted-foreground">Questions</span>
+                  <span className="font-medium text-foreground">
                     {questions.length}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Status</span>
+                  <span className="text-sm text-muted-foreground">Status</span>
                   <BadgeChip
                     text={quiz.isPublished ? 'Published' : 'Draft'}
                     variant={quiz.isPublished ? 'green' : 'yellow'}
                   />
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Attempts</span>
-                  <span className="font-medium text-gray-900 dark:text-white">
+                  <span className="text-sm text-muted-foreground">Attempts</span>
+                  <span className="font-medium text-foreground">
                     {quiz.attemptCount || 0}
                   </span>
                 </div>
@@ -479,10 +482,10 @@ const EditQuiz = () => {
             </div>
 
             {/* Questions Management */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <div className="bg-card rounded-xl shadow-sm border border-border">
+              <div className="p-6 border-b border-border">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <h3 className="text-lg font-semibold text-foreground">
                     Questions ({questions.length})
                   </h3>
                   <Link
@@ -499,7 +502,7 @@ const EditQuiz = () => {
                 <div className="p-6">
                   <div className="space-y-3">
                     {[...Array(3)].map((_, i) => (
-                      <div key={i} className="h-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                      <div key={i} className="h-16 bg-muted rounded animate-pulse" />
                     ))}
                   </div>
                 </div>
@@ -520,10 +523,10 @@ const EditQuiz = () => {
               ) : (
                 <div className="p-12 text-center">
                   <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <h4 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                  <h4 className="text-lg font-medium text-foreground mb-2">
                     No questions yet
                   </h4>
-                  <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  <p className="text-muted-foreground mb-4">
                     Add questions to make your quiz available to students
                   </p>
                   <Link
@@ -548,7 +551,7 @@ const QuestionManagementCard = ({ question, index, onDelete, quizId }) => {
   const [showMenu, setShowMenu] = useState(false);
 
   return (
-    <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+    <div className="p-4 border border-border rounded-lg hover:bg-muted/80 transition-colors">
       <div className="flex justify-between items-start gap-3">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
@@ -557,10 +560,10 @@ const QuestionManagementCard = ({ question, index, onDelete, quizId }) => {
             </span>
             <BadgeChip text={question.difficulty} variant={question.difficulty} />
           </div>
-          <p className="text-sm text-gray-900 dark:text-white font-medium line-clamp-2">
+          <p className="text-sm text-foreground font-medium line-clamp-2">
             {question.text}
           </p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
             4 options • Correct: Option {question.correctIndex + 1}
           </p>
         </div>
@@ -580,10 +583,10 @@ const QuestionManagementCard = ({ question, index, onDelete, quizId }) => {
                 className="fixed inset-0 z-10" 
                 onClick={() => setShowMenu(false)}
               />
-              <div className="absolute right-0 top-full mt-1 w-36 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20">
+              <div className="absolute right-0 top-full mt-1 w-36 bg-card rounded-lg shadow-lg border border-border z-20">
                 <Link
                   to={`/teacher/quiz/${quizId}/question/${question._id}/edit`}
-                  className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 first:rounded-t-lg"
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-muted/80 first:rounded-t-lg"
                   onClick={() => setShowMenu(false)}
                 >
                   <Edit className="w-4 h-4" />
@@ -609,3 +612,5 @@ const QuestionManagementCard = ({ question, index, onDelete, quizId }) => {
 };
 
 export default EditQuiz;
+
+

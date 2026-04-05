@@ -69,15 +69,15 @@ export const Navbar = () => {
   ]
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-700">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-lg border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/dashboard" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-violet-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">QP</span>
+            <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent-foreground rounded-lg flex items-center justify-center shadow-sm">
+              <span className="text-primary-foreground font-bold text-sm">QP</span>
             </div>
-            <span className="font-bold text-xl text-gray-900 dark:text-white">
+            <span className="font-bold text-xl text-foreground">
               QuizPilot
             </span>
           </Link>
@@ -91,8 +91,8 @@ export const Navbar = () => {
                 to={to}
                 className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   isActive(to)
-                    ? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary'
+                    : 'text-muted-foreground hover:bg-muted'
                 }`}
               >
                 <Icon size={16} />
@@ -103,15 +103,15 @@ export const Navbar = () => {
             {/* Teacher Navigation */}
             {isTeacherOrAdmin() && (
               <>
-                <div className="h-4 w-px bg-gray-300 dark:bg-gray-600 mx-2" />
+                <div className="h-4 w-px bg-border mx-2" />
                 {teacherLinks.map(({ to, label, icon: Icon }) => (
                   <Link
                     key={to}
                     to={to}
                     className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                       isActive(to)
-                        ? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        ? 'bg-primary/10 text-primary dark:bg-primary/20'
+                        : 'text-muted-foreground hover:bg-muted'
                     }`}
                   >
                     <Icon size={16} />
@@ -124,15 +124,15 @@ export const Navbar = () => {
             {/* Admin Navigation */}
             {isAdmin() && (
               <>
-                <div className="h-4 w-px bg-gray-300 dark:bg-gray-600 mx-2" />
+                <div className="h-4 w-px bg-border mx-2" />
                 {adminLinks.map(({ to, label, icon: Icon }) => (
                   <Link
                     key={to}
                     to={to}
                     className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                       isActive(to)
-                        ? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        ? 'bg-primary/10 text-primary dark:bg-primary/20'
+                        : 'text-muted-foreground hover:bg-muted'
                     }`}
                   >
                     <Icon size={16} />
@@ -148,7 +148,7 @@ export const Navbar = () => {
             {/* Dark Mode Toggle */}
             <button
               onClick={toggleDarkMode}
-              className="p-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className="p-2 rounded-md text-muted-foreground hover:bg-muted transition-colors"
               aria-label="Toggle dark mode"
             >
               {isDark ? <Sun size={20} /> : <Moon size={20} />}
@@ -160,18 +160,18 @@ export const Navbar = () => {
                 {/* User Avatar */}
                 <Link
                   to="/profile"
-                  className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-muted transition-colors"
                 >
-                  <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center">
-                    <span className="text-white text-sm font-medium">
+                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center shadow-sm">
+                    <span className="text-primary-foreground text-sm font-medium">
                       {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                     </span>
                   </div>
                   <div className="hidden sm:block text-left">
-                    <div className="text-sm font-medium text-gray-900 dark:text-white">
+                    <div className="text-sm font-medium text-foreground">
                       {user?.name}
                     </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+                    <div className="text-xs text-muted-foreground capitalize">
                       {user?.role}
                     </div>
                   </div>
@@ -180,7 +180,7 @@ export const Navbar = () => {
                 {/* Logout Button */}
                 <button
                   onClick={handleLogout}
-                  className="p-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  className="p-2 rounded-md text-muted-foreground hover:bg-muted transition-colors"
                   aria-label="Logout"
                 >
                   <LogOut size={20} />
@@ -191,7 +191,7 @@ export const Navbar = () => {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="md:hidden p-2 rounded-md text-muted-foreground hover:bg-muted"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -200,7 +200,7 @@ export const Navbar = () => {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="md:hidden py-4 border-t border-border">
             <div className="space-y-1">
               {/* Student Links */}
               {studentLinks.map(({ to, label, icon: Icon }) => (
@@ -210,8 +210,8 @@ export const Navbar = () => {
                   onClick={() => setIsOpen(false)}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium ${
                     isActive(to)
-                      ? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary'
+                      : 'text-muted-foreground hover:bg-muted'
                   }`}
                 >
                   <Icon size={16} />
@@ -222,7 +222,7 @@ export const Navbar = () => {
               {/* Teacher Links */}
               {isTeacherOrAdmin() && (
                 <>
-                  <div className="border-t border-gray-200 dark:border-gray-700 my-2" />
+                  <div className="border-t border-border my-2" />
                   {teacherLinks.map(({ to, label, icon: Icon }) => (
                     <Link
                       key={to}
@@ -230,8 +230,8 @@ export const Navbar = () => {
                       onClick={() => setIsOpen(false)}
                       className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium ${
                         isActive(to)
-                          ? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300'
-                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                          ? 'bg-primary/10 text-primary dark:bg-primary/20'
+                          : 'text-muted-foreground hover:bg-muted'
                       }`}
                     >
                       <Icon size={16} />
@@ -244,7 +244,7 @@ export const Navbar = () => {
               {/* Admin Links */}
               {isAdmin() && (
                 <>
-                  <div className="border-t border-gray-200 dark:border-gray-700 my-2" />
+                  <div className="border-t border-border my-2" />
                   {adminLinks.map(({ to, label, icon: Icon }) => (
                     <Link
                       key={to}
@@ -252,8 +252,8 @@ export const Navbar = () => {
                       onClick={() => setIsOpen(false)}
                       className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium ${
                         isActive(to)
-                          ? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300'
-                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                          ? 'bg-primary/10 text-primary dark:bg-primary/20'
+                          : 'text-muted-foreground hover:bg-muted'
                       }`}
                     >
                       <Icon size={16} />
@@ -269,3 +269,5 @@ export const Navbar = () => {
     </nav>
   )
 }
+
+

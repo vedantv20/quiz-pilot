@@ -18,6 +18,8 @@ import { StatCard } from '../components/StatCard'
 export const SubjectDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
+  const toArray = (value) => (Array.isArray(value) ? value : [])
+  const withId = (item) => ({ ...item, _id: item?._id || item?.id })
   
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedDifficulty, setSelectedDifficulty] = useState('all')
@@ -27,7 +29,7 @@ export const SubjectDetail = () => {
   const { data: subject, isLoading: subjectLoading } = useQuery({
     queryKey: ['subjects', id],
     queryFn: async () => {
-      const subjects = await subjectAPI.getAll().then(res => res.data.data)
+      const subjects = await subjectAPI.getAll().then((res) => toArray(res?.data?.data).map(withId))
       return subjects.find(s => s._id === id)
     },
     enabled: !!id,
@@ -36,7 +38,10 @@ export const SubjectDetail = () => {
   // Fetch quizzes for this subject
   const { data: allQuizzes = [], isLoading: quizzesLoading } = useQuery({
     queryKey: ['quizzes', 'subject', id],
-    queryFn: () => quizAPI.getAll({ subject: id }).then(res => res.data.data),
+    queryFn: () =>
+      quizAPI
+        .getAll({ subject: id })
+        .then((res) => toArray(res?.data?.data).map(withId)),
     enabled: !!id,
   })
 
@@ -44,7 +49,8 @@ export const SubjectDetail = () => {
   const { data: userAttempts = [] } = useQuery({
     queryKey: ['attempts', 'my', 'subject', id],
     queryFn: async () => {
-      const attempts = await attemptAPI.getMy().then(res => res.data.data)
+      const attemptsPayload = await attemptAPI.getMy().then((res) => res?.data?.data)
+      const attempts = toArray(attemptsPayload?.attempts).map(withId)
       return attempts.filter(attempt => 
         (attempt.quiz?.subject?._id || attempt.quiz?.subject) === id
       )
@@ -94,15 +100,17 @@ export const SubjectDetail = () => {
 
   if (subjectLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="page-shell">
+        <div className="page-container">
         <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
-          <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+          <div className="h-8 bg-muted rounded w-1/3"></div>
+          <div className="h-32 bg-muted rounded-lg"></div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-24 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+              <div key={i} className="h-24 bg-muted rounded-lg"></div>
             ))}
           </div>
+        </div>
         </div>
       </div>
     )
@@ -110,13 +118,14 @@ export const SubjectDetail = () => {
 
   if (!subject) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="page-shell">
+        <div className="page-container">
         <div className="text-center py-12">
           <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          <h2 className="text-2xl font-bold text-foreground mb-2">
             Subject Not Found
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
+          <p className="text-muted-foreground mb-6">
             The subject you're looking for doesn't exist or has been removed.
           </p>
           <button
@@ -126,29 +135,31 @@ export const SubjectDetail = () => {
             Browse All Subjects
           </button>
         </div>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="page-shell">
+      <div className="page-container">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center space-x-4 mb-6">
           <button
             onClick={() => navigate('/subjects')}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className="p-2 rounded-lg hover:bg-muted transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <ArrowLeft className="w-5 h-5 text-muted-foreground" />
           </button>
           <div className="flex items-center space-x-4">
             <div className="text-4xl">{subject.icon}</div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-3xl font-bold text-foreground">
                 {subject.name}
               </h1>
               {subject.description && (
-                <p className="text-gray-600 dark:text-gray-400 mt-2">
+                <p className="text-muted-foreground mt-2">
                   {subject.description}
                 </p>
               )}
@@ -187,8 +198,8 @@ export const SubjectDetail = () => {
         </div>
 
         {/* Difficulty Distribution */}
-        <div className="card mb-8">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <div className="surface-card mb-8">
+          <h3 className="text-lg font-semibold text-foreground mb-4">
             Difficulty Distribution
           </h3>
           <div className="grid grid-cols-3 gap-4">
@@ -274,7 +285,7 @@ export const SubjectDetail = () => {
       {quizzesLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-64 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+            <div key={i} className="h-64 bg-muted rounded-lg animate-pulse"></div>
           ))}
         </div>
       ) : filteredQuizzes.length > 0 ? (
@@ -291,17 +302,17 @@ export const SubjectDetail = () => {
           </div>
           
           {/* Results Count */}
-          <div className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
+          <div className="mt-8 text-center text-sm text-muted-foreground">
             Showing {filteredQuizzes.length} of {subjectStats.totalQuizzes} quizzes
           </div>
         </>
       ) : (
         <div className="text-center py-12">
           <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+          <h3 className="text-lg font-medium text-foreground mb-2">
             No quizzes found
           </h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-muted-foreground mb-4">
             {searchTerm || selectedDifficulty !== 'all' 
               ? 'Try adjusting your search or filter criteria.'
               : 'No quizzes are available for this subject yet.'}
@@ -321,17 +332,21 @@ export const SubjectDetail = () => {
       )}
 
       {/* Breadcrumb Navigation */}
-      <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
-        <nav className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
-          <Link to="/subjects" className="hover:text-primary-600 dark:hover:text-primary-400">
+      <div className="mt-12 pt-8 border-t border-border">
+        <nav className="flex items-center space-x-2 text-sm text-muted-foreground">
+          <Link to="/subjects" className="hover:text-primary">
             All Subjects
           </Link>
           <span>›</span>
-          <span className="text-gray-900 dark:text-white font-medium">
+          <span className="text-foreground font-medium">
             {subject.name}
           </span>
         </nav>
       </div>
+      </div>
     </div>
   )
 }
+
+
+

@@ -31,11 +31,21 @@ export const QuizResult = () => {
   
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [showReview, setShowReview] = useState(false)
+  const toArray = (value) => (Array.isArray(value) ? value : [])
+  const withId = (item) => ({ ...item, _id: item?._id || item?.id })
 
   // Fetch quiz details
   const { data: quiz, isLoading: quizLoading } = useQuery({
     queryKey: ['quiz', id, 'result'],
-    queryFn: () => quizAPI.getById(id).then(res => res.data.data),
+    queryFn: () =>
+      quizAPI.getById(id).then((res) => {
+        const data = res?.data?.data
+        if (!data) return null
+        return {
+          ...withId(data),
+          questions: toArray(data.questions).map((q) => withId(q)),
+        }
+      }),
     enabled: !!id,
   })
 
@@ -43,8 +53,9 @@ export const QuizResult = () => {
   const { data: attempt, isLoading: attemptLoading } = useQuery({
     queryKey: ['attempt', attemptId],
     queryFn: async () => {
-      const attempts = await attemptAPI.getMy().then(res => res.data.data)
-      return attempts.find(a => a._id === attemptId)
+      const attemptsPayload = await attemptAPI.getMy().then((res) => res?.data?.data)
+      const attempts = toArray(attemptsPayload?.attempts).map(withId)
+      return attempts.find((a) => String(a._id) === String(attemptId))
     },
     enabled: !!attemptId,
   })
@@ -52,15 +63,16 @@ export const QuizResult = () => {
   // Fetch subjects
   const { data: subjects = [] } = useQuery({
     queryKey: ['subjects'],
-    queryFn: () => subjectAPI.getAll().then(res => res.data.data),
+    queryFn: () => subjectAPI.getAll().then((res) => toArray(res?.data?.data).map(withId)),
   })
 
   // Fetch user's other attempts on this quiz
   const { data: allAttempts = [] } = useQuery({
     queryKey: ['attempts', 'quiz', id, 'all'],
     queryFn: async () => {
-      const attempts = await attemptAPI.getMy().then(res => res.data.data)
-      return attempts
+      const attemptsPayload = await attemptAPI.getMy().then((res) => res?.data?.data)
+      return toArray(attemptsPayload?.attempts)
+        .map(withId)
         .filter(a => (a.quiz?._id || a.quiz) === id)
         .sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt))
     },
@@ -157,14 +169,16 @@ export const QuizResult = () => {
 
   if (quizLoading || attemptLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
-          <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-24 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-            ))}
+      <div className="page-shell">
+        <div className="page-container">
+          <div className="animate-pulse space-y-6">
+            <div className="h-8 bg-muted rounded w-1/3"></div>
+            <div className="h-64 bg-muted rounded-lg"></div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="h-24 bg-muted rounded-lg"></div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -173,38 +187,41 @@ export const QuizResult = () => {
 
   if (!quiz || !attempt) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center py-12">
-          <XCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Results Not Found
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            The quiz results you're looking for don't exist or have been removed.
-          </p>
-          <button onClick={() => navigate('/dashboard')} className="btn-primary">
-            Go to Dashboard
-          </button>
+      <div className="page-shell">
+        <div className="page-container">
+          <div className="text-center py-12">
+            <XCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-foreground mb-2">
+              Results Not Found
+            </h2>
+            <p className="text-muted-foreground mb-6">
+              The quiz results you're looking for don't exist or have been removed.
+            </p>
+            <button onClick={() => navigate('/dashboard')} className="btn-primary">
+              Go to Dashboard
+            </button>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="page-shell">
+      <div className="page-container">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center space-x-4 mb-6">
           <button
             onClick={() => navigate(`/quiz/${id}`)}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className="p-2 rounded-lg hover:bg-muted transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <ArrowLeft className="w-5 h-5 text-muted-foreground" />
           </button>
           {subject && (
             <Link 
               to={`/subjects/${subject._id}`}
-              className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+              className="flex items-center space-x-2 text-muted-foreground hover:text-primary transition-colors"
             >
               <span className="text-2xl">{subject.icon}</span>
               <span className="font-medium">{subject.name}</span>
@@ -213,10 +230,10 @@ export const QuizResult = () => {
         </div>
 
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-3xl font-bold text-foreground mb-2">
             Quiz Results
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400">
+          <p className="text-lg text-muted-foreground">
             {quiz.title}
           </p>
         </div>
@@ -226,7 +243,7 @@ export const QuizResult = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
         {/* Score Display */}
         <div className="lg:col-span-1">
-          <div className="card text-center">
+          <div className="surface-card text-center">
             <div className="mb-6">
               <ScoreRing 
                 score={stats.percentage} 
@@ -239,7 +256,7 @@ export const QuizResult = () => {
               <div className={`text-2xl font-bold ${getScoreColor(stats.percentage)}`}>
                 {isPassed ? 'Passed!' : 'Try Again'}
               </div>
-              <div className="text-gray-600 dark:text-gray-400">
+              <div className="text-muted-foreground">
                 {stats.correctAnswers} out of {stats.totalQuestions} correct
               </div>
               {improvement !== null && (
@@ -285,20 +302,20 @@ export const QuizResult = () => {
           </div>
 
           {/* Performance Insights */}
-          <div className="card mt-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <div className="surface-card mt-6">
+            <h3 className="text-lg font-semibold text-foreground mb-4">
               Performance Insights
             </h3>
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <span className="text-gray-600 dark:text-gray-400">Time per question:</span>
-                <span className="font-medium text-gray-900 dark:text-white">
+              <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                <span className="text-muted-foreground">Time per question:</span>
+                <span className="font-medium text-foreground">
                   {Math.round(stats.timeTaken / stats.totalQuestions)}s average
                 </span>
               </div>
-              <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <span className="text-gray-600 dark:text-gray-400">Completion rate:</span>
-                <span className="font-medium text-gray-900 dark:text-white">
+              <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                <span className="text-muted-foreground">Completion rate:</span>
+                <span className="font-medium text-foreground">
                   {((stats.totalQuestions - stats.skippedQuestions) / stats.totalQuestions * 100).toFixed(1)}%
                 </span>
               </div>
@@ -343,14 +360,14 @@ export const QuizResult = () => {
       {/* Question Review */}
       {showReview && detailedResults.length > 0 && (
         <div className="space-y-8">
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-8">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
+          <div className="border-t border-border pt-8">
+            <h2 className="text-2xl font-bold text-foreground mb-6 text-center">
               Answer Review
             </h2>
 
             {/* Question Navigation */}
             <div className="flex items-center justify-center mb-8">
-              <div className="flex items-center space-x-4 bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
+              <div className="flex items-center space-x-4 bg-card rounded-lg p-4 shadow-sm border border-border">
                 <button
                   onClick={goToPreviousQuestion}
                   disabled={currentQuestionIndex === 0}
@@ -360,7 +377,7 @@ export const QuizResult = () => {
                 </button>
                 
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Question</span>
+                  <span className="text-sm text-muted-foreground">Question</span>
                   <select
                     value={currentQuestionIndex}
                     onChange={(e) => goToQuestion(parseInt(e.target.value))}
@@ -372,7 +389,7 @@ export const QuizResult = () => {
                       </option>
                     ))}
                   </select>
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-sm text-muted-foreground">
                     of {detailedResults.length}
                   </span>
                 </div>
@@ -413,7 +430,7 @@ export const QuizResult = () => {
 
             {/* Quick Navigation Grid */}
             <div className="mt-8">
-              <h4 className="text-lg font-medium text-gray-900 dark:text-white mb-4 text-center">
+              <h4 className="text-lg font-medium text-foreground mb-4 text-center">
                 Quick Navigation
               </h4>
               <div className="flex flex-wrap justify-center gap-2 max-w-4xl mx-auto">
@@ -424,7 +441,7 @@ export const QuizResult = () => {
                     className={`
                       w-12 h-12 rounded-lg text-sm font-medium transition-all
                       ${index === currentQuestionIndex 
-                        ? 'bg-primary-600 text-white ring-2 ring-primary-600' 
+                        ? 'bg-primary text-primary-foreground ring-2 ring-primary' 
                         : result.isCorrect 
                           ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-800' 
                           : result.isSkipped
@@ -440,15 +457,15 @@ export const QuizResult = () => {
               <div className="flex justify-center mt-4 space-x-6 text-xs">
                 <div className="flex items-center space-x-2">
                   <div className="w-4 h-4 bg-green-100 dark:bg-green-900 rounded"></div>
-                  <span className="text-gray-600 dark:text-gray-400">Correct</span>
+                  <span className="text-muted-foreground">Correct</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-4 h-4 bg-red-100 dark:bg-red-900 rounded"></div>
-                  <span className="text-gray-600 dark:text-gray-400">Incorrect</span>
+                  <span className="text-muted-foreground">Incorrect</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-4 h-4 bg-yellow-100 dark:bg-yellow-900 rounded"></div>
-                  <span className="text-gray-600 dark:text-gray-400">Skipped</span>
+                  <span className="text-muted-foreground">Skipped</span>
                 </div>
               </div>
             </div>
@@ -457,22 +474,22 @@ export const QuizResult = () => {
       )}
 
       {/* Recommendations */}
-      <div className="card mt-8">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+      <div className="surface-card mt-8">
+        <h3 className="text-lg font-semibold text-foreground mb-4">
           What's Next?
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <Link
             to={`/quiz/${id}`}
-            className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md transition-all group"
+            className="p-4 border border-border rounded-lg hover:shadow-md transition-all group"
           >
             <div className="flex items-center space-x-3">
               <div className="text-2xl">🔄</div>
               <div>
-                <h4 className="font-medium text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400">
+                <h4 className="font-medium text-foreground group-hover:text-primary">
                   Retake Quiz
                 </h4>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Practice makes perfect
                 </p>
               </div>
@@ -482,15 +499,15 @@ export const QuizResult = () => {
           {subject && (
             <Link
               to={`/subjects/${subject._id}`}
-              className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md transition-all group"
+              className="p-4 border border-border rounded-lg hover:shadow-md transition-all group"
             >
               <div className="flex items-center space-x-3">
                 <div className="text-2xl">{subject.icon}</div>
                 <div>
-                  <h4 className="font-medium text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400">
+                  <h4 className="font-medium text-foreground group-hover:text-primary">
                     More {subject.name}
                   </h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     Try other quizzes
                   </p>
                 </div>
@@ -500,15 +517,15 @@ export const QuizResult = () => {
           
           <Link
             to="/leaderboard"
-            className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md transition-all group"
+            className="p-4 border border-border rounded-lg hover:shadow-md transition-all group"
           >
             <div className="flex items-center space-x-3">
               <div className="text-2xl">🏆</div>
               <div>
-                <h4 className="font-medium text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400">
+                <h4 className="font-medium text-foreground group-hover:text-primary">
                   View Leaderboard
                 </h4>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   See your ranking
                 </p>
               </div>
@@ -516,6 +533,10 @@ export const QuizResult = () => {
           </Link>
         </div>
       </div>
+      </div>
     </div>
   )
 }
+
+
+

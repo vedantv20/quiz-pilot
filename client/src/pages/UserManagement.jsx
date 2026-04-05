@@ -68,16 +68,16 @@ const UserManagement = () => {
   const totalUsers = usersData?.total || 0;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="page-shell">
+      <div className="page-container">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
               <Users className="w-8 h-8 text-purple-600" />
               User Management
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-2">
+            <p className="text-muted-foreground mt-2">
               Manage user accounts, roles, and permissions
             </p>
           </div>
@@ -85,26 +85,26 @@ const UserManagement = () => {
           {/* Stats */}
           <div className="flex gap-4 text-sm">
             <div className="text-center">
-              <div className="font-semibold text-gray-900 dark:text-white">{totalUsers}</div>
-              <div className="text-gray-600 dark:text-gray-400">Total Users</div>
+              <div className="font-semibold text-foreground">{totalUsers}</div>
+              <div className="text-muted-foreground">Total Users</div>
             </div>
             <div className="text-center">
               <div className="font-semibold text-blue-600 dark:text-blue-400">
                 {users.filter(u => u.role === 'student').length}
               </div>
-              <div className="text-gray-600 dark:text-gray-400">Students</div>
+              <div className="text-muted-foreground">Students</div>
             </div>
             <div className="text-center">
               <div className="font-semibold text-green-600 dark:text-green-400">
                 {users.filter(u => u.role === 'teacher').length}
               </div>
-              <div className="text-gray-600 dark:text-gray-400">Teachers</div>
+              <div className="text-muted-foreground">Teachers</div>
             </div>
           </div>
         </div>
 
         {/* Search and Filters */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+        <div className="bg-card rounded-xl shadow-sm border border-border p-6 mb-6">
           <div className="flex flex-col sm:flex-row gap-4">
             {/* Search */}
             <div className="flex-1">
@@ -115,7 +115,7 @@ const UserManagement = () => {
                   placeholder="Search users by name or email..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 />
               </div>
             </div>
@@ -125,7 +125,7 @@ const UserManagement = () => {
               <select
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
-                className="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
               >
                 <option value="all">All Roles</option>
                 <option value="student">Students</option>
@@ -135,7 +135,7 @@ const UserManagement = () => {
 
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-2 px-4 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="flex items-center gap-2 px-4 py-3 border border-border text-foreground rounded-lg hover:bg-muted/80 transition-colors"
               >
                 <Filter className="w-4 h-4" />
                 Filters
@@ -145,13 +145,13 @@ const UserManagement = () => {
 
           {/* Extended Filters */}
           {showFilters && (
-            <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="mt-4 pt-4 border-t border-border">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Registration Date
                   </label>
-                  <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                  <select className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
                     <option>All Time</option>
                     <option>Last 7 days</option>
                     <option>Last 30 days</option>
@@ -159,20 +159,20 @@ const UserManagement = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Activity Status
                   </label>
-                  <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                  <select className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
                     <option>All Users</option>
                     <option>Active (7 days)</option>
                     <option>Inactive (30+ days)</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Sort By
                   </label>
-                  <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                  <select className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
                     <option>Newest First</option>
                     <option>Oldest First</option>
                     <option>Name A-Z</option>
@@ -185,19 +185,19 @@ const UserManagement = () => {
         </div>
 
         {/* Users Table */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
           {isLoading ? (
             <div className="p-8">
               <div className="space-y-4">
                 {[...Array(10)].map((_, i) => (
                   <div key={i} className="flex items-center gap-4 p-4">
-                    <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse" />
+                    <div className="w-12 h-12 bg-muted rounded-full animate-pulse" />
                     <div className="flex-1">
-                      <div className="w-32 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-2" />
-                      <div className="w-48 h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                      <div className="w-32 h-4 bg-muted rounded animate-pulse mb-2" />
+                      <div className="w-48 h-3 bg-muted rounded animate-pulse" />
                     </div>
-                    <div className="w-20 h-6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
-                    <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                    <div className="w-20 h-6 bg-muted rounded animate-pulse" />
+                    <div className="w-8 h-8 bg-muted rounded animate-pulse" />
                   </div>
                 ))}
               </div>
@@ -206,8 +206,8 @@ const UserManagement = () => {
             <>
               {/* Table Header - Desktop */}
               <div className="hidden md:block">
-                <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
-                  <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-700 dark:text-gray-300">
+                <div className="px-6 py-4 border-b border-border bg-muted/50">
+                  <div className="grid grid-cols-12 gap-4 text-sm font-medium text-foreground">
                     <div className="col-span-4">User</div>
                     <div className="col-span-2">Role</div>
                     <div className="col-span-2">Activity</div>
@@ -247,16 +247,16 @@ const UserManagement = () => {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="px-6 py-4 border-t border-border">
                   <div className="flex justify-between items-center">
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <div className="text-sm text-muted-foreground">
                       Showing {(page - 1) * 20 + 1} to {Math.min(page * 20, totalUsers)} of {totalUsers} users
                     </div>
                     <div className="flex gap-2">
                       <button
                         onClick={() => setPage(p => Math.max(1, p - 1))}
                         disabled={page === 1}
-                        className="px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="px-3 py-2 border border-border text-foreground rounded-lg hover:bg-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       >
                         Previous
                       </button>
@@ -266,7 +266,7 @@ const UserManagement = () => {
                       <button
                         onClick={() => setPage(p => p + 1)}
                         disabled={page >= totalPages}
-                        className="px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="px-3 py-2 border border-border text-foreground rounded-lg hover:bg-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       >
                         Next
                       </button>
@@ -278,10 +278,10 @@ const UserManagement = () => {
           ) : (
             <div className="p-12 text-center">
               <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+              <h3 className="text-lg font-medium text-foreground mb-2">
                 No users found
               </h3>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-muted-foreground">
                 Try adjusting your search or filter criteria
               </p>
             </div>
@@ -319,7 +319,7 @@ const UserTableRow = ({ user, onRoleChange, onDelete, isChangingRole, isDeleting
   const activity = getActivityStatus(user.lastActiveDate);
 
   return (
-    <div className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+    <div className="px-6 py-4 hover:bg-muted/80 transition-colors">
       <div className="grid grid-cols-12 gap-4 items-center">
         {/* User Info */}
         <div className="col-span-4">
@@ -330,10 +330,10 @@ const UserTableRow = ({ user, onRoleChange, onDelete, isChangingRole, isDeleting
               </span>
             </div>
             <div>
-              <div className="font-medium text-gray-900 dark:text-white">
+              <div className="font-medium text-foreground">
                 {user.name}
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1">
+              <div className="text-sm text-muted-foreground flex items-center gap-1">
                 <Mail className="w-3 h-3" />
                 {user.email}
               </div>
@@ -353,7 +353,7 @@ const UserTableRow = ({ user, onRoleChange, onDelete, isChangingRole, isDeleting
 
         {/* Joined Date */}
         <div className="col-span-2">
-          <div className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1">
+          <div className="text-sm text-muted-foreground flex items-center gap-1">
             <Calendar className="w-3 h-3" />
             {new Date(user.createdAt).toLocaleDateString()}
           </div>
@@ -375,7 +375,7 @@ const UserTableRow = ({ user, onRoleChange, onDelete, isChangingRole, isDeleting
                   className="fixed inset-0 z-10" 
                   onClick={() => setShowMenu(false)}
                 />
-                <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20">
+                <div className="absolute right-0 top-full mt-1 w-48 bg-card rounded-lg shadow-lg border border-border z-20">
                   <div className="py-1">
                     <button
                       onClick={() => {
@@ -383,7 +383,7 @@ const UserTableRow = ({ user, onRoleChange, onDelete, isChangingRole, isDeleting
                         onRoleChange(user._id, user.role === 'student' ? 'teacher' : 'student');
                       }}
                       disabled={isChangingRole}
-                      className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                      className="flex items-center gap-2 w-full px-4 py-2 text-sm text-foreground hover:bg-muted/80"
                     >
                       {user.role === 'student' ? <UserCheck className="w-4 h-4" /> : <UserX className="w-4 h-4" />}
                       Make {user.role === 'student' ? 'Teacher' : 'Student'}
@@ -395,13 +395,13 @@ const UserTableRow = ({ user, onRoleChange, onDelete, isChangingRole, isDeleting
                           onRoleChange(user._id, 'admin');
                         }}
                         disabled={isChangingRole}
-                        className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                        className="flex items-center gap-2 w-full px-4 py-2 text-sm text-foreground hover:bg-muted/80"
                       >
                         <Shield className="w-4 h-4" />
                         Make Admin
                       </button>
                     )}
-                    <div className="border-t border-gray-200 dark:border-gray-700 my-1" />
+                    <div className="border-t border-border my-1" />
                     <button
                       onClick={() => {
                         setShowMenu(false);
@@ -446,10 +446,10 @@ const UserMobileCard = ({ user, onRoleChange, onDelete, isChangingRole, isDeleti
           </span>
         </div>
         <div className="flex-1">
-          <div className="font-medium text-gray-900 dark:text-white">
+          <div className="font-medium text-foreground">
             {user.name}
           </div>
-          <div className="text-sm text-gray-600 dark:text-gray-400">
+          <div className="text-sm text-muted-foreground">
             {user.email}
           </div>
           <div className="flex items-center gap-2 mt-1">
@@ -474,7 +474,7 @@ const UserMobileCard = ({ user, onRoleChange, onDelete, isChangingRole, isDeleti
                 className="fixed inset-0 z-10" 
                 onClick={() => setShowMenu(false)}
               />
-              <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20">
+              <div className="absolute right-0 top-full mt-1 w-48 bg-card rounded-lg shadow-lg border border-border z-20">
                 <div className="py-1">
                   <button
                     onClick={() => {
@@ -482,7 +482,7 @@ const UserMobileCard = ({ user, onRoleChange, onDelete, isChangingRole, isDeleti
                       onRoleChange(user._id, user.role === 'student' ? 'teacher' : 'student');
                     }}
                     disabled={isChangingRole}
-                    className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    className="flex items-center gap-2 w-full px-4 py-2 text-sm text-foreground hover:bg-muted/80"
                   >
                     {user.role === 'student' ? <UserCheck className="w-4 h-4" /> : <UserX className="w-4 h-4" />}
                     Make {user.role === 'student' ? 'Teacher' : 'Student'}
@@ -494,13 +494,13 @@ const UserMobileCard = ({ user, onRoleChange, onDelete, isChangingRole, isDeleti
                         onRoleChange(user._id, 'admin');
                       }}
                       disabled={isChangingRole}
-                      className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                      className="flex items-center gap-2 w-full px-4 py-2 text-sm text-foreground hover:bg-muted/80"
                     >
                       <Shield className="w-4 h-4" />
                       Make Admin
                     </button>
                   )}
-                  <div className="border-t border-gray-200 dark:border-gray-700 my-1" />
+                  <div className="border-t border-border my-1" />
                   <button
                     onClick={() => {
                       setShowMenu(false);
@@ -523,3 +523,5 @@ const UserMobileCard = ({ user, onRoleChange, onDelete, isChangingRole, isDeleti
 };
 
 export default UserManagement;
+
+

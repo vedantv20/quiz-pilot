@@ -10,10 +10,10 @@ export const QuizCard = ({
 }) => {
   const getDifficultyColor = (difficulty) => {
     switch (difficulty?.toLowerCase()) {
-      case 'easy': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-      case 'medium': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
-      case 'hard': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
+      case 'easy': return 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300'
+      case 'medium': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300'
+      case 'hard': return 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300'
+      default: return 'bg-muted text-foreground'
     }
   }
 
@@ -23,14 +23,14 @@ export const QuizCard = ({
   }
 
   return (
-    <div className={`card hover:shadow-lg transition-all duration-200 group ${className}`}>
+    <div className={`surface-card hover:shadow-lg transition-all duration-200 group ${className}`}>
       <div className="flex flex-col h-full">
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
           {showSubject && subject && (
             <div className="flex items-center space-x-2">
               <span className="text-2xl">{subject.icon}</span>
-              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <span className="text-sm font-medium text-muted-foreground">
                 {subject.name}
               </span>
             </div>
@@ -50,11 +50,11 @@ export const QuizCard = ({
 
         {/* Title & Description */}
         <div className="flex-1 mb-4">
-          <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+          <h3 className="font-semibold text-lg text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
             {quiz.title}
           </h3>
           {quiz.description && (
-            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+            <p className="text-sm text-muted-foreground line-clamp-2">
               {quiz.description}
             </p>
           )}
@@ -62,7 +62,7 @@ export const QuizCard = ({
 
         {/* Stats */}
         {showStats && (
-          <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-4">
+          <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-1">
                 <BookOpen className="w-4 h-4" />
@@ -130,3 +130,7 @@ if (!document.head.querySelector('style[data-component="line-clamp"]')) {
   style.setAttribute('data-component', 'line-clamp')
   document.head.appendChild(style)
 }
+
+export default QuizCard
+
+

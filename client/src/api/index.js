@@ -77,3 +77,13 @@ export const userAPI = {
   updateRole: (id, role) => api.put(`/users/${id}/role`, { role }),
   delete: (id) => api.delete(`/users/${id}`),
 }
+
+// Onboarding API calls
+export const onboardingAPI = {
+  getExamCategories: (educationLevel) => api.get('/onboarding/exam-categories', { params: cleanParams({ educationLevel }) }),
+  getTargetExams: () => api.get('/onboarding/target-exams'),
+  completeOnboarding: (data) => api.post('/onboarding/complete', data),
+  getSubjectsByQualification: () => api.get('/onboarding/subjects'),
+  getSuggestedQuizzes: (params) => api.get('/onboarding/suggested-quizzes', { params: cleanParams(params) }),
+  updateTargetExams: (targetExams) => api.put('/onboarding/target-exams', { targetExams }),
+}

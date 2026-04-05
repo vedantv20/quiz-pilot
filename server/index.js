@@ -76,6 +76,7 @@ app.use('/api/leaderboard', require('./routes/leaderboard'));
 app.use('/api/surveys', require('./routes/surveys'));
 app.use('/api/bookmarks', require('./routes/bookmarks'));
 app.use('/api/users', require('./routes/users'));
+app.use('/api/onboarding', require('./routes/onboarding'));
 
 // 404 handler for undefined routes
 app.use('*', (req, res) => {

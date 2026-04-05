@@ -32,7 +32,7 @@ const useAuthStore = create(
           })
 
           toast.success(`Welcome back, ${user.name}!`)
-          return { success: true }
+          return { success: true, requiresOnboarding: !user.onboardingCompleted }
         } catch (error) {
           set({ isLoading: false })
           const message = error.response?.data?.message || 'Login failed'
@@ -60,7 +60,7 @@ const useAuthStore = create(
           })
 
           toast.success(`Welcome to QuizPilot, ${user.name}!`)
-          return { success: true }
+          return { success: true, requiresOnboarding: !user.onboardingCompleted }
         } catch (error) {
           set({ isLoading: false })
           const message = error.response?.data?.message || 'Registration failed'
@@ -82,6 +82,11 @@ const useAuthStore = create(
         })
 
         toast.success('Logged out successfully')
+      },
+
+      setUser: (userData) => {
+        localStorage.setItem('user', JSON.stringify(userData))
+        set({ user: userData })
       },
 
       updateUser: (userData) => {
@@ -140,6 +145,12 @@ const useAuthStore = create(
       isTeacher: () => get().hasRole('teacher'),
       isAdmin: () => get().hasRole('admin'),
       isTeacherOrAdmin: () => get().hasAnyRole(['teacher', 'admin']),
+      
+      // Check if user needs onboarding
+      needsOnboarding: () => {
+        const user = get().user
+        return user && !user.onboardingCompleted
+      },
     }),
     {
       name: 'auth-storage',
@@ -153,3 +164,4 @@ const useAuthStore = create(
 )
 
 export { useAuthStore }
+export default useAuthStore

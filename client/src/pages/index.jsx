@@ -10,6 +10,7 @@ export { QuizResult } from './QuizResult'
 export { Survey } from './Survey'
 export { Bookmarks } from './Bookmarks'
 export { Profile } from './Profile'
+export { default as Onboarding } from './Onboarding'
 
 export { default as Leaderboard } from './Leaderboard'
 export { default as TeacherDashboard } from './TeacherDashboard'

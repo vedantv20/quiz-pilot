@@ -5,6 +5,7 @@ const Question = require('./Question');
 const Attempt = require('./Attempt');
 const Survey = require('./Survey');
 const Bookmark = require('./Bookmark');
+const ExamCategory = require('./ExamCategory');
 
 module.exports = {
   User,
@@ -13,5 +14,6 @@ module.exports = {
   Question,
   Attempt,
   Survey,
-  Bookmark
+  Bookmark,
+  ExamCategory
 };

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { 
   User, 
@@ -12,7 +13,11 @@ import {
   Eye,
   EyeOff,
   Save,
-  Edit3
+  Edit3,
+  GraduationCap,
+  BookOpen,
+  Settings,
+  ChevronRight
 } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 import { attemptAPI } from '../api'
@@ -286,6 +291,101 @@ export const Profile = () => {
                 </button>
               </div>
             )}
+          </div>
+
+          {/* Education Preferences */}
+          <div className="surface-card">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-3">
+                <GraduationCap className="w-5 h-5 text-primary" />
+                <h2 className="text-xl font-semibold text-foreground">
+                  Education Preferences
+                </h2>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Education Level */}
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Education Level
+                </label>
+                <div className="flex items-center space-x-2 text-foreground">
+                  <BookOpen className="w-4 h-4 text-gray-400" />
+                  <span className="capitalize">
+                    {user?.educationLevel?.replace('_', ' ') || 'Not set'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Current Class (if applicable) */}
+              {user?.currentClass && (
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Current Class
+                  </label>
+                  <div className="flex items-center space-x-2 text-foreground">
+                    <GraduationCap className="w-4 h-4 text-gray-400" />
+                    <span>{user.currentClass}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Target Exams */}
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Target Exams
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {user?.targetExams && user.targetExams.length > 0 ? (
+                    user.targetExams.map((exam, index) => (
+                      <span key={index} className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
+                        {exam}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-muted-foreground">No target exams set</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Preferred Subjects */}
+              {user?.preferredSubjects && user.preferredSubjects.length > 0 && (
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Preferred Subjects
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {user.preferredSubjects.map((subject, index) => (
+                      <span key={index} className="px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium">
+                        {subject}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-6 pt-6 border-t border-border">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-medium text-foreground mb-1">
+                    Update Your Preferences
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    Modify your education level and target exams to get better quiz suggestions
+                  </p>
+                </div>
+                <Link
+                  to="/onboarding"
+                  className="btn-secondary flex items-center space-x-2"
+                >
+                  <Settings className="w-4 h-4" />
+                  <span>Update Preferences</span>
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
           </div>
 
           {/* Change Password */}

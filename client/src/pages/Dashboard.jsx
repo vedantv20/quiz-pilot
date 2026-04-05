@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { 
   BookOpen, 
@@ -9,10 +9,12 @@ import {
   Clock, 
   Award,
   ChevronRight,
-  Play
+  Play,
+  Sparkles,
+  Settings
 } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
-import { attemptAPI, quizAPI, subjectAPI, leaderboardAPI } from '../api'
+import { attemptAPI, quizAPI, subjectAPI, leaderboardAPI, onboardingAPI } from '../api'
 import { StatCard } from '../components/StatCard'
 import { SubjectChart } from '../components/SubjectChart'
 import { ScoreRing } from '../components/ScoreRing'
@@ -23,6 +25,7 @@ import { Badge } from '../components/ui/Badge'
 
 export const Dashboard = () => {
   const { user } = useAuthStore()
+  const navigate = useNavigate()
 
   const toArray = (value) => (Array.isArray(value) ? value : [])
 
@@ -64,6 +67,16 @@ export const Dashboard = () => {
         const payload = res?.data?.data
         return toArray(payload?.leaderboard)
       }),
+  })
+
+  // Fetch suggested quizzes based on user's qualification (if onboarding completed)
+  const { data: suggestedQuizzes = [], isLoading: suggestedLoading } = useQuery({
+    queryKey: ['suggested-quizzes'],
+    queryFn: () =>
+      onboardingAPI.getSuggestedQuizzes({ limit: 6 }).then((res) => {
+        return toArray(res?.data?.quizzes)
+      }),
+    enabled: user?.onboardingCompleted === true,
   })
 
   // Calculate dashboard stats
@@ -172,6 +185,37 @@ export const Dashboard = () => {
   return (
     <div className="page-shell">
       <div className="page-container space-y-8">
+      {/* Onboarding Prompt Banner */}
+      {!user?.onboardingCompleted && (
+        <div className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 dark:from-primary/20 dark:via-accent/20 dark:to-primary/20 border border-primary/20 rounded-xl p-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex items-start space-x-4">
+              <div className="p-3 bg-primary/20 rounded-full">
+                <Sparkles className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-foreground mb-1">
+                  Complete Your Profile Setup
+                </h3>
+                <p className="text-muted-foreground text-sm">
+                  Tell us about your educational goals so we can suggest the best quizzes for you.
+                  It only takes a minute!
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-3">
+              <Link
+                to="/onboarding"
+                className="btn-primary flex items-center space-x-2 whitespace-nowrap"
+              >
+                <Settings className="w-4 h-4" />
+                <span>Complete Setup</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Welcome Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between">
         <div>
@@ -227,6 +271,65 @@ export const Dashboard = () => {
           subtitle={stats.currentStreak > 0 ? "Keep it up! 🔥" : "Start your streak today"}
         />
       </div>
+
+      {/* Suggested Quizzes Section - Only shown if onboarding completed */}
+      {user?.onboardingCompleted && suggestedQuizzes.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg">
+                <Sparkles className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-foreground">
+                  Suggested For You
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Based on your {user?.educationLevel?.replace('_', ' ')} profile
+                  {user?.targetExams?.length > 0 && ` and ${user.targetExams.join(', ')} preparation`}
+                </p>
+              </div>
+            </div>
+            <Link 
+              to="/subjects"
+              className="text-primary hover:text-primary/80 flex items-center space-x-1"
+            >
+              <span>View all</span>
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
+          
+          {suggestedLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(3)].map((_, i) => (
+                <Card key={i} className="h-48">
+                  <CardContent className="p-6">
+                    <div className="space-y-3">
+                      <div className="h-6 bg-muted/50 rounded w-3/4 skeleton"></div>
+                      <div className="h-4 bg-muted/30 rounded w-1/2 skeleton"></div>
+                      <div className="h-4 bg-muted/30 rounded w-full skeleton"></div>
+                      <div className="h-10 bg-muted/50 rounded w-full skeleton mt-4"></div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {suggestedQuizzes.slice(0, 6).map((quiz) => {
+                const subject = subjects.find(s => s._id === quiz.subject || s._id === quiz.subject?._id) || quiz.subject
+                return (
+                  <QuizCard 
+                    key={quiz._id} 
+                    quiz={quiz} 
+                    subject={subject}
+                  />
+                )
+              })}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Performance & Progress */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

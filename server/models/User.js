@@ -23,8 +23,34 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String // URL, optional
   },
+  // Educational qualification fields
+  educationLevel: {
+    type: String,
+    enum: [
+      'class_11',
+      'class_12', 
+      'undergraduate',
+      'postgraduate',
+      'working_professional',
+      'other'
+    ]
+  },
+  currentClass: {
+    type: String // e.g. "11th Science", "12th Commerce", "B.Tech CSE"
+  },
+  targetExams: [{
+    type: String // Array of target exams e.g. ["JEE", "MHTCET"]
+  }],
   targetExam: {
-    type: String // e.g. "JEE", "NEET", "UPSC", "CAT", "GATE"
+    type: String // Legacy field - primary target exam
+  },
+  preferredSubjects: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Subject'
+  }],
+  onboardingCompleted: {
+    type: Boolean,
+    default: false
   },
   streak: {
     type: Number,

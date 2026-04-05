@@ -20,6 +20,7 @@ import {
   Survey,
   Bookmarks,
   Profile,
+  Onboarding,
   TeacherDashboard,
   CreateQuiz,
   EditQuiz,
@@ -62,6 +63,13 @@ function App() {
         <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <Landing />} />
         <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <Login />} />
         <Route path="/register" element={user ? <Navigate to="/dashboard" replace /> : <Register />} />
+
+        {/* Onboarding route - protected but without navbar */}
+        <Route path="/onboarding" element={
+          <ProtectedRoute>
+            <Onboarding />
+          </ProtectedRoute>
+        } />
 
         {/* Protected routes with navbar */}
         <Route path="/*" element={

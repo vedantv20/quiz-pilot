@@ -43,17 +43,16 @@ api.interceptors.response.use(
 
     // Handle authentication errors
     if (status === 401) {
-      // Clear auth data from both localStorage and store
+      // Clear auth data from localStorage only
+      // Don't redirect here - let the auth store and React Router handle it
       localStorage.removeItem('token')
       localStorage.removeItem('user')
       localStorage.removeItem('auth-storage') // Zustand persist storage
       
-      // Only redirect if not already on login page to prevent loops
+      // Only show toast if not on auth pages
       const currentPath = window.location.pathname
       if (currentPath !== '/login' && currentPath !== '/register' && currentPath !== '/') {
         toast.error('Session expired. Please login again.')
-        // Use replace to prevent back button issues
-        window.location.replace('/login')
       }
       
       return Promise.reject(error)

@@ -81,6 +81,9 @@ const useAuthStore = create(
           isAuthenticated: false,
         })
 
+        // Force clear Zustand persistence
+        localStorage.removeItem('auth-storage')
+
         toast.success('Logged out successfully')
       },
 
@@ -112,26 +115,61 @@ const useAuthStore = create(
             return { isAuthenticated: false }
           }
 
-          // Verify token with backend
-          const response = await api.get('/auth/me')
-          const user = response.data.data
+          let user
+          try {
+            user = JSON.parse(userData)
+          } catch {
+            // Invalid JSON in localStorage, clear it
+            localStorage.removeItem('token')
+            localStorage.removeItem('user')
+            set({ 
+              isLoading: false,
+              isAuthenticated: false,
+              user: null,
+              token: null
+            })
+            return { isAuthenticated: false }
+          }
 
-          // Update localStorage with fresh user data from server
-          localStorage.setItem('user', JSON.stringify(user))
-
+          // Set state immediately with localStorage data to prevent redirect loops
           set({
             user,
             token,
             isAuthenticated: true,
             isLoading: false,
           })
+
+          // Then verify token with backend in background
+          try {
+            const response = await api.get('/auth/me')
+            const freshUser = response.data.data
+
+            // Only update if there are differences
+            if (JSON.stringify(user) !== JSON.stringify(freshUser)) {
+              localStorage.setItem('user', JSON.stringify(freshUser))
+              set({ user: freshUser })
+            }
+          } catch (verifyError) {
+            // If verification fails, clear auth but don't throw
+            console.warn('Token verification failed:', verifyError)
+            
+            // Only clear auth if it's actually an auth error (401)
+            if (verifyError.response?.status === 401) {
+              localStorage.removeItem('token')
+              localStorage.removeItem('user')
+              set({
+                user: null,
+                token: null,
+                isAuthenticated: false,
+              })
+              return { isAuthenticated: false, error: 'Token expired' }
+            }
+            // For other errors (network, etc), keep user logged in
+          }
           
           return { isAuthenticated: true, user }
         } catch (error) {
           console.error('Auth initialization failed:', error)
-          // Token is invalid, clear everything
-          localStorage.removeItem('token')
-          localStorage.removeItem('user')
           set({
             user: null,
             token: null,
@@ -189,6 +227,34 @@ const useAuthStore = create(
         token: state.token,
         isAuthenticated: state.isAuthenticated,
       }),
+      onRehydrateStorage: () => (state) => {
+        // Sync with localStorage after rehydration
+        if (state) {
+          const token = localStorage.getItem('token')
+          const userData = localStorage.getItem('user')
+          
+          if (!token || !userData) {
+            // Clear persisted state if localStorage is empty
+            state.user = null
+            state.token = null
+            state.isAuthenticated = false
+          } else {
+            try {
+              const user = JSON.parse(userData)
+              state.user = user
+              state.token = token
+              state.isAuthenticated = true
+            } catch {
+              // Invalid data, clear everything
+              localStorage.removeItem('token')
+              localStorage.removeItem('user')
+              state.user = null
+              state.token = null
+              state.isAuthenticated = false
+            }
+          }
+        }
+      },
     }
   )
 )

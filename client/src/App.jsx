@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useAuthStore } from './store/authStore'
 import { Navbar } from './components/Navbar'
@@ -34,12 +34,43 @@ import {
 } from './pages/index'
 
 function App() {
-  const { initializeAuth, user, isLoading, isAuthenticated } = useAuthStore()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { initializeAuth, user, isLoading, isAuthenticated, token } = useAuthStore()
 
   // Initialize auth on app load
   useEffect(() => {
     initializeAuth()
   }, [initializeAuth])
+
+  // Handle auth state changes and redirect if needed
+  useEffect(() => {
+    // Only handle redirects after auth is initialized (not loading)
+    if (isLoading) return
+
+    // If not authenticated and on a protected route, stay on current route
+    // ProtectedRoute will handle the redirect to login
+    if (!isAuthenticated) {
+      const isProtectedRoute = !['/login', '/register', '/', '/onboarding'].includes(location.pathname)
+      if (isProtectedRoute) {
+        // Don't redirect here - let ProtectedRoute handle it
+        return
+      }
+    }
+
+    // If authenticated, handle onboarding flow
+    if (isAuthenticated && user) {
+      const isOnAuthPage = ['/login', '/register', '/'].includes(location.pathname)
+      const isOnOnboardingPage = location.pathname === '/onboarding'
+      const needsOnboarding = !user.onboardingCompleted
+
+      if (needsOnboarding && !isOnOnboardingPage) {
+        navigate('/onboarding', { replace: true })
+      } else if (!needsOnboarding && (isOnAuthPage || isOnOnboardingPage)) {
+        navigate('/dashboard', { replace: true })
+      }
+    }
+  }, [isAuthenticated, user, location.pathname, navigate, isLoading])
 
   // Initialize dark mode based on localStorage or system preference
   useEffect(() => {

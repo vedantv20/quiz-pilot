@@ -56,7 +56,33 @@ exports.completeOnboarding = async (req, res, next) => {
     res.json({
       success: true,
       message: 'Onboarding completed successfully',
-      user
+      data: { user }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Skip onboarding - mark as completed without saving preferences
+exports.skipOnboarding = async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { onboardingCompleted: true },
+      { new: true }
+    ).select('-passwordHash');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Onboarding skipped successfully',
+      data: { user }
     });
   } catch (error) {
     next(error);

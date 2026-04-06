@@ -69,9 +69,10 @@ const TARGET_EXAMS_BY_LEVEL = {
 const Onboarding = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user, setUser } = useAuthStore();
+  const { user, setUser, skipOnboarding } = useAuthStore();
   
   const [currentStep, setCurrentStep] = useState(1);
+  const [isSkipping, setIsSkipping] = useState(false);
   const [formData, setFormData] = useState({
     educationLevel: '',
     currentClass: '',
@@ -90,7 +91,7 @@ const Onboarding = () => {
     mutationFn: (data) => onboardingAPI.completeOnboarding(data),
     onSuccess: (response) => {
       // Update user in store
-      setUser(response.user);
+      setUser(response.data.user);
       toast.success('Welcome to QuizPilot! Your personalized quizzes are ready.');
       navigate('/dashboard');
     },
@@ -98,6 +99,25 @@ const Onboarding = () => {
       toast.error(error.response?.data?.message || 'Failed to complete onboarding');
     },
   });
+
+  // Handle skip onboarding
+  const handleSkipOnboarding = async () => {
+    try {
+      setIsSkipping(true);
+      const result = await skipOnboarding();
+      
+      if (result.success) {
+        toast.success('You can complete your profile later from settings!');
+        navigate('/dashboard');
+      } else {
+        toast.error(result.message || 'Failed to skip onboarding');
+      }
+    } catch (error) {
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setIsSkipping(false);
+    }
+  };
 
   const handleEducationSelect = (level) => {
     setFormData(prev => ({
@@ -384,10 +404,18 @@ const Onboarding = () => {
         {/* Skip option */}
         <div className="text-center mt-6">
           <button
-            onClick={() => navigate('/dashboard')}
-            className="text-gray-500 dark:text-gray-400 text-sm hover:text-gray-700 dark:hover:text-gray-300"
+            onClick={handleSkipOnboarding}
+            disabled={isSkipping}
+            className="text-gray-500 dark:text-gray-400 text-sm hover:text-gray-700 dark:hover:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto"
           >
-            Skip for now
+            {isSkipping ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Skipping...
+              </>
+            ) : (
+              'Skip for now'
+            )}
           </button>
         </div>
       </div>

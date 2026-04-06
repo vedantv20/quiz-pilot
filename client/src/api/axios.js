@@ -43,10 +43,19 @@ api.interceptors.response.use(
 
     // Handle authentication errors
     if (status === 401) {
+      // Clear auth data from both localStorage and store
       localStorage.removeItem('token')
       localStorage.removeItem('user')
-      window.location.href = '/login'
-      toast.error('Session expired. Please login again.')
+      localStorage.removeItem('auth-storage') // Zustand persist storage
+      
+      // Only redirect if not already on login page to prevent loops
+      const currentPath = window.location.pathname
+      if (currentPath !== '/login' && currentPath !== '/register' && currentPath !== '/') {
+        toast.error('Session expired. Please login again.')
+        // Use replace to prevent back button issues
+        window.location.replace('/login')
+      }
+      
       return Promise.reject(error)
     }
 
@@ -55,13 +64,19 @@ api.interceptors.response.use(
     
     switch (status) {
       case 400:
-        toast.error(message)
+        // Don't show toast for validation errors in forms
+        if (!data?.errors) {
+          toast.error(message)
+        }
         break
       case 403:
         toast.error('Access denied. Insufficient permissions.')
         break
       case 404:
-        toast.error('Resource not found.')
+        // Only show for non-silent requests
+        if (!error.config?.silent) {
+          toast.error('Resource not found.')
+        }
         break
       case 422:
         // Validation errors - let components handle these
@@ -70,7 +85,11 @@ api.interceptors.response.use(
         toast.error('Server error. Please try again later.')
         break
       default:
-        toast.error(message)
+        if (status >= 500) {
+          toast.error('Server error. Please try again later.')
+        } else {
+          toast.error(message)
+        }
     }
 
     return Promise.reject(error)

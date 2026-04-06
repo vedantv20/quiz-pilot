@@ -103,13 +103,21 @@ const useAuthStore = create(
           const userData = localStorage.getItem('user')
 
           if (!token || !userData) {
-            set({ isLoading: false })
-            return
+            set({ 
+              isLoading: false,
+              isAuthenticated: false,
+              user: null,
+              token: null
+            })
+            return { isAuthenticated: false }
           }
 
           // Verify token with backend
           const response = await api.get('/auth/me')
           const user = response.data.data
+
+          // Update localStorage with fresh user data from server
+          localStorage.setItem('user', JSON.stringify(user))
 
           set({
             user,
@@ -117,7 +125,10 @@ const useAuthStore = create(
             isAuthenticated: true,
             isLoading: false,
           })
+          
+          return { isAuthenticated: true, user }
         } catch (error) {
+          console.error('Auth initialization failed:', error)
           // Token is invalid, clear everything
           localStorage.removeItem('token')
           localStorage.removeItem('user')
@@ -127,6 +138,25 @@ const useAuthStore = create(
             isAuthenticated: false,
             isLoading: false,
           })
+          return { isAuthenticated: false, error: error.message }
+        }
+      },
+
+      // Skip onboarding helper
+      skipOnboarding: async () => {
+        try {
+          const response = await api.post('/onboarding/skip')
+          const updatedUser = response.data.data.user
+          
+          // Update both localStorage and state
+          localStorage.setItem('user', JSON.stringify(updatedUser))
+          set({ user: updatedUser })
+          
+          return { success: true, user: updatedUser }
+        } catch (error) {
+          const message = error.response?.data?.message || 'Failed to skip onboarding'
+          toast.error(message)
+          return { success: false, message }
         }
       },
 

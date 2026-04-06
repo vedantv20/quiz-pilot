@@ -19,6 +19,12 @@ export const completeOnboarding = async (data) => {
   return response.data;
 };
 
+// Skip onboarding
+export const skipOnboarding = async () => {
+  const response = await api.post('/onboarding/skip');
+  return response.data;
+};
+
 // Get subjects based on user qualification
 export const getSubjectsByQualification = async () => {
   const response = await api.get('/onboarding/subjects');

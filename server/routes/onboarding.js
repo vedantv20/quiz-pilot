@@ -6,6 +6,9 @@ const onboardingController = require('../controllers/onboardingController');
 // Save user onboarding data (education level, target exams)
 router.post('/complete', authenticate, onboardingController.completeOnboarding);
 
+// Skip onboarding - mark as completed without saving preferences
+router.post('/skip', authenticate, onboardingController.skipOnboarding);
+
 // Get exam categories for onboarding selection
 router.get('/exam-categories', onboardingController.getExamCategories);
 

@@ -111,7 +111,11 @@ const useAuthStore = create(
           const token = localStorage.getItem('token')
           const userData = localStorage.getItem('user')
 
+          // If either token or user data is missing, clear everything
           if (!token || !userData) {
+            localStorage.removeItem('token')
+            localStorage.removeItem('user')
+            localStorage.removeItem('auth-storage')
             set({ 
               isLoading: false,
               isAuthenticated: false,
@@ -124,10 +128,16 @@ const useAuthStore = create(
           let user
           try {
             user = JSON.parse(userData)
-          } catch {
-            // Invalid JSON in localStorage, clear it
+            // Validate that user object has required properties
+            if (!user || !user._id || !user.email) {
+              throw new Error('Invalid user data structure')
+            }
+          } catch (error) {
+            console.error('Invalid user data in localStorage:', error)
+            // Invalid JSON or data structure in localStorage, clear everything
             localStorage.removeItem('token')
             localStorage.removeItem('user')
+            localStorage.removeItem('auth-storage')
             set({ 
               isLoading: false,
               isAuthenticated: false,
@@ -137,13 +147,15 @@ const useAuthStore = create(
             return { isAuthenticated: false }
           }
 
-          // Set state immediately with localStorage data to prevent redirect loops
+          // CRITICAL: Only set isAuthenticated=true if we have both valid token AND user
           set({
             user,
             token,
             isAuthenticated: true,
             isLoading: false,
           })
+
+          console.log('Auth initialized with:', { user: user.name, isAuthenticated: true })
 
           // Then verify token with backend in background
           try {
@@ -152,6 +164,7 @@ const useAuthStore = create(
 
             // Only update if there are differences
             if (JSON.stringify(user) !== JSON.stringify(freshUser)) {
+              console.log('Updating user data from server')
               localStorage.setItem('user', JSON.stringify(freshUser))
               set({ user: freshUser })
             }
@@ -161,8 +174,10 @@ const useAuthStore = create(
             
             // Only clear auth if it's actually an auth error (401)
             if (verifyError.response?.status === 401) {
+              console.log('Token expired, clearing auth')
               localStorage.removeItem('token')
               localStorage.removeItem('user')
+              localStorage.removeItem('auth-storage')
               set({
                 user: null,
                 token: null,
@@ -170,12 +185,17 @@ const useAuthStore = create(
               })
               return { isAuthenticated: false, error: 'Token expired' }
             }
-            // For other errors (network, etc), keep user logged in
+            // For other errors (network, etc), keep user logged in with local data
+            console.log('Network error during verification, keeping local auth')
           }
           
           return { isAuthenticated: true, user }
         } catch (error) {
           console.error('Auth initialization failed:', error)
+          // Clear everything on any error
+          localStorage.removeItem('token')
+          localStorage.removeItem('user')
+          localStorage.removeItem('auth-storage')
           set({
             user: null,
             token: null,
@@ -234,30 +254,42 @@ const useAuthStore = create(
         isAuthenticated: state.isAuthenticated,
       }),
       onRehydrateStorage: () => (state) => {
-        // Sync with localStorage after rehydration
+        console.log('Rehydrating auth state:', state)
+        // Sync with localStorage after rehydration and validate consistency
         if (state) {
           const token = localStorage.getItem('token')
           const userData = localStorage.getItem('user')
           
+          // If localStorage is missing data, clear persisted state
           if (!token || !userData) {
-            // Clear persisted state if localStorage is empty
+            console.log('localStorage missing auth data, clearing persisted state')
             state.user = null
             state.token = null
             state.isAuthenticated = false
-          } else {
-            try {
-              const user = JSON.parse(userData)
-              state.user = user
-              state.token = token
-              state.isAuthenticated = true
-            } catch {
-              // Invalid data, clear everything
-              localStorage.removeItem('token')
-              localStorage.removeItem('user')
-              state.user = null
-              state.token = null
-              state.isAuthenticated = false
+            return
+          }
+
+          try {
+            const user = JSON.parse(userData)
+            // Validate user object structure
+            if (!user || !user._id || !user.email) {
+              throw new Error('Invalid user structure')
             }
+            
+            // Only set authenticated if we have both valid token and user
+            state.user = user
+            state.token = token
+            state.isAuthenticated = true
+            console.log('Auth state rehydrated successfully:', { user: user.name })
+          } catch (error) {
+            console.error('Invalid auth data during rehydration:', error)
+            // Invalid data, clear everything
+            localStorage.removeItem('token')
+            localStorage.removeItem('user')
+            localStorage.removeItem('auth-storage')
+            state.user = null
+            state.token = null
+            state.isAuthenticated = false
           }
         }
       },

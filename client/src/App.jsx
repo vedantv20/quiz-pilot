@@ -57,6 +57,18 @@ function App() {
       currentPath: location.pathname 
     })
 
+    // CRITICAL: If isAuthenticated is true but user is null, this is an invalid state
+    // Clear auth and let the system re-initialize
+    if (isAuthenticated && !user) {
+      console.error('Invalid auth state: isAuthenticated=true but user=null, clearing auth')
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      localStorage.removeItem('auth-storage')
+      // Force a reload to restart the auth flow
+      window.location.reload()
+      return
+    }
+
     // If not authenticated and on a protected route, stay on current route
     // ProtectedRoute will handle the redirect to login
     if (!isAuthenticated) {

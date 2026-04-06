@@ -67,7 +67,7 @@ function App() {
 
         {/* Onboarding route - protected but without navbar */}
         <Route path="/onboarding" element={
-          <ProtectedRoute>
+          <ProtectedRoute skipOnboardingCheck={true}>
             <Onboarding />
           </ProtectedRoute>
         } />

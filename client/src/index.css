@@ -70,6 +70,10 @@
 
   /* Spacing */
   --spacing: 0.27rem;
+
+  /* Toast Colors */
+  --toast-bg: oklch(0.9940 0 0);
+  --toast-color: oklch(0 0 0);
 }
 
 .dark {
@@ -120,6 +124,10 @@
   --shadow-lg: 0px 2px 3px 0px hsl(0 0% 0% / 0.16), 0px 4px 6px -1px hsl(0 0% 0% / 0.16);
   --shadow-xl: 0px 2px 3px 0px hsl(0 0% 0% / 0.16), 0px 8px 10px -1px hsl(0 0% 0% / 0.16);
   --shadow-2xl: 0px 2px 3px 0px hsl(0 0% 0% / 0.40);
+
+  /* Toast Colors - Dark Mode */
+  --toast-bg: oklch(0.2568 0.0076 274.6528);
+  --toast-color: oklch(0.9551 0 0);
 }
 
 @theme inline {
@@ -391,6 +399,15 @@
   @apply bg-input text-foreground;
   font-size: 0.875rem;
   transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Input field with icons - override default padding */
+.input-field.pl-10 {
+  padding-left: 2.5rem !important;
+}
+
+.input-field.pr-10 {
+  padding-right: 2.5rem !important;
 }
 
 .input-field::placeholder {

@@ -1,7 +1,7 @@
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 
-export const ProtectedRoute = ({ children, allowedRoles = ['student', 'teacher', 'admin'] }) => {
+export const ProtectedRoute = ({ children, allowedRoles = ['student', 'teacher', 'admin'], skipOnboardingCheck = false }) => {
   const { isAuthenticated, user, isLoading } = useAuthStore()
   const location = useLocation()
 
@@ -17,6 +17,11 @@ export const ProtectedRoute = ({ children, allowedRoles = ['student', 'teacher',
   // Redirect to login if not authenticated
   if (!isAuthenticated || !user) {
     return <Navigate to="/login" state={{ from: location }} replace />
+  }
+
+  // Check if user needs to complete onboarding (skip this check for the onboarding route itself)
+  if (!skipOnboardingCheck && !user.onboardingCompleted && location.pathname !== '/onboarding') {
+    return <Navigate to="/onboarding" replace />
   }
 
   // Check if user has required role

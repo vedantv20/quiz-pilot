@@ -169,25 +169,6 @@ export const Login = () => {
             </button>
           </form>
 
-          {/* Demo Accounts */}
-          <div className="mt-6 p-4 bg-muted rounded-lg border border-border">
-            <h3 className="text-sm font-medium text-foreground mb-3">Demo Accounts</h3>
-            <div className="space-y-2 text-xs text-muted-foreground">
-              <div className="flex justify-between">
-                <span>Admin:</span>
-                <span className="font-mono">admin@quizpilot.com / Admin@123</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Teacher:</span>
-                <span className="font-mono">teacher@quizpilot.com / Teacher@123</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Student:</span>
-                <span className="font-mono">student1@quizpilot.com / Student@123</span>
-              </div>
-            </div>
-          </div>
-
           {/* Register Link */}
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">

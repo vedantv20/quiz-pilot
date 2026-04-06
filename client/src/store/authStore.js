@@ -89,13 +89,19 @@ const useAuthStore = create(
 
       setUser: (userData) => {
         localStorage.setItem('user', JSON.stringify(userData))
-        set({ user: userData })
+        set({ 
+          user: userData,
+          isAuthenticated: true  // Ensure we stay authenticated
+        })
       },
 
       updateUser: (userData) => {
         const updatedUser = { ...get().user, ...userData }
         localStorage.setItem('user', JSON.stringify(updatedUser))
-        set({ user: updatedUser })
+        set({ 
+          user: updatedUser,
+          isAuthenticated: true  // Ensure we stay authenticated
+        })
       },
 
       initializeAuth: async () => {

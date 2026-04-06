@@ -48,6 +48,15 @@ function App() {
     // Only handle redirects after auth is initialized (not loading)
     if (isLoading) return
 
+    console.log('Auth state check:', { 
+      isAuthenticated, 
+      user: user ? { 
+        name: user.name, 
+        onboardingCompleted: user.onboardingCompleted 
+      } : null, 
+      currentPath: location.pathname 
+    })
+
     // If not authenticated and on a protected route, stay on current route
     // ProtectedRoute will handle the redirect to login
     if (!isAuthenticated) {
@@ -64,9 +73,18 @@ function App() {
       const isOnOnboardingPage = location.pathname === '/onboarding'
       const needsOnboarding = !user.onboardingCompleted
 
+      console.log('Onboarding check:', { 
+        needsOnboarding, 
+        isOnOnboardingPage, 
+        isOnAuthPage,
+        onboardingCompleted: user.onboardingCompleted 
+      })
+
       if (needsOnboarding && !isOnOnboardingPage) {
+        console.log('Redirecting to onboarding')
         navigate('/onboarding', { replace: true })
       } else if (!needsOnboarding && (isOnAuthPage || isOnOnboardingPage)) {
+        console.log('Redirecting to dashboard')
         navigate('/dashboard', { replace: true })
       }
     }

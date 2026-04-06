@@ -35,7 +35,18 @@ const examCategorySchema = new mongoose.Schema({
   // Specific stream/branch if applicable
   stream: {
     type: String,
-    enum: ['science', 'commerce', 'arts', 'engineering', 'medical', 'general'],
+    enum: [
+      'science', 
+      'commerce', 
+      'arts', 
+      'engineering', 
+      'medical', 
+      'general',
+      'computer_science',
+      'software',
+      'interview',
+      'advanced_cs'
+    ],
     default: 'general'
   },
   // Target exams this category prepares for

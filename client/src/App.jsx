@@ -34,73 +34,20 @@ import {
 } from './pages/index'
 
 function App() {
-  const navigate = useNavigate()
   const location = useLocation()
-  const { initializeAuth, user, isLoading, isAuthenticated, token } = useAuthStore()
+  const { initializeAuth, isLoading, isAuthenticated } = useAuthStore()
 
   // Initialize auth on app load
   useEffect(() => {
     initializeAuth()
   }, [initializeAuth])
 
-  // Handle auth state changes and redirect if needed
   useEffect(() => {
-    // Only handle redirects after auth is initialized (not loading)
-    if (isLoading) return
-
-    console.log('Auth state check:', { 
-      isAuthenticated, 
-      user: user ? { 
-        name: user.name, 
-        onboardingCompleted: user.onboardingCompleted 
-      } : null, 
-      currentPath: location.pathname 
-    })
-
-    // CRITICAL: If isAuthenticated is true but user is null, this is an invalid state
-    // Clear auth and let the system re-initialize
-    if (isAuthenticated && !user) {
-      console.error('Invalid auth state: isAuthenticated=true but user=null, clearing auth')
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      localStorage.removeItem('auth-storage')
-      // Force a reload to restart the auth flow
-      window.location.reload()
-      return
+    if (!isLoading && isAuthenticated && location.pathname === '/') {
+      window.history.replaceState({}, '', '/dashboard')
+      window.dispatchEvent(new PopStateEvent('popstate'))
     }
-
-    // If not authenticated and on a protected route, stay on current route
-    // ProtectedRoute will handle the redirect to login
-    if (!isAuthenticated) {
-      const isProtectedRoute = !['/login', '/register', '/', '/onboarding'].includes(location.pathname)
-      if (isProtectedRoute) {
-        // Don't redirect here - let ProtectedRoute handle it
-        return
-      }
-    }
-
-    // If authenticated, handle onboarding flow
-    if (isAuthenticated && user) {
-      const isOnAuthPage = ['/login', '/register', '/'].includes(location.pathname)
-      const isOnOnboardingPage = location.pathname === '/onboarding'
-      const needsOnboarding = !user.onboardingCompleted
-
-      console.log('Onboarding check:', { 
-        needsOnboarding, 
-        isOnOnboardingPage, 
-        isOnAuthPage,
-        onboardingCompleted: user.onboardingCompleted 
-      })
-
-      if (needsOnboarding && !isOnOnboardingPage) {
-        console.log('Redirecting to onboarding')
-        navigate('/onboarding', { replace: true })
-      } else if (!needsOnboarding && (isOnAuthPage || isOnOnboardingPage)) {
-        console.log('Redirecting to dashboard')
-        navigate('/dashboard', { replace: true })
-      }
-    }
-  }, [isAuthenticated, user, location.pathname, navigate, isLoading])
+  }, [isAuthenticated, isLoading, location.pathname])
 
   // Initialize dark mode based on localStorage or system preference
   useEffect(() => {
@@ -126,14 +73,8 @@ function App() {
           path="/" 
           element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Landing />} 
         />
-        <Route 
-          path="/login" 
-          element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} 
-        />
-        <Route 
-          path="/register" 
-          element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />} 
-        />
+        <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
+        <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />} />
 
         {/* Onboarding route - protected but without navbar */}
         <Route path="/onboarding" element={

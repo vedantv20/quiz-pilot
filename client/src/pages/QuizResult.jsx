@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate, useSearchParams, Link } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams, Link, useLocation } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { 
   ArrowLeft, 
@@ -26,11 +26,12 @@ import toast from 'react-hot-toast'
 export const QuizResult = () => {
   const { id } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const [searchParams] = useSearchParams()
-  const attemptId = searchParams.get('attempt')
+  const attemptId = searchParams.get('attempt') || location.state?.attempt?._id || location.state?.attempt?.id
   
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
-  const [showReview, setShowReview] = useState(false)
+  const [showReview, setShowReview] = useState(true)
   const toArray = (value) => (Array.isArray(value) ? value : [])
   const withId = (item) => ({ ...item, _id: item?._id || item?.id })
 
@@ -53,6 +54,7 @@ export const QuizResult = () => {
   const { data: attempt, isLoading: attemptLoading } = useQuery({
     queryKey: ['attempt', attemptId],
     queryFn: async () => {
+      if (location.state?.attempt) return withId(location.state.attempt)
       const attemptsPayload = await attemptAPI.getMy().then((res) => res?.data?.data)
       const attempts = toArray(attemptsPayload?.attempts).map(withId)
       return attempts.find((a) => String(a._id) === String(attemptId))
@@ -117,6 +119,7 @@ export const QuizResult = () => {
     Math.max(...previousAttempts.map(a => a.percentage)) : null
   const improvement = bestScore !== null ? 
     stats.percentage - bestScore : null
+  const rank = allAttempts.findIndex((a) => String(a._id) === String(attemptId)) + 1
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60)
@@ -230,12 +233,12 @@ export const QuizResult = () => {
         </div>
 
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">
-            Quiz Results
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            {quiz.title}
-          </p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Quiz Results</h1>
+          <p className="text-lg text-muted-foreground">{quiz.title}</p>
+          <div className="mt-3 flex flex-wrap justify-center gap-2">
+            <BadgeChip>{stats.percentage}% score</BadgeChip>
+            <BadgeChip>{rank > 0 ? `Rank #${rank}` : 'Rank pending'}</BadgeChip>
+          </div>
         </div>
       </div>
 
@@ -342,11 +345,11 @@ export const QuizResult = () => {
           <span>Retake Quiz</span>
         </button>
         <button
-          onClick={() => setShowReview(!showReview)}
+          onClick={() => setShowReview(true)}
           className="btn-secondary flex items-center space-x-2"
         >
           <BookOpen className="w-4 h-4" />
-          <span>{showReview ? 'Hide' : 'Review'} Answers</span>
+          <span>Review Answers</span>
         </button>
         <button
           onClick={handleShareResults}

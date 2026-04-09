@@ -75,7 +75,10 @@ export const QuizAttempt = () => {
         return
       }
       toast.success(`Quiz completed! Score: ${attempt.percentage}%`)
-      navigate(`/quiz/${id}/result?attempt=${attempt._id || attempt.id}`)
+      navigate(`/quiz/${id}/result?attempt=${attempt._id || attempt.id}`, {
+        state: { attempt },
+        replace: true,
+      })
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || 'Failed to submit quiz')

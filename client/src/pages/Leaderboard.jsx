@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Trophy, Medal, Award, Filter, Clock, Target, TrendingUp, Users } from 'lucide-react';
-import { leaderboardApi } from '../api/leaderboard';
-import { subjectsApi } from '../api/subjects';
+import { leaderboardAPI, subjectAPI } from '../api';
 import { useAuthStore } from '../store/authStore';
 import LeaderboardTable from '../components/LeaderboardTable';
 import StatCard from '../components/StatCard';
@@ -17,17 +16,18 @@ const Leaderboard = () => {
   // Fetch subjects for filter
   const { data: subjects = [] } = useQuery({
     queryKey: ['subjects'],
-    queryFn: subjectsApi.getAll
+    queryFn: () => subjectAPI.getAll().then((res) => res.data.data || [])
   });
 
   // Fetch leaderboard data
   const { data: leaderboard = [], isLoading } = useQuery({
     queryKey: ['leaderboard', selectedSubject, selectedPeriod],
-    queryFn: () => {
+    queryFn: async () => {
       const params = {};
       if (selectedSubject !== 'all') params.subject = selectedSubject;
       if (selectedPeriod !== 'all') params.period = selectedPeriod;
-      return leaderboardApi.getLeaderboard(params);
+      const response = await leaderboardAPI.get(params);
+      return response.data.data.leaderboard || [];
     }
   });
 

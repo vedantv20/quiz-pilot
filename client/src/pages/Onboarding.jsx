@@ -82,7 +82,7 @@ const Onboarding = () => {
   // Check if user already completed onboarding
   useEffect(() => {
     if (user?.onboardingCompleted) {
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     }
   }, [user, navigate]);
 

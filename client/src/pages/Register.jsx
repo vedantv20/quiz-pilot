@@ -76,7 +76,6 @@ export const Register = () => {
     const result = await register(registerData)
     
     if (result.success) {
-      // New users should always go through onboarding
       navigate('/onboarding', { replace: true })
     }
   }

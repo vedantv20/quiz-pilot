@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useAuthStore } from './store/authStore'
 import { Navbar } from './components/Navbar'
@@ -34,20 +34,12 @@ import {
 } from './pages/index'
 
 function App() {
-  const location = useLocation()
   const { initializeAuth, isLoading, isAuthenticated } = useAuthStore()
 
   // Initialize auth on app load
   useEffect(() => {
     initializeAuth()
   }, [initializeAuth])
-
-  useEffect(() => {
-    if (!isLoading && isAuthenticated && location.pathname === '/') {
-      window.history.replaceState({}, '', '/dashboard')
-      window.dispatchEvent(new PopStateEvent('popstate'))
-    }
-  }, [isAuthenticated, isLoading, location.pathname])
 
   // Initialize dark mode based on localStorage or system preference
   useEffect(() => {

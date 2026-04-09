@@ -60,11 +60,10 @@ export const Login = () => {
     const result = await login(formData)
     
     if (result.success) {
-      // Redirect to onboarding if user hasn't completed it
       if (result.requiresOnboarding) {
         navigate('/onboarding', { replace: true })
       } else {
-        navigate(from, { replace: true })
+        navigate(from === '/onboarding' ? '/dashboard' : from, { replace: true })
       }
     }
   }

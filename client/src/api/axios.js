@@ -16,7 +16,22 @@ const api = axios.create({
 // Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token')
+    const authStorageRaw = localStorage.getItem('auth-storage')
+    let token = null
+
+    if (authStorageRaw) {
+      try {
+        const parsed = JSON.parse(authStorageRaw)
+        token = parsed?.state?.token || null
+      } catch {
+        token = null
+      }
+    }
+
+    if (!token) {
+      token = localStorage.getItem('token')
+    }
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -43,16 +58,15 @@ api.interceptors.response.use(
 
     // Handle authentication errors
     if (status === 401) {
-      // Clear auth data from localStorage only
-      // Don't redirect here - let the auth store and React Router handle it
       localStorage.removeItem('token')
       localStorage.removeItem('user')
-      localStorage.removeItem('auth-storage') // Zustand persist storage
+      localStorage.removeItem('auth-storage')
       
       // Only show toast if not on auth pages
       const currentPath = window.location.pathname
       if (currentPath !== '/login' && currentPath !== '/register' && currentPath !== '/') {
         toast.error('Session expired. Please login again.')
+        window.location.replace('/login')
       }
       
       return Promise.reject(error)

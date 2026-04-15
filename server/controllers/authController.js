@@ -4,6 +4,28 @@ const { generateToken } = require('../utils/jwt');
 const { sendSuccess, sendError } = require('../utils/response');
 
 /**
+ * Build a consistent user payload for auth responses
+ * @param {Object} user - Mongoose user document
+ * @returns {Object}
+ */
+const serializeUser = (user) => ({
+  _id: user._id,
+  name: user.name,
+  email: user.email,
+  role: user.role,
+  avatar: user.avatar,
+  targetExam: user.targetExam,
+  educationLevel: user.educationLevel,
+  currentClass: user.currentClass,
+  targetExams: user.targetExams,
+  onboardingCompleted: user.onboardingCompleted,
+  streak: user.streak,
+  badges: user.badges,
+  createdAt: user.createdAt,
+  lastActiveDate: user.lastActiveDate
+});
+
+/**
  * Register a new user
  * POST /api/auth/register
  */
@@ -35,17 +57,7 @@ const register = async (req, res, next) => {
     const token = generateToken(user._id, user.role);
 
     // Return user data without password
-    const userData = {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      avatar: user.avatar,
-      targetExam: user.targetExam,
-      streak: user.streak,
-      badges: user.badges,
-      createdAt: user.createdAt
-    };
+    const userData = serializeUser(user);
 
     return sendSuccess(res, 201, 'User registered successfully', {
       user: userData,
@@ -84,18 +96,7 @@ const login = async (req, res, next) => {
     const token = generateToken(user._id, user.role);
 
     // Return user data without password
-    const userData = {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      avatar: user.avatar,
-      targetExam: user.targetExam,
-      streak: user.streak,
-      badges: user.badges,
-      createdAt: user.createdAt,
-      lastActiveDate: user.lastActiveDate
-    };
+    const userData = serializeUser(user);
 
     return sendSuccess(res, 200, 'Login successful', {
       user: userData,
@@ -114,18 +115,7 @@ const getMe = async (req, res, next) => {
   try {
     const user = req.user;
 
-    const userData = {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      avatar: user.avatar,
-      targetExam: user.targetExam,
-      streak: user.streak,
-      badges: user.badges,
-      createdAt: user.createdAt,
-      lastActiveDate: user.lastActiveDate
-    };
+    const userData = serializeUser(user);
 
     return sendSuccess(res, 200, 'User profile retrieved', userData);
   } catch (error) {

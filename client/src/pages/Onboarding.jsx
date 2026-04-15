@@ -90,19 +90,17 @@ const Onboarding = () => {
   const { mutate: completeOnboarding, isPending } = useMutation({
     mutationFn: (data) => onboardingAPI.completeOnboarding(data),
     onSuccess: (response) => {
-      // Update user in store immediately
-      const updatedUser = response.data.user;
+      const updatedUser = response?.data?.user || response?.user || response?.data?.data?.user;
+      if (!updatedUser?._id) {
+        toast.error('Failed to load updated profile. Please login again.');
+        return;
+      }
+
       setUser(updatedUser);
       
-      // Also force update localStorage to be extra sure
-      localStorage.setItem('user', JSON.stringify(updatedUser));
-      
       toast.success('Welcome to QuizPilot! Your personalized quizzes are ready.');
-      
-      // Use a slight delay to ensure state has propagated
-      setTimeout(() => {
-        navigate('/dashboard', { replace: true });
-      }, 100);
+
+      navigate('/dashboard', { replace: true });
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || 'Failed to complete onboarding');
@@ -116,15 +114,9 @@ const Onboarding = () => {
       const result = await skipOnboarding();
       
       if (result.success) {
-        // Force update localStorage to be extra sure
-        localStorage.setItem('user', JSON.stringify(result.user));
-        
         toast.success('You can complete your profile later from settings!');
-        
-        // Use a slight delay to ensure state has propagated
-        setTimeout(() => {
-          navigate('/dashboard', { replace: true });
-        }, 100);
+
+        navigate('/dashboard', { replace: true });
       } else {
         toast.error(result.message || 'Failed to skip onboarding');
       }

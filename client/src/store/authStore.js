@@ -1,301 +1,302 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 import api from '../api/axios'
 import toast from 'react-hot-toast'
 
-const useAuthStore = create(
-  persist(
-    (set, get) => ({
-      // State
+const AUTH_STORAGE_KEY = 'auth-storage'
+const LEGACY_USER_KEY = 'user'
+const LEGACY_TOKEN_KEY = 'token'
+
+const isValidUser = (user) => {
+  return Boolean(user && typeof user === 'object' && user._id && user.email)
+}
+
+const savePersistedAuth = ({ user, token, isAuthenticated }) => {
+  localStorage.setItem(
+    AUTH_STORAGE_KEY,
+    JSON.stringify({
+      state: { user, token, isAuthenticated },
+      version: 0,
+    })
+  )
+}
+
+const loadPersistedAuth = () => {
+  try {
+    const raw = localStorage.getItem(AUTH_STORAGE_KEY)
+    if (!raw) {
+      const legacyToken = localStorage.getItem(LEGACY_TOKEN_KEY)
+      const legacyUserRaw = localStorage.getItem(LEGACY_USER_KEY)
+
+      if (!legacyToken || !legacyUserRaw) {
+        return { user: null, token: null, isAuthenticated: false }
+      }
+
+      try {
+        const legacyUser = JSON.parse(legacyUserRaw)
+        if (!isValidUser(legacyUser)) {
+          throw new Error('Invalid legacy user')
+        }
+
+        const migrated = {
+          user: legacyUser,
+          token: legacyToken,
+          isAuthenticated: true,
+        }
+        savePersistedAuth(migrated)
+        localStorage.removeItem(LEGACY_USER_KEY)
+        localStorage.removeItem(LEGACY_TOKEN_KEY)
+        return migrated
+      } catch {
+        localStorage.removeItem(LEGACY_USER_KEY)
+        localStorage.removeItem(LEGACY_TOKEN_KEY)
+        return { user: null, token: null, isAuthenticated: false }
+      }
+    }
+
+    const parsed = JSON.parse(raw)
+    const state = parsed?.state
+    const user = state?.user || null
+    const token = state?.token || null
+
+    if (!token || !isValidUser(user)) {
+      localStorage.removeItem(AUTH_STORAGE_KEY)
+      return { user: null, token: null, isAuthenticated: false }
+    }
+
+    return { user, token, isAuthenticated: true }
+  } catch {
+    localStorage.removeItem(AUTH_STORAGE_KEY)
+    return { user: null, token: null, isAuthenticated: false }
+  }
+}
+
+const clearAllAuthStorage = () => {
+  localStorage.removeItem(AUTH_STORAGE_KEY)
+  localStorage.removeItem(LEGACY_USER_KEY)
+  localStorage.removeItem(LEGACY_TOKEN_KEY)
+}
+
+const bootState = loadPersistedAuth()
+
+const useAuthStore = create((set, get) => ({
+  user: bootState.user,
+  token: bootState.token,
+  isAuthenticated: bootState.isAuthenticated,
+  isLoading: false,
+
+  login: async (credentials) => {
+    try {
+      set({ isLoading: true })
+
+      const response = await api.post('/auth/login', credentials)
+      const payload = response?.data?.data
+      const token = payload?.token
+      const user = payload?.user
+
+      if (!token || !isValidUser(user)) {
+        throw new Error('Invalid login response')
+      }
+
+      const nextState = {
+        user,
+        token,
+        isAuthenticated: true,
+        isLoading: false,
+      }
+
+      savePersistedAuth(nextState)
+      set(nextState)
+
+      toast.success(`Welcome back, ${user.name}!`)
+      return { success: true, requiresOnboarding: !user.onboardingCompleted }
+    } catch (error) {
+      set({ isLoading: false })
+      const message = error.response?.data?.message || error.message || 'Login failed'
+      toast.error(message)
+      return { success: false, message }
+    }
+  },
+
+  register: async (userData) => {
+    try {
+      set({ isLoading: true })
+
+      const response = await api.post('/auth/register', userData)
+      const payload = response?.data?.data
+      const token = payload?.token
+      const user = payload?.user
+
+      if (!token || !isValidUser(user)) {
+        throw new Error('Invalid registration response')
+      }
+
+      const nextState = {
+        user,
+        token,
+        isAuthenticated: true,
+        isLoading: false,
+      }
+
+      savePersistedAuth(nextState)
+      set(nextState)
+
+      toast.success(`Welcome to QuizPilot, ${user.name}!`)
+      return { success: true, requiresOnboarding: !user.onboardingCompleted }
+    } catch (error) {
+      set({ isLoading: false })
+      const message = error.response?.data?.message || error.message || 'Registration failed'
+      toast.error(message)
+      return { success: false, message }
+    }
+  },
+
+  logout: () => {
+    clearAllAuthStorage()
+    set({
       user: null,
       token: null,
-      isLoading: false,
       isAuthenticated: false,
+      isLoading: false,
+    })
 
-      // Actions
-      login: async (credentials) => {
-        try {
-          set({ isLoading: true })
-          
-          const response = await api.post('/auth/login', credentials)
-          const { token, user } = response.data.data
+    toast.success('Logged out successfully')
+  },
 
-          // Store token and user
-          localStorage.setItem('token', token)
-          localStorage.setItem('user', JSON.stringify(user))
+  setUser: (userData) => {
+    if (!isValidUser(userData)) {
+      return
+    }
 
-          set({
-            user,
-            token,
-            isAuthenticated: true,
-            isLoading: false,
-          })
+    const current = get()
+    const nextState = {
+      user: userData,
+      token: current.token,
+      isAuthenticated: Boolean(current.token),
+    }
+    savePersistedAuth(nextState)
+    set(nextState)
+  },
 
-          toast.success(`Welcome back, ${user.name}!`)
-          return { success: true, requiresOnboarding: !user.onboardingCompleted }
-        } catch (error) {
-          set({ isLoading: false })
-          const message = error.response?.data?.message || 'Login failed'
-          toast.error(message)
-          return { success: false, message }
-        }
-      },
+  updateUser: (userData) => {
+    const current = get()
+    if (!isValidUser(current.user)) {
+      return
+    }
 
-      register: async (userData) => {
-        try {
-          set({ isLoading: true })
-          
-          const response = await api.post('/auth/register', userData)
-          const { token, user } = response.data.data
+    const updatedUser = { ...current.user, ...userData }
+    if (!isValidUser(updatedUser)) {
+      return
+    }
 
-          // Store token and user
-          localStorage.setItem('token', token)
-          localStorage.setItem('user', JSON.stringify(user))
+    const nextState = {
+      user: updatedUser,
+      token: current.token,
+      isAuthenticated: Boolean(current.token),
+    }
+    savePersistedAuth(nextState)
+    set(nextState)
+  },
 
-          set({
-            user,
-            token,
-            isAuthenticated: true,
-            isLoading: false,
-          })
+  initializeAuth: async () => {
+    try {
+      set({ isLoading: true })
 
-          toast.success(`Welcome to QuizPilot, ${user.name}!`)
-          return { success: true, requiresOnboarding: !user.onboardingCompleted }
-        } catch (error) {
-          set({ isLoading: false })
-          const message = error.response?.data?.message || 'Registration failed'
-          toast.error(message)
-          return { success: false, message }
-        }
-      },
-
-      logout: () => {
-        // Clear storage
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
-
-        // Clear state
+      const { token, user } = get()
+      if (!token || !isValidUser(user)) {
+        clearAllAuthStorage()
         set({
           user: null,
           token: null,
           isAuthenticated: false,
+          isLoading: false,
         })
+        return { isAuthenticated: false }
+      }
 
-        // Force clear Zustand persistence
-        localStorage.removeItem('auth-storage')
+      set({ isAuthenticated: true })
 
-        toast.success('Logged out successfully')
-      },
+      try {
+        const response = await api.get('/auth/me')
+        const freshUser = response?.data?.data
 
-      setUser: (userData) => {
-        localStorage.setItem('user', JSON.stringify(userData))
-        set({ 
-          user: userData,
-          isAuthenticated: true  // Ensure we stay authenticated
-        })
-      },
+        if (!isValidUser(freshUser)) {
+          throw new Error('Invalid user payload from /auth/me')
+        }
 
-      updateUser: (userData) => {
-        const updatedUser = { ...get().user, ...userData }
-        localStorage.setItem('user', JSON.stringify(updatedUser))
-        set({ 
-          user: updatedUser,
-          isAuthenticated: true  // Ensure we stay authenticated
-        })
-      },
-
-      initializeAuth: async () => {
-        try {
-          set({ isLoading: true })
-          
-          const token = localStorage.getItem('token')
-          const userData = localStorage.getItem('user')
-
-          // If either token or user data is missing, clear everything
-          if (!token || !userData) {
-            localStorage.removeItem('token')
-            localStorage.removeItem('user')
-            localStorage.removeItem('auth-storage')
-            set({ 
-              isLoading: false,
-              isAuthenticated: false,
-              user: null,
-              token: null
-            })
-            return { isAuthenticated: false }
-          }
-
-          let user
-          try {
-            user = JSON.parse(userData)
-            // Validate that user object has required properties
-            if (!user || !user._id || !user.email) {
-              throw new Error('Invalid user data structure')
-            }
-          } catch (error) {
-            console.error('Invalid user data in localStorage:', error)
-            // Invalid JSON or data structure in localStorage, clear everything
-            localStorage.removeItem('token')
-            localStorage.removeItem('user')
-            localStorage.removeItem('auth-storage')
-            set({ 
-              isLoading: false,
-              isAuthenticated: false,
-              user: null,
-              token: null
-            })
-            return { isAuthenticated: false }
-          }
-
-          // CRITICAL: Only set isAuthenticated=true if we have both valid token AND user
-          set({
-            user,
-            token,
-            isAuthenticated: true,
-            isLoading: false,
-          })
-
-          console.log('Auth initialized with:', { user: user.name, isAuthenticated: true })
-
-          // Then verify token with backend in background
-          try {
-            const response = await api.get('/auth/me')
-            const freshUser = response.data.data
-
-            // Only update if there are differences
-            if (JSON.stringify(user) !== JSON.stringify(freshUser)) {
-              console.log('Updating user data from server')
-              localStorage.setItem('user', JSON.stringify(freshUser))
-              set({ user: freshUser })
-            }
-          } catch (verifyError) {
-            // If verification fails, clear auth but don't throw
-            console.warn('Token verification failed:', verifyError)
-            
-            // Only clear auth if it's actually an auth error (401)
-            if (verifyError.response?.status === 401) {
-              console.log('Token expired, clearing auth')
-              localStorage.removeItem('token')
-              localStorage.removeItem('user')
-              localStorage.removeItem('auth-storage')
-              set({
-                user: null,
-                token: null,
-                isAuthenticated: false,
-              })
-              return { isAuthenticated: false, error: 'Token expired' }
-            }
-            // For other errors (network, etc), keep user logged in with local data
-            console.log('Network error during verification, keeping local auth')
-          }
-          
-          return { isAuthenticated: true, user }
-        } catch (error) {
-          console.error('Auth initialization failed:', error)
-          // Clear everything on any error
-          localStorage.removeItem('token')
-          localStorage.removeItem('user')
-          localStorage.removeItem('auth-storage')
+        const nextState = {
+          user: freshUser,
+          token,
+          isAuthenticated: true,
+          isLoading: false,
+        }
+        savePersistedAuth(nextState)
+        set(nextState)
+        return { isAuthenticated: true, user: freshUser }
+      } catch (verifyError) {
+        if (verifyError.response?.status === 401) {
+          clearAllAuthStorage()
           set({
             user: null,
             token: null,
             isAuthenticated: false,
             isLoading: false,
           })
-          return { isAuthenticated: false, error: error.message }
+          return { isAuthenticated: false, error: 'Token expired' }
         }
-      },
 
-      // Skip onboarding helper
-      skipOnboarding: async () => {
-        try {
-          const response = await api.post('/onboarding/skip')
-          const updatedUser = response.data.data.user
-          
-          // Update both localStorage and state
-          localStorage.setItem('user', JSON.stringify(updatedUser))
-          set({ user: updatedUser })
-          
-          return { success: true, user: updatedUser }
-        } catch (error) {
-          const message = error.response?.data?.message || 'Failed to skip onboarding'
-          toast.error(message)
-          return { success: false, message }
-        }
-      },
-
-      // Helper methods
-      hasRole: (role) => {
-        const user = get().user
-        return user?.role === role
-      },
-
-      hasAnyRole: (roles) => {
-        const user = get().user
-        return roles.includes(user?.role)
-      },
-
-      isStudent: () => get().hasRole('student'),
-      isTeacher: () => get().hasRole('teacher'),
-      isAdmin: () => get().hasRole('admin'),
-      isTeacherOrAdmin: () => get().hasAnyRole(['teacher', 'admin']),
-      
-      // Check if user needs onboarding
-      needsOnboarding: () => {
-        const user = get().user
-        return user && !user.onboardingCompleted
-      },
-    }),
-    {
-      name: 'auth-storage',
-      partialize: (state) => ({
-        user: state.user,
-        token: state.token,
-        isAuthenticated: state.isAuthenticated,
-      }),
-      onRehydrateStorage: () => (state) => {
-        console.log('Rehydrating auth state:', state)
-        // Sync with localStorage after rehydration and validate consistency
-        if (state) {
-          const token = localStorage.getItem('token')
-          const userData = localStorage.getItem('user')
-          
-          // If localStorage is missing data, clear persisted state
-          if (!token || !userData) {
-            console.log('localStorage missing auth data, clearing persisted state')
-            state.user = null
-            state.token = null
-            state.isAuthenticated = false
-            return
-          }
-
-          try {
-            const user = JSON.parse(userData)
-            // Validate user object structure
-            if (!user || !user._id || !user.email) {
-              throw new Error('Invalid user structure')
-            }
-            
-            // Only set authenticated if we have both valid token and user
-            state.user = user
-            state.token = token
-            state.isAuthenticated = true
-            console.log('Auth state rehydrated successfully:', { user: user.name })
-          } catch (error) {
-            console.error('Invalid auth data during rehydration:', error)
-            // Invalid data, clear everything
-            localStorage.removeItem('token')
-            localStorage.removeItem('user')
-            localStorage.removeItem('auth-storage')
-            state.user = null
-            state.token = null
-            state.isAuthenticated = false
-          }
-        }
-      },
+        set({ isLoading: false })
+        return { isAuthenticated: true, user }
+      }
+    } catch (error) {
+      clearAllAuthStorage()
+      set({
+        user: null,
+        token: null,
+        isAuthenticated: false,
+        isLoading: false,
+      })
+      return { isAuthenticated: false, error: error.message }
     }
-  )
-)
+  },
+
+  skipOnboarding: async () => {
+    try {
+      const response = await api.post('/onboarding/skip')
+      const updatedUser = response?.data?.data?.user
+
+      if (!isValidUser(updatedUser)) {
+        throw new Error('Invalid onboarding response')
+      }
+
+      get().setUser(updatedUser)
+      return { success: true, user: updatedUser }
+    } catch (error) {
+      const message = error.response?.data?.message || error.message || 'Failed to skip onboarding'
+      toast.error(message)
+      return { success: false, message }
+    }
+  },
+
+  hasRole: (role) => {
+    const user = get().user
+    return user?.role === role
+  },
+
+  hasAnyRole: (roles) => {
+    const user = get().user
+    return roles.includes(user?.role)
+  },
+
+  isStudent: () => get().hasRole('student'),
+  isTeacher: () => get().hasRole('teacher'),
+  isAdmin: () => get().hasRole('admin'),
+  isTeacherOrAdmin: () => get().hasAnyRole(['teacher', 'admin']),
+
+  needsOnboarding: () => {
+    const user = get().user
+    return user && !user.onboardingCompleted
+  },
+}))
 
 export { useAuthStore }
 export default useAuthStore

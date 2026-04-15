@@ -1,6 +1,7 @@
 const express = require('express');
 const { 
   getAllQuizzes, 
+  getMyQuizzes,
   getQuizById, 
   createQuiz, 
   updateQuiz, 
@@ -20,6 +21,13 @@ const router = express.Router();
 
 // GET /api/quizzes - Get all published quizzes
 router.get('/', getAllQuizzes);
+
+// GET /api/quizzes/mine - Get current teacher/admin quizzes (including drafts)
+router.get('/mine',
+  authenticate,
+  requireRole('teacher', 'admin'),
+  getMyQuizzes
+);
 
 // GET /api/quizzes/:id - Get quiz by ID with questions
 router.get('/:id', authenticate, getQuizById);

@@ -108,7 +108,12 @@ const useAuthStore = create((set, get) => ({
       set(nextState)
 
       toast.success(`Welcome back, ${user.name}!`)
-      return { success: true, requiresOnboarding: !user.onboardingCompleted }
+      return {
+        success: true,
+        user,
+        role: user.role,
+        requiresOnboarding: user.role === 'student' && !user.onboardingCompleted,
+      }
     } catch (error) {
       set({ isLoading: false })
       const message = error.response?.data?.message || error.message || 'Login failed'
@@ -141,7 +146,12 @@ const useAuthStore = create((set, get) => ({
       set(nextState)
 
       toast.success(`Welcome to QuizPilot, ${user.name}!`)
-      return { success: true, requiresOnboarding: !user.onboardingCompleted }
+      return {
+        success: true,
+        user,
+        role: user.role,
+        requiresOnboarding: user.role === 'student' && !user.onboardingCompleted,
+      }
     } catch (error) {
       set({ isLoading: false })
       const message = error.response?.data?.message || error.message || 'Registration failed'

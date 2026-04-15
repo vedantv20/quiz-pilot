@@ -5,7 +5,6 @@ import { ArrowLeft, BookOpen, Clock, Target, Globe, Lock, Save, Plus } from 'luc
 import { quizzesApi } from '../api/quizzes';
 import { subjectsApi } from '../api/subjects';
 import { useAuthStore } from '../store/authStore';
-import BadgeChip from '../components/BadgeChip';
 
 const CreateQuiz = () => {
   const navigate = useNavigate();
@@ -320,13 +319,15 @@ const CreateQuiz = () => {
               {formData.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {formData.tags.map((tag) => (
-                    <BadgeChip
+                    <button
                       key={tag}
-                      text={tag}
-                      variant="purple"
-                      onRemove={() => removeTag(tag)}
-                      removable
-                    />
+                      type="button"
+                      onClick={() => removeTag(tag)}
+                      className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary hover:bg-primary/20"
+                      title="Remove tag"
+                    >
+                      {tag}
+                    </button>
                   ))}
                 </div>
               )}

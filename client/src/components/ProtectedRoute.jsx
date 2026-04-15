@@ -19,8 +19,9 @@ export const ProtectedRoute = ({ children, allowedRoles = ['student', 'teacher',
     return <Navigate to="/login" state={{ from: location }} replace />
   }
 
-  // Check if user needs to complete onboarding (skip this check for the onboarding route itself)
-  if (!skipOnboardingCheck && !user.onboardingCompleted && location.pathname !== '/onboarding') {
+  // Check if student needs to complete onboarding (skip for onboarding route)
+  const shouldForceOnboarding = user.role === 'student' && !user.onboardingCompleted
+  if (!skipOnboardingCheck && shouldForceOnboarding && location.pathname !== '/onboarding') {
     return <Navigate to="/onboarding" replace />
   }
 

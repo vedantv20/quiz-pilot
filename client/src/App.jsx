@@ -44,7 +44,8 @@ const AppLayout = () => {
 }
 
 function App() {
-  const { initializeAuth, isLoading, isAuthenticated } = useAuthStore()
+  const { initializeAuth, isLoading, isAuthenticated, user } = useAuthStore()
+  const roleHome = user?.role === 'teacher' || user?.role === 'admin' ? '/teacher' : '/dashboard'
 
   useEffect(() => {
     initializeAuth()
@@ -68,9 +69,9 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Routes>
-        <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Landing />} />
-        <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
-        <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />} />
+        <Route path="/" element={isAuthenticated ? <Navigate to={roleHome} replace /> : <Landing />} />
+        <Route path="/login" element={isAuthenticated ? <Navigate to={roleHome} replace /> : <Login />} />
+        <Route path="/register" element={isAuthenticated ? <Navigate to={roleHome} replace /> : <Register />} />
 
         <Route
           path="/onboarding"
@@ -88,15 +89,71 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/subjects" element={<Subjects />} />
-          <Route path="/subjects/:id" element={<SubjectDetail />} />
-          <Route path="/quiz/:id" element={<QuizDetail />} />
-          <Route path="/quiz/:id/attempt" element={<QuizAttempt />} />
-          <Route path="/quiz/:id/result" element={<QuizResult />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/subjects"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <Subjects />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/subjects/:id"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <SubjectDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/quiz/:id"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <QuizDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/quiz/:id/attempt"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <QuizAttempt />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/quiz/:id/result"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <QuizResult />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/leaderboard" element={<Leaderboard />} />
-          <Route path="/survey" element={<Survey />} />
-          <Route path="/bookmarks" element={<Bookmarks />} />
+          <Route
+            path="/survey"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <Survey />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/bookmarks"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <Bookmarks />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/profile" element={<Profile />} />
 
           <Route

@@ -12,7 +12,6 @@ import {
   Plus,
   Edit,
   Trash2,
-  Eye,
   MoreVertical,
   AlertCircle
 } from 'lucide-react';
@@ -231,13 +230,6 @@ const EditQuiz = () => {
 
           {/* Quick Actions */}
           <div className="flex gap-3">
-            <Link
-              to={`/quiz/${id}`}
-              className="flex items-center gap-2 px-4 py-2 border border-border text-foreground rounded-lg hover:bg-muted/80 transition-colors"
-            >
-              <Eye className="w-4 h-4" />
-              Preview
-            </Link>
             <button
               onClick={() => togglePublishMutation.mutate()}
               disabled={togglePublishMutation.isLoading}
@@ -407,13 +399,15 @@ const EditQuiz = () => {
                     {formData.tags.length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {formData.tags.map((tag) => (
-                          <BadgeChip
+                          <button
                             key={tag}
-                            text={tag}
-                            variant="purple"
-                            onRemove={() => removeTag(tag)}
-                            removable
-                          />
+                            type="button"
+                            onClick={() => removeTag(tag)}
+                            className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary hover:bg-primary/20"
+                            title="Remove tag"
+                          >
+                            {tag}
+                          </button>
                         ))}
                       </div>
                     )}
@@ -467,10 +461,9 @@ const EditQuiz = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">Status</span>
-                  <BadgeChip
-                    text={quiz.isPublished ? 'Published' : 'Draft'}
-                    variant={quiz.isPublished ? 'green' : 'yellow'}
-                  />
+                  <BadgeChip variant={quiz.isPublished ? 'success' : 'warning'}>
+                    {quiz.isPublished ? 'Published' : 'Draft'}
+                  </BadgeChip>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">Attempts</span>
@@ -558,7 +551,7 @@ const QuestionManagementCard = ({ question, index, onDelete, quizId }) => {
             <span className="text-sm font-medium text-primary">
               Q{index}
             </span>
-            <BadgeChip text={question.difficulty} variant={question.difficulty} />
+            <BadgeChip variant={question.difficulty}>{question.difficulty}</BadgeChip>
           </div>
           <p className="text-sm text-foreground font-medium line-clamp-2">
             {question.text}

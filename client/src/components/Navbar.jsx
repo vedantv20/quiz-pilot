@@ -24,9 +24,10 @@ export const Navbar = () => {
   const [isDark, setIsDark] = useState(() => {
     return document.documentElement.classList.contains('dark')
   })
-  const { user, logout, isTeacher, isAdmin, isTeacherOrAdmin } = useAuthStore()
+  const { user, logout, isAdmin, isTeacherOrAdmin } = useAuthStore()
   const location = useLocation()
   const navigate = useNavigate()
+  const roleHome = user?.role === 'teacher' || user?.role === 'admin' ? '/teacher' : '/dashboard'
 
   const toggleDarkMode = () => {
     const newTheme = !isDark
@@ -68,12 +69,14 @@ export const Navbar = () => {
     { to: '/admin/surveys', label: 'Analytics', icon: BarChart3 },
   ]
 
+  const primaryLinks = user?.role === 'student' ? studentLinks : teacherLinks
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-lg border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/dashboard" className="flex items-center space-x-2">
+          <Link to={roleHome} className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent-foreground rounded-lg flex items-center justify-center shadow-sm">
               <span className="text-primary-foreground font-bold text-sm">QP</span>
             </div>
@@ -84,8 +87,7 @@ export const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
-            {/* Student Navigation */}
-            {studentLinks.map(({ to, label, icon: Icon }) => (
+            {primaryLinks.map(({ to, label, icon: Icon }) => (
               <Link
                 key={to}
                 to={to}
@@ -100,8 +102,7 @@ export const Navbar = () => {
               </Link>
             ))}
 
-            {/* Teacher Navigation */}
-            {isTeacherOrAdmin() && (
+            {user?.role === 'student' && isTeacherOrAdmin() && (
               <>
                 <div className="h-4 w-px bg-border mx-2" />
                 {teacherLinks.map(({ to, label, icon: Icon }) => (
@@ -202,8 +203,7 @@ export const Navbar = () => {
         {isOpen && (
             <div className="md:hidden py-4 border-t border-border">
             <div className="space-y-1">
-              {/* Student Links */}
-              {studentLinks.map(({ to, label, icon: Icon }) => (
+              {primaryLinks.map(({ to, label, icon: Icon }) => (
                 <Link
                   key={to}
                   to={to}
@@ -219,8 +219,7 @@ export const Navbar = () => {
                 </Link>
               ))}
 
-              {/* Teacher Links */}
-              {isTeacherOrAdmin() && (
+              {user?.role === 'student' && isTeacherOrAdmin() && (
                 <>
                   <div className="border-t border-border my-2" />
                   {teacherLinks.map(({ to, label, icon: Icon }) => (

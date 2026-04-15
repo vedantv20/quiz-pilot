@@ -16,7 +16,7 @@ export const Login = () => {
   const navigate = useNavigate()
   const location = useLocation()
   
-  const from = location.state?.from?.pathname || '/dashboard'
+  const from = location.state?.from?.pathname
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -60,10 +60,13 @@ export const Login = () => {
     const result = await login(formData)
     
     if (result.success) {
+      const roleHome = result.role === 'teacher' || result.role === 'admin' ? '/teacher' : '/dashboard'
+
       if (result.requiresOnboarding) {
         navigate('/onboarding', { replace: true })
       } else {
-        navigate(from === '/onboarding' ? '/dashboard' : from, { replace: true })
+        const nextPath = !from || from === '/onboarding' ? roleHome : from
+        navigate(nextPath, { replace: true })
       }
     }
   }

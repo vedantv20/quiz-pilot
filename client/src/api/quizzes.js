@@ -64,8 +64,15 @@ export const quizzesApi = {
   },
 
   getByTeacher: async (teacherId) => {
-    const quizzes = await quizzesApi.getAll()
-    return quizzes.filter((quiz) => (quiz.createdBy?._id || quiz.createdBy?.id) === teacherId)
+    const response = await api.get('/quizzes/mine')
+    const quizzes = response?.data?.data || []
+    const normalized = quizzes.map(normalizeQuiz)
+
+    if (!teacherId) {
+      return normalized
+    }
+
+    return normalized.filter((quiz) => (quiz.createdBy?._id || quiz.createdBy?.id) === teacherId)
   },
 
   getStats: async () => {

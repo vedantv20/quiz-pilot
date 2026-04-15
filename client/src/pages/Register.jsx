@@ -76,7 +76,8 @@ export const Register = () => {
     const result = await register(registerData)
     
     if (result.success) {
-      navigate('/onboarding', { replace: true })
+      const roleHome = result.role === 'teacher' || result.role === 'admin' ? '/teacher' : '/dashboard'
+      navigate(result.requiresOnboarding ? '/onboarding' : roleHome, { replace: true })
     }
   }
 

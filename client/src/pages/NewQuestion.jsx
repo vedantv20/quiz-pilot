@@ -154,8 +154,11 @@ const NewQuestion = () => {
     );
   }
 
+  const quizOwnerId = quiz?.createdBy?._id || quiz?.createdBy?.id || quiz?.createdBy;
+  const currentUserId = user?._id || user?.id;
+
   // Check if user owns this quiz (or is admin)
-  if (user?.role !== 'admin' && quiz.createdBy !== user?._id) {
+  if (user?.role !== 'admin' && String(quizOwnerId) !== String(currentUserId)) {
     return (
       <div className="page-shell">
         <div className="page-container">

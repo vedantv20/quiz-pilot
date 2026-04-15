@@ -1,6 +1,27 @@
 const { Quiz, Question, Subject, Attempt } = require('../models');
 const { sendSuccess, sendError } = require('../utils/response');
 
+const formatQuizWithStats = async (quiz) => {
+  const questionCount = await Question.countDocuments({ quiz: quiz._id });
+  const attemptCount = await Attempt.countDocuments({ quiz: quiz._id });
+
+  return {
+    _id: quiz._id,
+    title: quiz.title,
+    description: quiz.description,
+    subject: quiz.subject,
+    difficulty: quiz.difficulty,
+    timeLimit: quiz.timeLimit,
+    isMock: quiz.isMock,
+    isPublished: quiz.isPublished,
+    totalQuestions: questionCount,
+    attemptCount,
+    tags: quiz.tags,
+    createdBy: quiz.createdBy,
+    createdAt: quiz.createdAt
+  };
+};
+
 /**
  * Get all published quizzes with optional filters
  * GET /api/quizzes?subject=id&difficulty=easy
@@ -20,30 +41,32 @@ const getAllQuizzes = async (req, res, next) => {
       .sort({ createdAt: -1 });
 
     // Add question counts and attempt stats
-    const quizzesWithStats = await Promise.all(
-      quizzes.map(async (quiz) => {
-        const questionCount = await Question.countDocuments({ quiz: quiz._id });
-        const attemptCount = await Attempt.countDocuments({ quiz: quiz._id });
-        
-        return {
-          _id: quiz._id,
-          title: quiz.title,
-          description: quiz.description,
-          subject: quiz.subject,
-          difficulty: quiz.difficulty,
-          timeLimit: quiz.timeLimit,
-          isMock: quiz.isMock,
-          isPublished: quiz.isPublished,
-          totalQuestions: questionCount,
-          attemptCount,
-          tags: quiz.tags,
-          createdBy: quiz.createdBy,
-          createdAt: quiz.createdAt
-        };
-      })
-    );
+    const quizzesWithStats = await Promise.all(quizzes.map(formatQuizWithStats));
 
     return sendSuccess(res, 200, 'Quizzes retrieved successfully', quizzesWithStats);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Get current teacher/admin quizzes (including drafts)
+ * GET /api/quizzes/mine
+ */
+const getMyQuizzes = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    const filter = user.role === 'admin' ? {} : { createdBy: user._id };
+
+    const quizzes = await Quiz.find(filter)
+      .populate('subject', 'name icon')
+      .populate('createdBy', 'name email')
+      .sort({ createdAt: -1 });
+
+    const quizzesWithStats = await Promise.all(quizzes.map(formatQuizWithStats));
+
+    return sendSuccess(res, 200, 'My quizzes retrieved successfully', quizzesWithStats);
   } catch (error) {
     next(error);
   }
@@ -370,6 +393,7 @@ const getQuizStats = async (req, res, next) => {
 
 module.exports = {
   getAllQuizzes,
+  getMyQuizzes,
   getQuizById,
   createQuiz,
   updateQuiz,

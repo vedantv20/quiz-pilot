@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Trophy, Medal, Award, Filter, Clock, Target, TrendingUp, Users } from 'lucide-react';
 import { leaderboardAPI, subjectAPI } from '../api';
@@ -6,6 +6,27 @@ import { useAuthStore } from '../store/authStore';
 import LeaderboardTable from '../components/LeaderboardTable';
 import StatCard from '../components/StatCard';
 import BadgeChip from '../components/BadgeChip';
+
+const normalizeLeaderboardEntry = (entry) => {
+  const user = entry?.user || {};
+  const stats = entry?.stats || {};
+
+  return {
+    _id: user._id || user.id,
+    id: user.id || user._id,
+    rank: entry?.rank,
+    name: user.name || 'Unknown',
+    avatar: user.avatar || null,
+    badges: Array.isArray(user.badges) ? user.badges : [],
+    streak: user.streak || 0,
+    totalScore: stats.totalScore || 0,
+    totalQuizzes: stats.totalAttempts || 0,
+    overallAccuracy: stats.overallAccuracy || 0,
+    avgPercentage: stats.avgPercentage || 0,
+    bestScore: stats.bestScore || 0,
+    recentAttempt: stats.recentAttempt || null,
+  };
+};
 
 const Leaderboard = () => {
   const { user } = useAuthStore();
@@ -27,7 +48,8 @@ const Leaderboard = () => {
       if (selectedSubject !== 'all') params.subject = selectedSubject;
       if (selectedPeriod !== 'all') params.period = selectedPeriod;
       const response = await leaderboardAPI.get(params);
-      return response.data.data.leaderboard || [];
+      const rawLeaderboard = response?.data?.data?.leaderboard || [];
+      return rawLeaderboard.map(normalizeLeaderboardEntry);
     }
   });
 
@@ -143,27 +165,31 @@ const Leaderboard = () => {
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <StatCard
-            icon={<Users className="w-6 h-6 text-blue-600" />}
+            icon={Users}
             title="Total Students"
             value={leaderboard.length}
+            color="info"
             className="bg-blue-50 dark:bg-blue-900/20"
           />
           <StatCard
-            icon={<Target className="w-6 h-6 text-green-600" />}
+            icon={Target}
             title="Your Rank"
             value={userPosition > 0 ? `#${userPosition}` : 'N/A'}
+            color="success"
             className="bg-green-50 dark:bg-green-900/20"
           />
           <StatCard
-            icon={<TrendingUp className="w-6 h-6 text-primary" />}
+            icon={TrendingUp}
             title="Top Score"
             value={leaderboard[0]?.totalScore || 0}
+            color="primary"
             className="bg-primary/10"
           />
           <StatCard
-            icon={<Clock className="w-6 h-6 text-orange-600" />}
+            icon={Clock}
             title="Period"
             value={selectedPeriod === 'all' ? 'All Time' : 'This Week'}
+            color="warning"
             className="bg-orange-50 dark:bg-orange-900/20"
           />
         </div>
@@ -179,7 +205,7 @@ const Leaderboard = () => {
               <div className="text-center">
                 <div className="relative">
                   <div className="w-16 h-16 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center text-white font-bold text-lg mb-2">
-                    {topThree[1]?.name?.charAt(0).toUpperCase()}
+                    {topThree[1]?.name?.charAt(0)?.toUpperCase()}
                   </div>
                   <Medal className="absolute -top-2 -right-2 w-6 h-6 text-gray-400" />
                 </div>
@@ -197,7 +223,7 @@ const Leaderboard = () => {
               <div className="text-center">
                 <div className="relative">
                   <div className="w-20 h-20 bg-yellow-400 rounded-full flex items-center justify-center text-white font-bold text-xl mb-2">
-                    {topThree[0]?.name?.charAt(0).toUpperCase()}
+                    {topThree[0]?.name?.charAt(0)?.toUpperCase()}
                   </div>
                   <Trophy className="absolute -top-3 -right-3 w-8 h-8 text-yellow-500" />
                 </div>
@@ -215,7 +241,7 @@ const Leaderboard = () => {
               <div className="text-center">
                 <div className="relative">
                   <div className="w-16 h-16 bg-amber-600 rounded-full flex items-center justify-center text-white font-bold text-lg mb-2">
-                    {topThree[2]?.name?.charAt(0).toUpperCase()}
+                    {topThree[2]?.name?.charAt(0)?.toUpperCase()}
                   </div>
                   <Award className="absolute -top-2 -right-2 w-6 h-6 text-amber-600" />
                 </div>
@@ -238,7 +264,7 @@ const Leaderboard = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold">
-                  {user?.name?.charAt(0).toUpperCase()}
+                  {user?.name?.charAt(0)?.toUpperCase()}
                 </div>
                 <div>
                   <div className="font-medium text-foreground">Your Position</div>
@@ -247,10 +273,7 @@ const Leaderboard = () => {
                   </div>
                 </div>
               </div>
-              <BadgeChip
-                text={`#${userPosition}`}
-                variant="purple"
-              />
+              <BadgeChip variant="primary">#{userPosition}</BadgeChip>
             </div>
           </div>
         )}

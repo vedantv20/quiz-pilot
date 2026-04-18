@@ -376,7 +376,7 @@ export const Landing = () => {
             </div>
           </div>
           <div className="border-t border-border mt-8 pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 QuizPilot. All rights reserved. Built for students, by educators.</p>
+            <p>&copy; {new Date().getFullYear()} QuizPilot. All rights reserved. Built for students, by educators.</p>
           </div>
         </div>
       </footer>

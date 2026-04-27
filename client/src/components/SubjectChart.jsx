@@ -18,12 +18,12 @@ export const SubjectChart = ({
       return (
         <div className="bg-card text-card-foreground p-3 rounded-lg shadow-lg border border-border">
           <p className="font-medium text-foreground">{label}</p>
-          <p className="text-primary">
+          <p className="text-primary font-semibold">
             Score: {payload[0].value}%
           </p>
           {payload[0].payload.attempts > 0 && (
-            <p className="text-muted-foreground text-sm">
-              Attempts: {payload[0].payload.attempts}
+            <p className="text-muted-foreground text-sm mt-1">
+              Based on {payload[0].payload.attempts} attempt{payload[0].payload.attempts > 1 ? 's' : ''}
             </p>
           )}
         </div>
@@ -35,13 +35,15 @@ export const SubjectChart = ({
   if (!chartData.length) {
     return (
       <div className={`surface-card ${className}`}>
-        <h3 className="text-lg font-semibold text-foreground mb-4">
-          {title}
-        </h3>
-        <div className="flex items-center justify-center h-64">
+        <div>
+          <h3 className="text-lg font-semibold text-foreground">{title}</h3>
+          <p className="text-sm text-muted-foreground mb-4">Average score percentage per subject</p>
+        </div>
+        <div className="flex items-center justify-center h-64 bg-muted/20 rounded-lg border border-dashed border-border">
           <div className="text-center">
-            <div className="text-4xl mb-2">📊</div>
-            <p className="text-muted-foreground">No data available</p>
+            <div className="text-4xl mb-2 opacity-50">📊</div>
+            <p className="text-muted-foreground font-medium">No performance data yet</p>
+            <p className="text-sm text-muted-foreground/70 mt-1">Complete a quiz to see your stats here</p>
           </div>
         </div>
       </div>
@@ -49,31 +51,38 @@ export const SubjectChart = ({
   }
 
   return (
-    <div className={`surface-card ${className}`}>
-      <h3 className="text-lg font-semibold text-foreground mb-4">
-        {title}
-      </h3>
-      <div className="h-64">
+    <div className={`surface-card flex flex-col ${className}`}>
+      <div>
+        <h3 className="text-lg font-semibold text-foreground">{title}</h3>
+        <p className="text-sm text-muted-foreground mb-6">Average score percentage per subject</p>
+      </div>
+      <div className="h-64 mt-auto">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+          <BarChart data={chartData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" className="opacity-50" />
             <XAxis 
               dataKey="subject" 
-              tick={{ fontSize: 12 }}
-              className="text-muted-foreground"
+              tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }}
+              axisLine={false}
+              tickLine={false}
+              dy={10}
             />
             <YAxis 
               domain={[0, 100]}
-              tick={{ fontSize: 12 }}
-              className="text-muted-foreground"
+              tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }}
+              axisLine={false}
+              tickLine={false}
+              dx={-10}
+              tickFormatter={(value) => `${value}%`}
             />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--muted)', opacity: 0.4 }} />
             <Bar 
               dataKey="score" 
-              name="Score (%)"
-              fill="#7c3aed"
+              name="Average Score"
+              fill="var(--primary)"
               radius={[4, 4, 0, 0]}
+              maxBarSize={48}
+              animationDuration={1000}
             />
           </BarChart>
         </ResponsiveContainer>
@@ -81,5 +90,6 @@ export const SubjectChart = ({
     </div>
   )
 }
+
 
 

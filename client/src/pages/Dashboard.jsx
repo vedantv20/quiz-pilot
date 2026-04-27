@@ -17,6 +17,7 @@ import { useAuthStore } from '../store/authStore'
 import { attemptAPI, quizAPI, subjectAPI, leaderboardAPI, onboardingAPI } from '../api'
 import { StatCard } from '../components/StatCard'
 import { SubjectChart } from '../components/SubjectChart'
+import { TrendChart } from '../components/TrendChart'
 import { ScoreRing } from '../components/ScoreRing'
 import { QuizCard } from '../components/QuizCard'
 import { Button } from '../components/ui/Button'
@@ -332,51 +333,64 @@ export const Dashboard = () => {
       )}
 
       {/* Performance & Progress */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Subject Performance Chart */}
-        <div className="lg:col-span-2">
+        <div>
           <SubjectChart 
             data={subjectPerformance}
-            title="Performance by Subject"
+            title="Subject Proficiency"
+            className="h-full"
           />
         </div>
 
+        {/* Score Trend Chart */}
+        <div>
+          <TrendChart 
+            data={recentAttempts.slice(0).reverse()} // reverse back to chronological order for trend
+            title="Score Progress"
+            className="h-full"
+          />
+        </div>
+      </div>
+
+      {/* Recent Activity & Overall Stats */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Overall Performance Ring */}
-        <div className="surface-card">
-          <h3 className="text-lg font-semibold text-foreground mb-6">
-            Overall Performance
-          </h3>
-          <div className="flex flex-col items-center space-y-6">
+        <div className="surface-card flex flex-col items-center justify-center">
+          <div className="w-full text-left mb-6">
+            <h3 className="text-lg font-semibold text-foreground">
+              Overall Performance
+            </h3>
+            <p className="text-sm text-muted-foreground">Your average score across all subjects</p>
+          </div>
+          <div className="flex flex-col items-center space-y-6 flex-1 justify-center">
             <ScoreRing 
               score={stats.averageScore} 
               size={140} 
             />
-            <div className="text-center space-y-2">
+            <div className="text-center space-y-2 mt-4">
               <div className="flex items-center justify-center space-x-4 text-sm text-muted-foreground">
                 <div className="flex items-center space-x-1">
-                  <Trophy className="w-4 h-4" />
-                  <span>Rank #{stats.currentRank || 'Unranked'}</span>
+                  <Trophy className="w-4 h-4 text-warning" />
+                  <span className="font-medium">Rank #{stats.currentRank || 'Unranked'}</span>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <Award className="w-4 h-4" />
-                  <span>{stats.badgeCount} badges</span>
+                  <Award className="w-4 h-4 text-primary" />
+                  <span className="font-medium">{stats.badgeCount} badges</span>
                 </div>
               </div>
               <Link 
                 to="/leaderboard"
-                className="text-primary hover:text-primary/80 text-sm font-medium"
+                className="text-primary hover:text-primary/80 text-sm font-medium mt-2 inline-block"
               >
                 View Leaderboard →
               </Link>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Recent Activity & Quick Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Attempts */}
-        <div className="surface-card">
+        <div className="surface-card lg:col-span-1">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-semibold text-foreground">
               Recent Activity
@@ -431,9 +445,9 @@ export const Dashboard = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="surface-card">
+        <div className="surface-card flex flex-col justify-center">
           <h3 className="text-lg font-semibold text-foreground mb-6">
-            Quick Actions
+            Quick Links
           </h3>
           <div className="space-y-4">
             {/* Survey Prompt */}

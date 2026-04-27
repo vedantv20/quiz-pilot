@@ -14,12 +14,12 @@ import {
 
 export const Landing = () => {
   const subjects = [
-    { name: 'Mathematics', icon: '➕', count: '150+ Quizzes', color: 'bg-blue-100 text-blue-600' },
-    { name: 'Physics', icon: '⚛️', count: '120+ Quizzes', color: 'bg-purple-100 text-purple-600' },
-    { name: 'Chemistry', icon: '🧪', count: '100+ Quizzes', color: 'bg-green-100 text-green-600' },
-    { name: 'Biology', icon: '🧬', count: '80+ Quizzes', color: 'bg-red-100 text-red-600' },
-    { name: 'Computer Science', icon: '💻', count: '90+ Quizzes', color: 'bg-indigo-100 text-indigo-600' },
-    { name: 'History', icon: '📜', count: '60+ Quizzes', color: 'bg-yellow-100 text-yellow-600' },
+    { name: 'Mathematics', icon: '➕', count: 'Practice Quizzes', color: 'bg-blue-100 text-blue-600' },
+    { name: 'Physics', icon: '⚛️', count: 'Practice Quizzes', color: 'bg-purple-100 text-purple-600' },
+    { name: 'Chemistry', icon: '🧪', count: 'Practice Quizzes', color: 'bg-green-100 text-green-600' },
+    { name: 'Biology', icon: '🧬', count: 'Practice Quizzes', color: 'bg-red-100 text-red-600' },
+    { name: 'Computer Science', icon: '💻', count: 'Practice Quizzes', color: 'bg-indigo-100 text-indigo-600' },
+    { name: 'History', icon: '📜', count: 'Practice Quizzes', color: 'bg-yellow-100 text-yellow-600' },
   ]
 
   const features = [
@@ -41,7 +41,7 @@ export const Landing = () => {
     {
       icon: Users,
       title: 'Community Learning',
-      description: 'Join thousands of students and compete in a friendly learning environment.'
+      description: 'Join our community of students and compete in a friendly learning environment.'
     }
   ]
 
@@ -91,7 +91,7 @@ export const Landing = () => {
     <div className="page-shell">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-lg border-b border-border">
-        <div className="page-container py-0">
+        <div className="page-container !py-0">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent-foreground rounded-lg flex items-center justify-center shadow-sm">
@@ -131,38 +131,34 @@ export const Landing = () => {
               QuizPilot is the ultimate online quiz and exam practice platform. 
               Practice with realistic questions, track your progress, and ace your exams with confidence.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link
-                to="/register"
-                className="btn-primary text-lg px-8 py-3 flex items-center justify-center space-x-2"
-              >
-                <span>Start Learning Free</span>
-                <ArrowRight className="h-5 w-5" />
-              </Link>
-              <button className="btn-secondary text-lg px-8 py-3 flex items-center justify-center space-x-2">
-                <Play className="h-5 w-5" />
-                <span>Watch Demo</span>
-              </button>
-            </div>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link
+              to="/register"
+              className="btn-primary text-lg px-8 py-3 flex items-center justify-center space-x-2"
+            >
+              <span>Start Learning Free</span>
+              <ArrowRight className="h-5 w-5" />
+            </Link>
+          </div>
           </div>
 
           {/* Hero Stats */}
           <div className="mt-14 md:mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             <div className="text-center">
-              <div className="text-3xl font-bold text-primary mb-2">10,000+</div>
-              <div className="text-sm sm:text-base text-muted-foreground">Active Students</div>
+              <div className="flex justify-center mb-2"><BookOpen className="h-8 w-8 text-primary" /></div>
+              <div className="text-sm sm:text-base text-muted-foreground">Multiple Subjects</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-primary mb-2">500+</div>
+              <div className="flex justify-center mb-2"><Target className="h-8 w-8 text-primary" /></div>
               <div className="text-sm sm:text-base text-muted-foreground">Practice Quizzes</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-primary mb-2">95%</div>
-              <div className="text-sm sm:text-base text-muted-foreground">Success Rate</div>
+              <div className="flex justify-center mb-2"><BarChart3 className="h-8 w-8 text-primary" /></div>
+              <div className="text-sm sm:text-base text-muted-foreground">Detailed Analytics</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-primary mb-2">4.9★</div>
-              <div className="text-sm sm:text-base text-muted-foreground">User Rating</div>
+              <div className="flex justify-center mb-2"><CheckCircle className="h-8 w-8 text-primary" /></div>
+              <div className="text-sm sm:text-base text-muted-foreground">Instant Feedback</div>
             </div>
           </div>
         </div>
@@ -279,7 +275,7 @@ export const Landing = () => {
               What Our Students Say
             </h2>
             <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
-              Join thousands of successful students who achieved their goals with QuizPilot.
+              Join the students who are achieving their goals with QuizPilot.
             </p>
           </div>
 

@@ -45,7 +45,7 @@ const NewQuestion = () => {
       queryClient.invalidateQueries(['quiz-questions', quizId]);
       queryClient.invalidateQueries(['quiz', quizId]);
       toast.success('Question created successfully');
-      navigate(`\${useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes' : '/teacher/quiz'}/${quizId}/edit`);
+      navigate(`${useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes' : '/teacher/quiz'}/${quizId}/edit`);
     },
     onError: (error) => {
       console.error('Create question error:', error);
@@ -176,7 +176,7 @@ const NewQuestion = () => {
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Link
-            to={`\${useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes' : '/teacher/quiz'}/${quizId}/edit`}
+            to={`${useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes' : '/teacher/quiz'}/${quizId}/edit`}
             className="p-2 hover:bg-muted rounded-lg transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -325,7 +325,7 @@ const NewQuestion = () => {
           {/* Actions */}
           <div className="flex justify-between items-center">
             <Link
-              to={`\${useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes' : '/teacher/quiz'}/${quizId}/edit`}
+              to={`${useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes' : '/teacher/quiz'}/${quizId}/edit`}
               className="btn-secondary"
             >
               Cancel

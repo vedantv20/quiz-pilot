@@ -1,5 +1,5 @@
-import { useParams } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { useParams, Link } from 'react-router-dom'
 import { 
   Users, 
   Target, 
@@ -8,7 +8,6 @@ import {
   ChevronLeft,
   Clock
 } from 'lucide-react'
-import { Link } from 'react-router-dom'
 import { quizzesApi } from '../api/quizzes'
 import { useAuthStore } from '../store/authStore'
 import StatCard from '../components/StatCard'

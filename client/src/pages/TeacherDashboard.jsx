@@ -225,14 +225,14 @@ const TeacherDashboard = () => {
                         <td className="px-6 py-4">
                           <div className="flex items-center justify-end gap-2">
                             <Link
-                              to={`\${useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes' : '/teacher/quiz'}/${quiz._id}/edit`}
+                              to={`${useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes' : '/teacher/quiz'}/${quiz._id}/edit`}
                               className="inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
                             >
                               <Edit className="h-3.5 w-3.5" />
                               Edit
                             </Link>
                             <Link
-                              to={`\${useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes' : '/teacher/quiz'}/${quiz._id}/question/new`}
+                              to={`${useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes' : '/teacher/quiz'}/${quiz._id}/question/new`}
                               className="inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
                             >
                               <Plus className="h-3.5 w-3.5" />
@@ -249,7 +249,7 @@ const TeacherDashboard = () => {
                               {quiz.isPublished ? 'Unpublish' : 'Publish'}
                             </button>
                             <Link
-                              to={`\${useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes' : '/teacher/quiz'}/${quiz._id}/stats`}
+                              to={`${useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes' : '/teacher/quiz'}/${quiz._id}/stats`}
                               className="inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
                             >
                               <BarChart3 className="h-3.5 w-3.5" />

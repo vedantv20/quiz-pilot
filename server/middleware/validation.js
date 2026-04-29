@@ -41,7 +41,7 @@ const updateQuestionSchema = createQuestionSchema.partial().omit({ quiz: true })
 
 // Attempt validation schema
 const submitAttemptSchema = z.object({
-  quizId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid quiz ID'),
+  quizId: z.string().min(1, 'Quiz ID or slug is required'),
   answers: z.array(z.number().int().min(-1).max(3)), // -1 for skipped, 0-3 for options
   timeTaken: z.number().min(0, 'Time taken cannot be negative')
 });

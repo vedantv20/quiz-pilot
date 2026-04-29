@@ -171,7 +171,7 @@ export const QuizAttempt = () => {
     )
 
     submitAttempt.mutate({
-      quizId: id,
+      quizId: quiz._id || id,
       answers: submissionAnswers,
       timeTaken
     })
@@ -387,7 +387,7 @@ export const QuizAttempt = () => {
               showExplanation={false}
               isBookmarked={bookmarkedQuestions.has(currentQuestionData._id)}
               onBookmarkToggle={(questionId) => toggleBookmark.mutate(questionId)}
-              className="mb-8"
+              className="mb-8 px-3 py-2"
             />
 
             {/* Navigation Buttons */}

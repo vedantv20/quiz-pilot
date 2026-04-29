@@ -80,6 +80,9 @@ const Onboarding = () => {
   });
 
   // Check if user already completed onboarding
+  const location = useLocation();
+  const from = location.state?.from;
+
   useEffect(() => {
     if (user?.onboardingCompleted) {
       navigate('/dashboard', { replace: true });
@@ -113,11 +116,11 @@ const Onboarding = () => {
       setIsSkipping(true);
       const result = await skipOnboarding();
       
-      if (result.success) {
-        toast.success('You can complete your profile later from settings!');
-
-        navigate('/dashboard', { replace: true });
-      } else {
+    if (result.success) {
+      toast.success('Profile updated successfully!');
+      const nextPath = (!from || from === '/onboarding' || from === '/register' || from === '/login') ? '/dashboard' : from;
+      navigate(nextPath, { replace: true });
+    } else {
         toast.error(result.message || 'Failed to skip onboarding');
       }
     } catch (error) {

@@ -60,12 +60,12 @@ export const Login = () => {
     const result = await login(formData)
     
     if (result.success) {
-      const roleHome = result.role === 'teacher' || result.role === 'admin' ? '/teacher' : '/dashboard'
+      const roleHome = result.role === 'admin' ? '/admin' : result.role === 'teacher' ? '/teacher' : '/dashboard'
 
       if (result.requiresOnboarding) {
-        navigate('/onboarding', { replace: true })
+        navigate('/onboarding', { replace: true, state: { from } })
       } else {
-        const nextPath = !from || from === '/onboarding' ? roleHome : from
+        const nextPath = (!from || from === '/onboarding' || from === '/login') ? roleHome : from
         navigate(nextPath, { replace: true })
       }
     }
@@ -177,6 +177,7 @@ export const Login = () => {
               Don't have an account?{' '}
               <Link
                 to="/register"
+                state={{ from: location.state?.from }}
                 className="font-medium text-primary hover:text-primary/80"
               >
                 Create one here

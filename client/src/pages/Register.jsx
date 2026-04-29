@@ -18,6 +18,9 @@ export const Register = () => {
   const { register, isLoading } = useAuthStore()
   const navigate = useNavigate()
 
+  const location = useLocation()
+  const from = location.state?.from?.pathname
+  
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({
@@ -76,8 +79,14 @@ export const Register = () => {
     const result = await register(registerData)
     
     if (result.success) {
-      const roleHome = result.role === 'teacher' || result.role === 'admin' ? '/teacher' : '/dashboard'
-      navigate(result.requiresOnboarding ? '/onboarding' : roleHome, { replace: true })
+      const roleHome = result.role === 'admin' ? '/admin' : result.role === 'teacher' ? '/teacher' : '/dashboard'
+
+      if (result.requiresOnboarding) {
+        navigate('/onboarding', { replace: true, state: { from } })
+      } else {
+        const nextPath = (!from || from === '/onboarding' || from === '/register') ? roleHome : from
+        navigate(nextPath, { replace: true })
+      }
     }
   }
 
@@ -295,6 +304,7 @@ export const Register = () => {
               Already have an account?{' '}
               <Link
                 to="/login"
+                state={{ from: location.state?.from }}
                 className="font-medium text-primary hover:text-primary/80"
               >
                 Sign in here

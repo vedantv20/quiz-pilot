@@ -88,7 +88,7 @@ export const QuizCard = ({
             to={`/quiz/${quiz.slug || quiz._id}`}
             className="flex-1 btn-primary"
           >
-            {isMock ? 'Start Mock Exam' : 'Practice Now'}
+            {quiz.isMock ? 'Start Mock Exam' : 'Practice Now'}
           </Link>
           <Link
             to={`/quiz/${quiz.slug || quiz._id}`}

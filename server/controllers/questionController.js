@@ -2,6 +2,7 @@ const { Question, Quiz } = require('../models');
 const { sendSuccess, sendError } = require('../utils/response');
 const fs = require('fs');
 const path = require('path');
+const mongoose = require('mongoose');
 
 /**
  * Add a question to a quiz (Teacher/Admin only)
@@ -153,6 +154,9 @@ const deleteQuestion = async (req, res, next) => {
     }
 
     const quizId = question.quiz._id;
+    
+    // Also delete any bookmarks related to this question
+    await mongoose.model('Bookmark').deleteMany({ question: id });
     
     await Question.findByIdAndDelete(id);
 

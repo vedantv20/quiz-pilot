@@ -1,4 +1,5 @@
-const { Quiz, Question, Subject, Attempt } = require('../models');
+const mongoose = require('mongoose');
+const { Quiz, Question, Subject, Attempt, Bookmark } = require('../models');
 const { sendSuccess, sendError } = require('../utils/response');
 
 const formatQuizWithStats = async (quiz) => {
@@ -261,11 +262,19 @@ const deleteQuiz = async (req, res, next) => {
     }
 
     // Check ownership (admin can delete any quiz)
-    if (user.role !== 'admin' && quiz.createdBy.toString() !== user._id.toString()) {
+    if (user.role !== 'admin' && (!quiz.createdBy || quiz.createdBy.toString() !== user._id.toString())) {
       return sendError(res, 403, 'Not authorized to delete this quiz');
     }
 
-    // Delete related questions and attempts
+    // Find questions to delete their bookmarks
+    const questions = await Question.find({ quiz: id });
+    const questionIds = questions.map(q => q._id);
+
+    // Delete related bookmarks, questions and attempts
+    if (questionIds.length > 0) {
+      await mongoose.model('Bookmark').deleteMany({ question: { $in: questionIds } });
+    }
+    
     await Question.deleteMany({ quiz: id });
     await Attempt.deleteMany({ quiz: id });
     await Quiz.findByIdAndDelete(id);

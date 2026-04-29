@@ -14,6 +14,7 @@ import {
   Lock,
   AlertTriangle,
   ChevronRight,
+  Trash2,
 } from 'lucide-react'
 import { quizzesApi } from '../api/quizzes'
 import { attemptsApi } from '../api/attempts'
@@ -50,6 +51,20 @@ const TeacherDashboard = () => {
       queryClient.invalidateQueries({ queryKey: ['teacher-stats', teacherId] })
     },
   })
+
+  const deleteQuizMutation = useMutation({
+    mutationFn: (quizId) => quizzesApi.delete(quizId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['teacher-quizzes', teacherId] })
+      queryClient.invalidateQueries({ queryKey: ['teacher-stats', teacherId] })
+    },
+  })
+
+  const handleDeleteQuiz = (quizId, quizTitle) => {
+    if (window.confirm(`Are you sure you want to delete the quiz "${quizTitle}"? This will permanently delete the quiz, all its questions, and student attempts. This action cannot be undone.`)) {
+      deleteQuizMutation.mutate(quizId)
+    }
+  }
 
   const dashboardStats = useMemo(() => {
     const totalQuizzes = quizzes.length
@@ -240,6 +255,16 @@ const TeacherDashboard = () => {
                               <BarChart3 className="h-3.5 w-3.5" />
                               Stats
                             </Link>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteQuiz(quiz._id, quiz.title)}
+                              disabled={deleteQuizMutation.isPending && deleteQuizMutation.variables === quiz._id}
+                              className="inline-flex items-center gap-1 rounded-md border border-red-200 bg-red-50 text-red-600 px-3 py-1.5 text-xs font-medium hover:bg-red-100 dark:border-red-900/30 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/40 disabled:cursor-not-allowed disabled:opacity-60"
+                              title="Delete quiz"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                              Delete
+                            </button>
                           </div>
                         </td>
                       </tr>

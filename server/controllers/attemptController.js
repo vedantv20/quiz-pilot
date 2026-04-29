@@ -308,8 +308,59 @@ const getQuizAttempts = async (req, res, next) => {
   }
 };
 
+/**
+ * Get all attempts for a specific teacher's quizzes
+ * GET /api/attempts/teacher-stats
+ */
+const getTeacherStats = async (req, res, next) => {
+  try {
+    const user = req.user;
+    
+    // Find all quizzes created by this teacher
+    const quizzes = await Quiz.find({ createdBy: user._id });
+    const quizIds = quizzes.map(q => q._id);
+
+    // Get all attempts for these quizzes
+    const attempts = await Attempt.find({ quiz: { $in: quizIds } })
+      .populate('student', 'name email')
+      .populate('quiz', 'title')
+      .sort({ completedAt: -1 });
+
+    const totalAttempts = attempts.length;
+    const averageScore = totalAttempts
+      ? attempts.reduce((sum, attempt) => sum + (attempt.percentage || 0), 0) / totalAttempts
+      : 0;
+    
+    const successRate = totalAttempts
+      ? Math.round((attempts.filter(attempt => (attempt.percentage || 0) >= 70).length / totalAttempts) * 100)
+      : 0;
+      
+    const engagementRate = quizzes.length ? Math.round((totalAttempts / quizzes.length) * 10) / 10 : 0;
+
+    const recentAttempts = attempts
+      .filter(attempt => attempt.student !== null)
+      .slice(0, 10)
+      .map(attempt => ({
+        studentName: attempt.student?.name || 'Student',
+        percentage: attempt.percentage || 0,
+        quizTitle: attempt.quiz?.title || 'Quiz',
+      }));
+
+    return sendSuccess(res, 200, 'Teacher stats retrieved successfully', {
+      totalAttempts,
+      averageScore,
+      successRate,
+      engagementRate,
+      recentAttempts
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   submitAttempt,
   getMyAttempts,
-  getQuizAttempts
+  getQuizAttempts,
+  getTeacherStats
 };

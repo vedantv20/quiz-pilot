@@ -39,8 +39,8 @@ const TeacherDashboard = () => {
   })
 
   const { data: stats, isLoading: statsLoading } = useQuery({
-    queryKey: ['teacher-stats', teacherId],
-    queryFn: () => attemptsApi.getTeacherStats(teacherId, 'all'),
+    queryKey: ['teacher-stats'],
+    queryFn: () => attemptsApi.getTeacherStats(),
     enabled: Boolean(teacherId),
   })
 

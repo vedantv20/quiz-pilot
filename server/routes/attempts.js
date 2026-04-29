@@ -1,5 +1,5 @@
 const express = require('express');
-const { submitAttempt, getMyAttempts, getQuizAttempts } = require('../controllers/attemptController');
+const { submitAttempt, getMyAttempts, getQuizAttempts, getTeacherStats } = require('../controllers/attemptController');
 const { 
   authenticate, 
   requireRole, 
@@ -20,6 +20,13 @@ router.post('/',
 router.get('/my', 
   authenticate, 
   getMyAttempts
+);
+
+// GET /api/attempts/teacher-stats - Get stats for all quizzes by teacher
+router.get('/teacher-stats', 
+  authenticate, 
+  requireRole('teacher', 'admin'), 
+  getTeacherStats
 );
 
 // GET /api/attempts/quiz/:quizId - Get all attempts for a quiz (Teacher/Admin)

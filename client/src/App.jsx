@@ -45,7 +45,7 @@ const AppLayout = () => {
 
 function App() {
   const { initializeAuth, isLoading, isAuthenticated, user } = useAuthStore()
-  const roleHome = user?.role === 'teacher' || user?.role === 'admin' ? '/teacher' : '/dashboard'
+  const roleHome = user?.role === 'admin' ? '/admin' : user?.role === 'teacher' ? '/teacher' : '/dashboard'
 
   useEffect(() => {
     initializeAuth()

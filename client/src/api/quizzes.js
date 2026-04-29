@@ -20,6 +20,7 @@ const normalizeQuiz = (quiz) => {
 
   return {
     ...normalized,
+    slug: normalized.slug,
     subject,
     createdBy,
     questions,

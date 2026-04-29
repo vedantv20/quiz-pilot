@@ -85,14 +85,13 @@ export const QuizCard = ({
         {/* Actions */}
         <div className="flex items-center space-x-2">
           <Link
-            to={`/quiz/${quiz._id}`}
-            className="btn-primary flex-1 flex items-center justify-center space-x-2"
+            to={`/quiz/${quiz.slug || quiz._id}`}
+            className="flex-1 btn-primary"
           >
-            <Play className="w-4 h-4" />
-            <span>Start Quiz</span>
+            {isMock ? 'Start Mock Exam' : 'Practice Now'}
           </Link>
           <Link
-            to={`/quiz/${quiz._id}`}
+            to={`/quiz/${quiz.slug || quiz._id}`}
             className="btn-secondary p-2"
             title="View Details"
           >

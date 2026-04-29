@@ -320,7 +320,7 @@ export const Bookmarks = () => {
                         {/* Link to original quiz */}
                         {question.quiz && (
                           <Link
-                            to={`/quiz/${question.quiz._id || question.quiz}`}
+                            to={`/quiz/${question.quiz?.slug || question.quiz?._id || question.quiz}`}
                             className="p-2 text-gray-400 hover:text-primary transition-colors"
                             title="View original quiz"
                           >

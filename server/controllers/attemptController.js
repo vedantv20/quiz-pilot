@@ -96,21 +96,23 @@ const submitAttempt = async (req, res, next) => {
     const { quizId, answers, timeTaken } = req.validatedData;
     const student = req.user;
 
+    const { resolveQuiz } = require('../utils/slugHelper');
     // Get quiz with questions
-    const quiz = await Quiz.findById(quizId)
-      .populate('subject', 'name')
-      .populate('createdBy', 'name');
+    const quiz = await resolveQuiz(quizId);
 
     if (!quiz) {
       return sendError(res, 404, 'Quiz not found');
     }
+
+    await quiz.populate('subject', 'name');
+    await quiz.populate('createdBy', 'name');
 
     if (!quiz.isPublished) {
       return sendError(res, 400, 'Quiz is not published');
     }
 
     // Get all questions for this quiz
-    const questions = await Question.find({ quiz: quizId }).sort({ createdAt: 1 });
+    const questions = await Question.find({ quiz: quiz._id }).sort({ createdAt: 1 });
     
     if (questions.length === 0) {
       return sendError(res, 400, 'Quiz has no questions');
@@ -148,7 +150,7 @@ const submitAttempt = async (req, res, next) => {
     // Create attempt record
     const attempt = new Attempt({
       student: student._id,
-      quiz: quizId,
+      quiz: quiz._id,
       answers,
       score: correctCount,
       percentage,
@@ -258,7 +260,8 @@ const getQuizAttempts = async (req, res, next) => {
     const { page = 1, limit = 50 } = req.query;
 
     // Check if quiz exists and user has permission
-    const quiz = await Quiz.findById(quizId);
+    const { resolveQuiz } = require('../utils/slugHelper');
+    const quiz = await resolveQuiz(quizId);
     if (!quiz) {
       return sendError(res, 404, 'Quiz not found');
     }
@@ -270,13 +273,13 @@ const getQuizAttempts = async (req, res, next) => {
 
     const skip = (page - 1) * limit;
 
-    const attempts = await Attempt.find({ quiz: quizId })
+    const attempts = await Attempt.find({ quiz: quiz._id })
       .populate('student', 'name email')
       .sort({ completedAt: -1 })
       .skip(skip)
       .limit(parseInt(limit));
 
-    const totalAttempts = await Attempt.countDocuments({ quiz: quizId });
+    const totalAttempts = await Attempt.countDocuments({ quiz: quiz._id });
 
     const attemptsData = attempts
       .filter(attempt => attempt.student !== null) // Filter out attempts with deleted students

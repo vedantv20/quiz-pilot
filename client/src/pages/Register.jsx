@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, User, Mail, Lock, UserPlus } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 

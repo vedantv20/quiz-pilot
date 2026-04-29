@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { Quiz, Question, Subject, Attempt, Bookmark } = require('../models');
 const { sendSuccess, sendError } = require('../utils/response');
+const { generateSlug, resolveQuiz } = require('../utils/slugHelper');
 
 const formatQuizWithStats = async (quiz) => {
   const questionCount = await Question.countDocuments({ quiz: quiz._id });
@@ -9,6 +10,7 @@ const formatQuizWithStats = async (quiz) => {
   return {
     _id: quiz._id,
     title: quiz.title,
+    slug: quiz.slug,
     description: quiz.description,
     subject: quiz.subject,
     difficulty: quiz.difficulty,
@@ -82,13 +84,13 @@ const getQuizById = async (req, res, next) => {
     const { id } = req.params;
     const user = req.user;
 
-    const quiz = await Quiz.findById(id)
-      .populate('subject', 'name icon')
-      .populate('createdBy', 'name email');
-
+    const quiz = await resolveQuiz(id);
     if (!quiz) {
       return sendError(res, 404, 'Quiz not found');
     }
+
+    await quiz.populate('subject', 'name icon');
+    await quiz.populate('createdBy', 'name email');
 
     // Check if quiz is published (unless user is teacher/admin or owner)
     const isOwner = quiz.createdBy && quiz.createdBy._id && quiz.createdBy._id.toString() === user._id.toString();
@@ -97,7 +99,7 @@ const getQuizById = async (req, res, next) => {
     }
 
     // Get questions
-    let questions = await Question.find({ quiz: id }).sort({ createdAt: 1 });
+    let questions = await Question.find({ quiz: quiz._id }).sort({ createdAt: 1 });
 
     // For students: hide correctIndex and explanation during attempt
     // For mock exams: always hide correctIndex and explanation during attempt
@@ -128,6 +130,7 @@ const getQuizById = async (req, res, next) => {
     const quizData = {
       _id: quiz._id,
       title: quiz.title,
+      slug: quiz.slug,
       description: quiz.description,
       subject: quiz.subject,
       difficulty: quiz.difficulty,
@@ -162,8 +165,11 @@ const createQuiz = async (req, res, next) => {
       return sendError(res, 400, 'Invalid subject ID');
     }
 
+    const slug = await generateSlug(title);
+
     const quiz = new Quiz({
       title,
+      slug,
       description,
       subject,
       createdBy,
@@ -181,6 +187,7 @@ const createQuiz = async (req, res, next) => {
     const quizData = {
       _id: quiz._id,
       title: quiz.title,
+      slug: quiz.slug,
       description: quiz.description,
       subject: quiz.subject,
       difficulty: quiz.difficulty,
@@ -209,7 +216,7 @@ const updateQuiz = async (req, res, next) => {
     const updates = req.validatedData;
     const user = req.user;
 
-    const quiz = await Quiz.findById(id);
+    const quiz = await resolveQuiz(id);
     if (!quiz) {
       return sendError(res, 404, 'Quiz not found');
     }
@@ -220,6 +227,10 @@ const updateQuiz = async (req, res, next) => {
     }
 
     // Update quiz
+    if (updates.title && updates.title !== quiz.title) {
+      quiz.slug = await generateSlug(updates.title, quiz._id);
+    }
+    
     Object.keys(updates).forEach(key => {
       quiz[key] = updates[key];
     });
@@ -228,11 +239,12 @@ const updateQuiz = async (req, res, next) => {
     await quiz.populate('subject', 'name icon');
     await quiz.populate('createdBy', 'name email');
 
-    const questionCount = await Question.countDocuments({ quiz: id });
+    const questionCount = await Question.countDocuments({ quiz: quiz._id });
 
     const quizData = {
       _id: quiz._id,
       title: quiz.title,
+      slug: quiz.slug,
       description: quiz.description,
       subject: quiz.subject,
       difficulty: quiz.difficulty,
@@ -260,7 +272,7 @@ const deleteQuiz = async (req, res, next) => {
     const { id } = req.params;
     const user = req.user;
 
-    const quiz = await Quiz.findById(id);
+    const quiz = await resolveQuiz(id);
     if (!quiz) {
       return sendError(res, 404, 'Quiz not found');
     }
@@ -271,7 +283,7 @@ const deleteQuiz = async (req, res, next) => {
     }
 
     // Find questions to delete their bookmarks
-    const questions = await Question.find({ quiz: id });
+    const questions = await Question.find({ quiz: quiz._id });
     const questionIds = questions.map(q => q._id);
 
     // Delete related bookmarks, questions and attempts
@@ -279,9 +291,9 @@ const deleteQuiz = async (req, res, next) => {
       await mongoose.model('Bookmark').deleteMany({ question: { $in: questionIds } });
     }
     
-    await Question.deleteMany({ quiz: id });
-    await Attempt.deleteMany({ quiz: id });
-    await Quiz.findByIdAndDelete(id);
+    await Question.deleteMany({ quiz: quiz._id });
+    await Attempt.deleteMany({ quiz: quiz._id });
+    await Quiz.findByIdAndDelete(quiz._id);
 
     return sendSuccess(res, 200, 'Quiz and related data deleted successfully');
   } catch (error) {
@@ -298,7 +310,7 @@ const togglePublishQuiz = async (req, res, next) => {
     const { id } = req.params;
     const user = req.user;
 
-    const quiz = await Quiz.findById(id);
+    const quiz = await resolveQuiz(id);
     if (!quiz) {
       return sendError(res, 404, 'Quiz not found');
     }
@@ -309,7 +321,7 @@ const togglePublishQuiz = async (req, res, next) => {
     }
 
     // Check if quiz has questions
-    const questionCount = await Question.countDocuments({ quiz: id });
+    const questionCount = await Question.countDocuments({ quiz: quiz._id });
     if (questionCount === 0) {
       return sendError(res, 400, 'Cannot publish quiz without questions');
     }
@@ -334,7 +346,7 @@ const getQuizStats = async (req, res, next) => {
     const { id } = req.params;
     const user = req.user;
 
-    const quiz = await Quiz.findById(id);
+    const quiz = await resolveQuiz(id);
     if (!quiz) {
       return sendError(res, 404, 'Quiz not found');
     }
@@ -345,7 +357,7 @@ const getQuizStats = async (req, res, next) => {
     }
 
     // Get all attempts for this quiz
-    const attempts = await Attempt.find({ quiz: id })
+    const attempts = await Attempt.find({ quiz: quiz._id })
       .populate('student', 'name email')
       .sort({ completedAt: -1 });
 
@@ -356,7 +368,7 @@ const getQuizStats = async (req, res, next) => {
     const lowestScore = totalAttempts > 0 ? Math.min(...attempts.map(a => a.percentage)) : 0;
 
     // Get questions for per-question analysis
-    const questions = await Question.find({ quiz: id }).sort({ createdAt: 1 });
+    const questions = await Question.find({ quiz: quiz._id }).sort({ createdAt: 1 });
     
     // Per question accuracy
     const questionAccuracy = questions.map((question, index) => {

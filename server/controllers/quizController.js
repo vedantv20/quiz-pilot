@@ -105,6 +105,8 @@ const getQuizById = async (req, res, next) => {
       questions = questions.map(q => ({
         _id: q._id,
         text: q.text,
+        image: q.image,
+        imageAlt: q.imageAlt,
         options: q.options,
         difficulty: q.difficulty
         // correctIndex and explanation hidden
@@ -114,6 +116,8 @@ const getQuizById = async (req, res, next) => {
       questions = questions.map(q => ({
         _id: q._id,
         text: q.text,
+        image: q.image,
+        imageAlt: q.imageAlt,
         options: q.options,
         correctIndex: q.correctIndex,
         explanation: q.explanation,

@@ -84,11 +84,11 @@ export const QuestionCard = ({
 
       {/* Question Image (if exists) */}
       {question.image && !imageError && (
-        <div className="mb-6">
+        <div className="mb-6 flex justify-center">
           <img
-            src={question.image}
+            src={question.image.startsWith('http') ? question.image : `${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api', '') : ''}${question.image}`}
             alt={question.imageAlt || "Question diagram"}
-            className="max-w-full h-auto rounded-lg shadow-sm"
+            className="max-w-full h-auto max-h-64 object-contain rounded-lg shadow-sm border border-border"
             onError={() => setImageError(true)}
           />
         </div>

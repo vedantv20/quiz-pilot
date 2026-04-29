@@ -264,7 +264,7 @@ const getQuizAttempts = async (req, res, next) => {
     }
 
     // Check ownership (admin can view any quiz attempts)
-    if (user.role !== 'admin' && quiz.createdBy.toString() !== user._id.toString()) {
+    if (user.role !== 'admin' && (!quiz.createdBy || quiz.createdBy.toString() !== user._id.toString())) {
       return sendError(res, 403, 'Not authorized to view quiz attempts');
     }
 

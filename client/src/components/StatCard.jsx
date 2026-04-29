@@ -1,4 +1,7 @@
+import React from 'react';
+
 export const StatCard = ({ 
+
   title, 
   value, 
   subtitle, 
@@ -69,7 +72,16 @@ export const StatCard = ({
         </div>
         {Icon && (
           <div className={`p-3 rounded-lg ${getColorClasses(color)}`}>
-            <Icon className="w-6 h-6" />
+            {typeof Icon === 'function' || typeof Icon === 'object' && Icon.$$typeof ? (
+              // If Icon is a React component type or element
+              React.isValidElement(Icon) ? (
+                Icon
+              ) : (
+                <Icon className="w-6 h-6" />
+              )
+            ) : (
+              Icon
+            )}
           </div>
         )}
       </div>

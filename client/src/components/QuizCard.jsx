@@ -1,3 +1,4 @@
+import { useAuthStore } from '../store/authStore'
 import { Link } from 'react-router-dom'
 import { Clock, Users, BookOpen, Play, Eye, Zap } from 'lucide-react'
 

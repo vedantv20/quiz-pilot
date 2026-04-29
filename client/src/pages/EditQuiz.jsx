@@ -482,7 +482,7 @@ const EditQuiz = () => {
                     Questions ({questions.length})
                   </h3>
                   <Link
-                    to={`/teacher/quiz/${id}/question/new`}
+                    to={`\${useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes' : '/teacher/quiz'}/${id}/question/new`}
                     className="btn-primary text-sm"
                   >
                     <Plus className="w-4 h-4" />
@@ -523,7 +523,7 @@ const EditQuiz = () => {
                     Add questions to make your quiz available to students
                   </p>
                   <Link
-                    to={`/teacher/quiz/${id}/question/new`}
+                    to={`\${useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes' : '/teacher/quiz'}/${id}/question/new`}
                     className="btn-primary"
                   >
                     <Plus className="w-4 h-4" />
@@ -578,7 +578,7 @@ const QuestionManagementCard = ({ question, index, onDelete, quizId }) => {
               />
               <div className="absolute right-0 top-full mt-1 w-36 bg-card rounded-lg shadow-lg border border-border z-20">
                 <Link
-                  to={`/teacher/quiz/${quizId}/question/${question._id}/edit`}
+                  to={`\${useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes' : '/teacher/quiz'}/${quizId}/question/${question._id}/edit`}
                   className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-muted/80 first:rounded-t-lg"
                   onClick={() => setShowMenu(false)}
                 >

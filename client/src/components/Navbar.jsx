@@ -67,9 +67,10 @@ export const Navbar = () => {
     { to: '/admin/users', label: 'Users', icon: Users },
     { to: '/admin/subjects', label: 'Subjects', icon: BookOpen },
     { to: '/admin/surveys', label: 'Analytics', icon: BarChart3 },
+    { to: '/admin/quizzes', label: 'Quizzes', icon: BookOpen },
   ]
 
-  const primaryLinks = user?.role === 'student' ? studentLinks : teacherLinks
+  const primaryLinks = user?.role === 'student' ? studentLinks : user?.role === 'admin' ? adminLinks : teacherLinks
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-lg border-b border-border">
@@ -123,7 +124,7 @@ export const Navbar = () => {
             )}
 
             {/* Admin Navigation */}
-            {isAdmin() && (
+            {isAdmin() && user?.role === 'student' && (
               <>
                 <div className="h-4 w-px bg-border mx-2" />
                 {adminLinks.map(({ to, label, icon: Icon }) => (
@@ -241,7 +242,7 @@ export const Navbar = () => {
               )}
 
               {/* Admin Links */}
-              {isAdmin() && (
+              {isAdmin() && user?.role === 'student' && (
                 <>
                   <div className="border-t border-border my-2" />
                   {adminLinks.map(({ to, label, icon: Icon }) => (

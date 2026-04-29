@@ -17,26 +17,10 @@ export { default as TeacherDashboard } from './TeacherDashboard'
 export { default as CreateQuiz } from './CreateQuiz'
 export { default as EditQuiz } from './EditQuiz'
 export { default as NewQuestion } from './NewQuestion'
-export const QuizStats = () => {
-  return (
-    <div className="page-shell">
-      <div className="page-container">
-        <h1 className="text-3xl font-bold text-foreground">Quiz Stats - Coming Soon</h1>
-      </div>
-    </div>
-  )
-}
+export { default as QuizStats } from './QuizStats'
 export { default as AdminDashboard } from './AdminDashboard'
 export { default as UserManagement } from './UserManagement'
-export const SubjectManagement = () => {
-  return (
-    <div className="page-shell">
-      <div className="page-container">
-        <h1 className="text-3xl font-bold text-foreground">Subject Management - Coming Soon</h1>
-      </div>
-    </div>
-  )
-}
+export { default as SubjectManagement } from './SubjectManagement'
 export { default as SurveyAnalytics } from './SurveyAnalytics'
 
 export const NotFound = () => {

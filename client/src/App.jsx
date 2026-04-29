@@ -156,46 +156,88 @@ function App() {
           />
           <Route path="/profile" element={<Profile />} />
 
-          <Route
-            path="/teacher"
-            element={
-              <ProtectedRoute allowedRoles={['teacher', 'admin']}>
-                <TeacherDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/teacher/quiz/new"
-            element={
-              <ProtectedRoute allowedRoles={['teacher', 'admin']}>
-                <CreateQuiz />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/teacher/quiz/:id/edit"
-            element={
-              <ProtectedRoute allowedRoles={['teacher', 'admin']}>
-                <EditQuiz />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/teacher/quiz/:quizId/question/new"
-            element={
-              <ProtectedRoute allowedRoles={['teacher', 'admin']}>
-                <NewQuestion />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/teacher/quiz/:id/stats"
-            element={
-              <ProtectedRoute allowedRoles={['teacher', 'admin']}>
-                <QuizStats />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/teacher"
+              element={
+                <ProtectedRoute allowedRoles={['teacher', 'admin']}>
+                  <TeacherDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/teacher/quiz/new"
+              element={
+                <ProtectedRoute allowedRoles={['teacher', 'admin']}>
+                  <CreateQuiz />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/teacher/quiz/:id/edit"
+              element={
+                <ProtectedRoute allowedRoles={['teacher', 'admin']}>
+                  <EditQuiz />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/teacher/quiz/:quizId/question/new"
+              element={
+                <ProtectedRoute allowedRoles={['teacher', 'admin']}>
+                  <NewQuestion />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/teacher/quiz/:id/stats"
+              element={
+                <ProtectedRoute allowedRoles={['teacher', 'admin']}>
+                  <QuizStats />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Admin Quizzes Routes (same components, different URLs) */}
+            <Route
+              path="/admin/quizzes"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <TeacherDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/quizzes/new"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <CreateQuiz />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/quizzes/:id/edit"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <EditQuiz />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/quizzes/:quizId/question/new"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <NewQuestion />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/quizzes/:id/stats"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <QuizStats />
+                </ProtectedRoute>
+              }
+            />
 
           <Route
             path="/admin"

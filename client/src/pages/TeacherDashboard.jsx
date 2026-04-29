@@ -101,7 +101,7 @@ const TeacherDashboard = () => {
             </p>
           </div>
           <div className="flex gap-3">
-            <Link to="/teacher/quiz/new" className="btn-primary">
+            <Link to={useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes/new' : '/teacher/quiz/new'} className="btn-primary">
               <Plus className="w-4 h-4" />
               New Quiz
             </Link>
@@ -163,7 +163,7 @@ const TeacherDashboard = () => {
         <div className="overflow-hidden rounded-xl border border-border bg-card">
           <div className="flex items-center justify-between border-b border-border p-6">
             <h2 className="text-xl font-semibold text-foreground">Quiz Manager</h2>
-            <Link to="/teacher/quiz/new" className="text-sm font-medium text-primary hover:text-primary/80">
+            <Link to={useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes/new' : '/teacher/quiz/new'} className="text-sm font-medium text-primary hover:text-primary/80">
               Create another
             </Link>
           </div>
@@ -178,7 +178,7 @@ const TeacherDashboard = () => {
             <div className="p-12 text-center">
               <BookOpen className="mx-auto mb-4 h-10 w-10 text-muted-foreground" />
               <p className="mb-4 text-muted-foreground">You have not created any quizzes yet.</p>
-              <Link to="/teacher/quiz/new" className="btn-primary">
+              <Link to={useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes/new' : '/teacher/quiz/new'} className="btn-primary">
                 <Plus className="w-4 h-4" />
                 Create first quiz
               </Link>
@@ -225,14 +225,14 @@ const TeacherDashboard = () => {
                         <td className="px-6 py-4">
                           <div className="flex items-center justify-end gap-2">
                             <Link
-                              to={`/teacher/quiz/${quiz._id}/edit`}
+                              to={`\${useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes' : '/teacher/quiz'}/${quiz._id}/edit`}
                               className="inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
                             >
                               <Edit className="h-3.5 w-3.5" />
                               Edit
                             </Link>
                             <Link
-                              to={`/teacher/quiz/${quiz._id}/question/new`}
+                              to={`\${useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes' : '/teacher/quiz'}/${quiz._id}/question/new`}
                               className="inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
                             >
                               <Plus className="h-3.5 w-3.5" />
@@ -249,7 +249,7 @@ const TeacherDashboard = () => {
                               {quiz.isPublished ? 'Unpublish' : 'Publish'}
                             </button>
                             <Link
-                              to={`/teacher/quiz/${quiz._id}/stats`}
+                              to={`\${useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes' : '/teacher/quiz'}/${quiz._id}/stats`}
                               className="inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
                             >
                               <BarChart3 className="h-3.5 w-3.5" />
@@ -307,7 +307,7 @@ const TeacherDashboard = () => {
             <h3 className="mb-4 text-lg font-semibold text-foreground">Teaching Shortcuts</h3>
             <div className="space-y-3">
               <Link
-                to="/teacher/quiz/new"
+                to={useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes/new' : '/teacher/quiz/new'}
                 className="flex items-center justify-between rounded-lg border border-border px-4 py-3 text-sm text-foreground hover:bg-muted"
               >
                 <span className="inline-flex items-center gap-2">

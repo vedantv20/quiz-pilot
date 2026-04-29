@@ -37,7 +37,7 @@ const CreateQuiz = () => {
     mutationFn: quizzesApi.create,
     onSuccess: (data) => {
       queryClient.invalidateQueries(['teacher-quizzes']);
-      navigate(`/teacher/quiz/${data._id}/edit`);
+      navigate(`\${useAuthStore.getState().user?.role === 'admin' ? '/admin/quizzes' : '/teacher/quiz'}/${data._id}/edit`);
     },
     onError: (error) => {
       setErrors({ submit: error.message || 'Failed to create quiz' });

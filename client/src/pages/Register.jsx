@@ -81,10 +81,17 @@ export const Register = () => {
     if (result.success) {
       const roleHome = result.role === 'admin' ? '/admin' : result.role === 'teacher' ? '/teacher' : '/dashboard'
 
+      const isAllowedPath = (path, role) => {
+        if (!path) return false;
+        if (role === 'student' && (path.startsWith('/admin') || path.startsWith('/teacher'))) return false;
+        if (role === 'teacher' && path.startsWith('/admin')) return false;
+        return true;
+      }
+
       if (result.requiresOnboarding) {
         navigate('/onboarding', { replace: true, state: { from } })
       } else {
-        const nextPath = (!from || from === '/onboarding' || from === '/register') ? roleHome : from
+        const nextPath = (!from || from === '/onboarding' || from === '/register' || from === '/' || !isAllowedPath(from, result.role)) ? roleHome : from
         navigate(nextPath, { replace: true })
       }
     }
